@@ -94,29 +94,35 @@ Les notebooks Jupyter dans `notebooks/` contiennent les analyses détaillées et
 - **Analyse lexicale** : n-grammes, fréquences d'apparition par patient et par thérapeute
 - **Topic Modeling** : comparaison de 4 approches (lexique manuel, TF-IDF + K-Means, Word2Vec/GloVe + clustering, LDA)
 
-### Étape 2 — Analyse des sentiments 🚧 **En cours de construction** 🚧
-- Quantification de la polarité et des émotions des échanges
-- Comparaison des approches entre les deux groupes  
-
-
-
-### Étape 3 — Outils d'accès à l'information 🚧 **En cours de construction** 🚧
+### Étape 2 — Outils d'accès à l'information
 | Groupe | Tâche |
 |--------|-------|
-| **Groupe 1** | Résumé automatique des conversations |
-| **Groupe 2** | Système de question-réponse sur la santé mentale |  
+| **Groupe 1** | Analyse des sentiments des conversations |
+| **Groupe 2** | Question-réponse sur la santé mentale |  
 
+#### Groupe 1 — Analyse des sentiments des conversations
+La première consiste à implémenter un "catégoriseur" de sentiments sur les question-réponses des thérapeutes selon une liste prédéfinie par les thérapeutes 
+(ex. Anxiété, Normal, Dépression, etc.) sur la base uniquement du contenu (mots, phrases, sujet).
 
+#### Groupe 2 — Question-réponse sur la santé mentale
+La seconde, quant à elle, devra implémenter un système de question-réponse simple sur le thème de la santé mentale, à une question en langage naturelle,
+le système retourne une liste de réponses, candidates ordonnées selon un score de pertinence.
 
+> L'étape 2 étant encore nouvelle, peut légèrement changer
 ---
 
 ## 📦 Données
 
-Le jeu de données utilisé est publié sur [Kaggle](https://www.kaggle.com/datasets/thedevastator/nlp-mental-health-conversations) et contient des conversations patient-thérapeute structurées en deux colonnes :
+Le jeu de données utilisé sur l'étape 1 est publié sur [Kaggle](https://www.kaggle.com/datasets/thedevastator/nlp-mental-health-conversations) et contient des conversations patient-thérapeute structurées en deux colonnes :
 - `patient` : message du patient
-- `therapist` : réponse du thérapeute
+- `therapist` : réponse du thérapeute  
 
-> ⚠️ Le fichier `train.csv` est commun à toute l'équipe et se situe dans le dossier `data/`.
+Le jeu de donnée utilisé pour l'étape 2 est publié sur [Kaggle](https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health/data) et contient un corpus d'entraînement sur 
+les catégories des sentiments où les annotations sont fournies manuellement par les thérapeutes.
+
+
+
+> ⚠️ Les fichiers `train.csv` et `combined_data.csv` sont commun à toute l'équipe et se situe dans le dossier `data/`.
 
 ---
 
@@ -136,7 +142,7 @@ Le jeu de données utilisé est publié sur [Kaggle](https://www.kaggle.com/data
 
 **Chef de projet :** Logan LARROUX
 
-| Groupe 1 — Résumé des conversations | Groupe 2 — Q/R sur la santé mentale |
+| Groupe 1 — Analyse des sentiments des conversations | Groupe 2 — Q&R sur la santé mentale |
 |--------------------------------------|--------------------------------------|
 | Cruz FERNANDES DIOGO (Chef de groupe) | Idir YAHIAOUI (Chef de groupe) |
 | Ulysse CHASSEIGNE | Bantsoukissa LAURE |
