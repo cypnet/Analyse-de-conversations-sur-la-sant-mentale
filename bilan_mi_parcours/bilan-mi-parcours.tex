@@ -505,7 +505,7 @@ Ce choix sera fait sur la base d'un vote des membres de l'équipe après avoir c
 \subsubsection{Hétérogénéité du nettoyage des données}
 Chaque membre a appliqué un pipeline différent pour le nettoyage, ce qui peut paraître intéressant
 pour comparer les résultats obtenus, mais cela peut aussi causer des problèmes de cohérence et de comparabilité
-des résultats obtenus, en particulier pour les étapes suivantes qui se basent sur les résultats du nettoyage. \smallbreak
+des résultats obtenus, en particulier pour l'étape suivante qui se basent sur les résultats du nettoyage. \smallbreak
 
 \hspace{0.5cm}\textbf{Solution apportée:} Après cette constatation lors de notre 
 \nameref{subsubsec:reuRef2} avec la référente, nous avions installé un tableur décrivant les 
@@ -608,15 +608,16 @@ Les plannings étant relativement grand, ont étaient mis en Annexe (\ref{subsec
 % ── Suite du projet ─────────────────────────────────────────────────────────────
 \section{Suite du projet}
 
-Le future du projet est principalement axé sur l'étape 2 et 3 du projet, qui consiste à analyser les sentiments 
-des conversations puis accéder aux conversations pour faire du résumé et du Q\&A sur la santé mentale.
+Après modification par la référente de l'objectif principale du projet, 
+l'étape 2 et 3 ont fusionnées pour ne faire qu'une, cela évitera un travail trop grand pour les membres de l'équipe,
+ainsi la structure des groupes établis sur l'étape 3 seront transférés sur l'étape 2.
 
-L'étape 2 sera (normalement) plus courte que la première puisqu'elle consiste à utiliser les résultats des modèles de l'étape précédente pour
-faire une analyse de sentiments sur les conversations, puisque nous avons adapté notre système d'organisation 
-(voir section \nameref{subsubsec:probMethoResEtape1}), les résultats seront plus cohérents et comparables 
-entre les groupes (problème résolu section \nameref{subsubsec:probMethoConsignes}),
-ce qui nous permettra d'identifier les émotions exprimées par les patients et les thérapeutes,
-ainsi que les facteurs qui influencent ces émotions.
+Celle-ci étant maintenant séparée en 2 parties comme dis précédemment, la première consiste à implémenter un "catégoriseur" 
+de sentiments sur les question-réponses des thérapeutes selon une liste prédéfinie par les thérapeutes 
+(ex. Anxiété, Normal, Dépression, etc.) sur la base uniquement du contenu (mots, phrases, sujet).
+La seconde, quant à elle, devra implémenter un système de question-réponse simple sur le thème de la santé mentale, à une question en langage naturelle,
+le système retourne une liste de réponses, candidates ordonnées selon un score de pertinence.\\
+(L'étape 2 sera décrite plus en détails dans le cahier des charges.)
 
 Le but étant d'accomplir cette étape dans les temps pour pouvoir se stabiliser sur le nouveau planning initialisé lors de l'étape 1.
 
