@@ -17,7 +17,7 @@
 Ce projet vise à analyser un corpus de conversations entre patients et thérapeutes afin de :
 - Comprendre la structure et les thématiques des échanges
 - Détecter les émotions et états psychologiques des patients (analyse de sentiments)
-- Développer deux outils d'accès à l'information : un système de **résumé automatique** et un système de **question-réponse** sur la santé mentale
+- Développer deux outils d'accès à l'information : un système d'**analyse des sentiments** et un système de **question-réponse** sur la santé mentale
 
 ---
 
@@ -47,14 +47,10 @@ Ce projet vise à analyser un corpus de conversations entre patients et thérape
 │   │   ├── compte_rendu_etape1.md  
 │   │   ├── compte_rendu_etape1.pdf
 │   │   └── compte_rendu_etape1.tex
-│   ├── etape2/                     # Compte rendu pour l'étape 2 
-│   │   ├── compte_rendu_etape2.md  
-│   │   ├── compte_rendu_etape2.pdf
-│   │   └── compte_rendu_etape2.tex
-│   └── etape3/                     # Compte rendu pour l'étape 3
-│       ├── compte_rendu_etape3.md  
-│       ├── compte_rendu_etape3.pdf
-│       └── compte_rendu_etape3.tex
+│   └── etape2/                     # Compte rendu pour l'étape 2 
+│       ├── compte_rendu_etape2.md  
+│       ├── compte_rendu_etape2.pdf
+│       └── compte_rendu_etape2.tex
 ├── .gitignore
 ├── requirements.txt                # Bibliothèques python nécessaires 
 └── README.md
