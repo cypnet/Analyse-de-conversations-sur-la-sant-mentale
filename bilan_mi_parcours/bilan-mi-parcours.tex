@@ -176,10 +176,8 @@ les objectifs atteints, les problèmes rencontrés, les solutions apportées et 
   \node[box, below=of stats] (lex) {Analyse\\lexicale};
   \node[box, below=of lex] (topic) {Topic\\Modeling};
 
-  \node[box, below=3cm of topic, text width=4cm] (sentiment) {Analyse sentiments\\conversations};
-
-  \node[box, below=3cm of sentiment, text width=3cm] (conversations) {Accès aux conversations};
-  \node[box, left=1cm of conversations, text width=3cm] (conversationG1) {Résumé des conversations};
+  \node[box, below=3cm of topic, text width=3cm] (conversations) {Analyse et accès\\aux conversations};
+  \node[box, left=1cm of conversations, text width=3cm] (conversationG1) {Analyse des sentiments\\des conversations};
   \node[box, right=1cm of conversations, text width=3cm] (conversationG2) {Q/A sur la santé mentale};
 
   % Méthode de Nettoyage
@@ -210,8 +208,7 @@ les objectifs atteints, les problèmes rencontrés, les solutions apportées et 
   \node[group, fit=(tm1) (tm2) (tm3) (tm4), label=above:\small\textbf{Comparaison des méthodes}] (methods4) {};
 
   \node[biggergroup, fit=(methods1) (methods2) (methods3) (methods4) (topic), label=above left:\textbf{Étape 1}] (step1) {};
-  \node[biggergroup, fit=(sentiment), label=above left:\textbf{Étape 2}] (step2) {};
-  \node[biggergroup, fit=(conversations) (conversationG1) (conversationG2), label=above left:\textbf{Étape 3}] (step3) {};
+  \node[biggergroup, fit=(conversations) (conversationG1) (conversationG2), label=above left:\textbf{Étape 2}] (step2) {};
 
   % Flux principal horizontal
   \draw[arrow] (data) -- (clean);
@@ -219,9 +216,7 @@ les objectifs atteints, les problèmes rencontrés, les solutions apportées et 
   \draw[arrow] (stats) -- (lex);
   \draw[arrow] (lex) -- (topic);
 
-  \draw[arrow] (topic) -- (sentiment);
-
-  \draw[arrow] (sentiment) -- (conversations);
+  \draw[arrow] (topic) -- (conversations);
   \draw[arrow] (conversations) -- (conversationG1);
   \draw[arrow] (conversations) -- (conversationG2);
 
@@ -237,17 +232,16 @@ les objectifs atteints, les problèmes rencontrés, les solutions apportées et 
 \end{center}
 \end{figure}
 
-% Barre
+% Barre de progression
 \begin{figure}[H]
 \begin{center}
 \begin{tikzpicture}[scale=1.5]
-
 % ======================
 % PARAMÈTRES
 % ======================
-\def\currentstep{2} % Étape actuelle (1, 2 ou 3)
-\def\groupA{0.0}
-\def\groupB{0.0}
+\def\currentstep{2}   % Étape actuelle : 1 ou 2
+\def\groupA{0.0}      % Progression partie 1 (0.0 à 1.0)
+\def\groupB{0.0}      % Progression partie 2 (0.0 à 1.0)
 
 % ======================
 % COULEURS
@@ -257,95 +251,98 @@ les objectifs atteints, les problèmes rencontrés, les solutions apportées et 
 \definecolor{todo}{RGB}{200,200,200}
 
 % ======================
-% BARRE PRINCIPALE
+% BARRE PRINCIPALE (Étape 1 → Étape 2)
 % ======================
-\draw[line width=3pt, color=todo] (0,0) -- (4,0);
+\draw[line width=3pt, color=todo]    (0,0) -- (3,0);
+\draw[line width=3pt, color=done]    (0,0) -- (3,0);
 
-% progression réelle (FIN étape 1 uniquement)
-\draw[line width=3pt, color=done] (0,0) -- (2.5,0);
-
-% étape en cours (étape 2)
-\draw[line width=3pt, color=current] (2.5,0) -- (3,0);
-
-% ======================
-% CRANS
-% ======================
-\foreach \x in {0,0.5,...,4} {
-    \draw[line width=1pt] (\x,0.05) -- (\x,-0.05);
+% Crans sur la barre principale
+\foreach \x in {0,0.5,...,3} {
+  \draw[line width=1pt] (\x,0.05) -- (\x,-0.05);
 }
 
 % ======================
-% BIFURCATION FLUIDE À PARTIR DE 4
+% BIFURCATION À PARTIR DE L'ÉTAPE 2
 % ======================
-\coordinate (split) at (4,0);
+\coordinate (split) at (3,0);
 
-% branches (fond)
+% Sous-barre haute — partie 1 (fond)
 \draw[line width=3pt, color=todo]
-  (split) to[out=-10, in=180] (5,0.6);
+  (split) to[out=10, in=180] (5,0.6);
 
+% Sous-barre basse — partie 2 (fond)
 \draw[line width=3pt, color=todo]
-  (split) to[out=10, in=180] (5,-0.6);
+  (split) to[out=-10, in=180] (5,-0.6);
 
-% progression groupe A
-\path (split) to[out=-10, in=180] coordinate[pos=\groupA] (Aprog) (5,0.6);
+% Progression partie 1
+\path (split) to[out=10, in=180]
+  coordinate[pos=\groupA] (Aprog) (5,0.6);
 \draw[line width=3pt, color=done]
   (split) to[out=-10, in=180] (Aprog);
 
-% état courant groupe A
+% État courant partie 1
 \ifdim \groupA pt > 0pt
-\ifdim \groupA pt < 1pt
-  \draw[line width=3pt, color=current]
-    (Aprog) to[out=-10, in=180] ++(0.15,0.08);
-\fi
+  \ifdim \groupA pt < 1pt
+    \draw[line width=3pt, color=current]
+      (Aprog) to[out=-10, in=180] ++(0.15,0.08);
+  \fi
 \fi
 
-% progression groupe B
-\path (split) to[out=10, in=180] coordinate[pos=\groupB] (Bprog) (5,-0.6);
+% Progression partie 2
+\path (split) to[out=10, in=180]
+  coordinate[pos=\groupB] (Bprog) (5,-0.6);
 \draw[line width=3pt, color=done]
   (split) to[out=10, in=180] (Bprog);
 
-% état courant groupe B
+% État courant partie 2
 \ifdim \groupB pt > 0pt
-\ifdim \groupB pt < 1pt
-  \draw[line width=3pt, color=current]
-    (Bprog) to[out=10, in=180] ++(0.15,-0.08);
-\fi
+  \ifdim \groupB pt < 1pt
+    \draw[line width=3pt, color=current]
+      (Bprog) to[out=10, in=180] ++(0.15,-0.08);
+  \fi
 \fi
 
 % ======================
-% POINTS ÉTAPES
+% POINTS ÉTAPES PRINCIPALES
 % ======================
 \foreach \x/\label/\step in {
-  0/Étape 1/1,
-  2.5/Étape 2/2,
-  4/Étape 3/3
+  0/{Étape 1}/1,
+  3/{Étape 2}/2
 } {
   \ifnum\step<\currentstep
     \filldraw[fill=done, draw=black] (\x,0) circle (0.15);
   \else\ifnum\step=\currentstep
     \filldraw[fill=current, draw=black] (\x,0) circle (0.15);
-  \else\ifnum\step=\currentstep
-    \filldraw[fill=done, draw=black] (\x,0) circle (0.15);
   \else
     \filldraw[fill=white, draw=black] (\x,0) circle (0.15);
-  \fi\fi\fi
-
+  \fi\fi
   \node[below=6pt] at (\x,0) {\label};
 }
 
 % ======================
-% POINTS GROUPES
+% POINTS SOUS-ÉTAPES
 % ======================
-\filldraw[fill=white, draw=black] (5,0.6) circle (0.12);
-\node[right] at (5.2,0.75) {Groupe A};
+% Partie 1 (en cours si groupA > 0)
+\ifdim \groupA pt > 0pt
+  \filldraw[fill=current, draw=black] (5,0.6) circle (0.12);
+\else
+  \filldraw[fill=white, draw=black] (5,0.6) circle (0.12);
+\fi
+\node[right] at (5.2,0.75) {Partie 1};
 
-\filldraw[fill=white, draw=black] (5,-0.6) circle (0.12);
-\node[right] at (5.2,-0.75) {Groupe B};
+% Partie 2 (en cours si groupB > 0)
+\ifdim \groupB pt > 0pt
+  \filldraw[fill=current, draw=black] (5,-0.6) circle (0.12);
+\else
+  \filldraw[fill=white, draw=black] (5,-0.6) circle (0.12);
+\fi
+\node[right] at (5.2,-0.75) {Partie 2};
 
 \end{tikzpicture}
 \caption{\centering\small Structure du projet et progression actuelle}
 \end{center}
 \end{figure}
+Ces figures ne sont pas définitives et sont succeptible de changer au cours du projet.
 
 \pagebreak
 % ── Objectifs atteints ─────────────────────────────────────────────────────────
@@ -484,7 +481,8 @@ Cela a pu causer des problèmes de qualité du travail réalisé, car celui-ci �
 
 \hspace{0.5cm}\textbf{Solution apportée:} L'étape 1 étant terminée avec ces contraintes, nous avons pu apprendre de nos
 erreurs et donc pour l'étape 2, nous allons réaliser une organisation beaucoup plus stratégique en répartissant 
-les tâches en deux groupes de 5 personnes, ses deux groupes seront les mêmes que ceux établis pour l'étape 3. 
+les tâches en deux groupes de 5 personnes, ses deux groupes seront les mêmes que ceux établis pour l'étape 3 (après mise à jour du cahier des charges,
+l'étape 3 est devenue l'étape 2). 
 
 \subsubsection{Résultats de l'étape 1 impactant l'étape 2}\label{subsubsec:probMethoResEtape1}
 Pour contexte, lors de l'étape 1, nous avons pu réaliser la modélisation de sujet (\text{topic modeling}) 
@@ -560,8 +558,8 @@ un nouveau planning pour la suite du projet, qui nous permettra d'atteindre nos 
 \ganttbar{Vectorisation TF-IDF}{2026-03-20}{2026-03-22} \\
 \ganttbar{Word embeddings}{2026-03-23}{2026-03-25} \\
 \ganttbar{Modèle LDA}{2026-03-26}{2026-03-28} \\
-\ganttbar{Étape 2}{2026-03-29}{2026-04-11} \\
-\ganttbar{Étape 3}{2026-04-12}{2026-05-29}
+\ganttbar{Étape 2}{2026-03-29}{2026-04-30} \\
+\ganttbar{Étape 3}{2026-05-01}{2026-05-29}
 
 \end{ganttchart}
 }
@@ -596,8 +594,8 @@ un nouveau planning pour la suite du projet, qui nous permettra d'atteindre nos 
 \ganttbar{Word embeddings}{2026-03-31}{2026-04-07} \\
 \ganttbar{Modèle LDA}{2026-04-08}{2026-04-14} \\
 \ganttbar{Résolution problèmes étape 1}{2026-04-15}{2026-04-20} \\
-\ganttbar{Étape 2}{2026-04-21}{2026-04-30} \\
-\ganttbar{Étape 3}{2026-05-01}{2026-05-29}
+\ganttbar{Étape 2 - Partie 1}{2026-04-21}{2026-05-29} \\
+\ganttbar{Étape 2 - Partie 2}{2026-04-21}{2026-05-29}
 
 \end{ganttchart}
 }
@@ -695,8 +693,8 @@ Le but étant d'accomplir cette étape dans les temps pour pouvoir se stabiliser
 \ganttbar{Word embeddings}{2026-03-31}{2026-04-07} \\
 \ganttbar{Modèle LDA}{2026-04-08}{2026-04-14} \\
 \ganttbar{Résolution problèmes étape 1}{2026-04-15}{2026-04-20} \\
-\ganttbar{Étape 2}{2026-04-21}{2026-04-30} \\
-\ganttbar{Étape 3}{2026-05-01}{2026-05-29}
+\ganttbar{Étape 2 - Partie 1}{2026-04-21}{2026-05-29} \\
+\ganttbar{Étape 2 - Partie 2}{2026-04-21}{2026-05-29}
 
 \end{ganttchart}
 }
