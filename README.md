@@ -24,23 +24,41 @@ Ce projet vise à analyser un corpus de conversations entre patients et thérape
 ## 📁 Structure du dépôt
 
 ```
+├── bilan_mi_parcours/          # Rapport de mi-parcours
+│   ├── bilan-mi-parcours.pdf   
+│   └── bilan-mi-parcours.tex 
 ├── data/
 │   └── train.csv               # Jeu de données Kaggle (conversations patient-thérapeute)
+├── img/                        # Images utilisées dans le projet
+│   └── ...
 ├── notebooks/                  # Notebooks de l'équipe
 │   ├── CRUZDiogo/
 │   ├── EMIN/
 │   ├── LAURE/
 │   ├── LOGAN/
 │   ├── LUCAS/
-│   ├── Trésor/
-│   ├── Yvan/
-│   └── idir/
-├── comptes_rendus                  # Compte rendu pour chaque étapes   
-│   ├── compte_rendu_etape1.md      # Compre rendu pour l'étape 1
-│   ├── compte_rendu_etape2.md      # Compte rendu pour l'étape 2
-│   └── compte_rendu_etape3/md      # Compte rendu pour l'étape 3
+│   ├── TRESOR/
+│   ├── ULYSSE/
+│   ├── VICTOR/
+│   ├── YVAN/
+│   └── IDIR/
+├── comptes_rendus/                 # Compte rendu pour chaque étapes   
+│   ├── etape1/                     # Compte rendu pour l'étape 1
+│   │   ├── compte_rendu_etape1.md  
+│   │   ├── compte_rendu_etape1.pdf
+│   │   └── compte_rendu_etape1.tex
+│   ├── etape2/                     # Compte rendu pour l'étape 2 
+│   │   ├── compte_rendu_etape2.md  
+│   │   ├── compte_rendu_etape2.pdf
+│   │   └── compte_rendu_etape2.tex
+│   └── etape3/                     # Compte rendu pour l'étape 3
+│       ├── compte_rendu_etape3.md  
+│       ├── compte_rendu_etape3.pdf
+│       └── compte_rendu_etape3.tex
+├── .gitignore
 ├── requirements.txt                # Bibliothèques python nécessaires 
 └── README.md
+
 ```
 
 ---
@@ -98,7 +116,7 @@ Le jeu de données utilisé est publié sur [Kaggle](https://www.kaggle.com/data
 - `patient` : message du patient
 - `therapist` : réponse du thérapeute
 
-> ⚠️ Le fichier `train.csv` se situe dans chacuns de dossiers de chaque participants.
+> ⚠️ Le fichier `train.csv` est commun à toute l'équipe et se situe dans le dossier `data/`.
 
 ---
 
@@ -107,7 +125,7 @@ Le jeu de données utilisé est publié sur [Kaggle](https://www.kaggle.com/data
 | Livrable | Date prévue | Statut |
 |----------|-------------|--------|
 | Cahier des charges | 15 mars 2026 | ✅ Rendu |
-| Bilan de mi-parcours | 20 avril 2026 | 🔄 En cours |
+| Bilan de mi-parcours | 20 avril 2026 | ✅ Rendu |
 | Livrable technique mensuel | Mensuel | 🔄 En cours |
 | Compte rendu des étapes | Chaque fin <br> d'étapes | 🔄 En cours |
 | Rapport final + documentation technique | 1 juin 2026 | ⏳ À venir |
