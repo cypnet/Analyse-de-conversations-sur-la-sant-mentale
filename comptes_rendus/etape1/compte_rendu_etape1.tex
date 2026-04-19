@@ -106,8 +106,8 @@
 \addtolength{\topmargin}{-2.2pt}
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\small Compte-rendu Étape 1}
-\rhead{\small NLP Mental Health Conversations}
+\lhead{\small Compte-rendu technique — Étape 1}
+\rhead{\small LARROUX Logan}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -121,18 +121,14 @@
   \vspace{3cm}
 
   {\fontsize{20}{22}\selectfont\bfseries
-    NLP MENTAL HEALTH CONVERSATIONS\\[0.4em]
-    Compte-rendu technique\\
-    Étape 1 : Exploration du jeu de données\par}
-  {\color{blue!70!black}\rule{0.6\textwidth}{1.5pt}\par}
-  \vspace{0.8cm}
+    COMPTE-RENDU TECHNIQUE\\
+    Analyse de conversations patient-thérapeute\\
+    sur la santé mentale\par}
+  {\color{blue!70!black}\rule{0.5\textwidth}{1.5pt}\par}
+  \vspace{0.5cm}
 
-  {\large\bfseries
-    Projet : Analyse de conversations patient-thérapeute sur la santé mentale\par}
-  \vspace{0.4cm}
-  {\large
-    Encadrante : Lynda Tamine-Lechani\par}
-  \vspace{0.6cm}
+   {\large\bfseries Auteur: LARROUX Logan \\
+                   Encadrante : Lynda Tamine-Lechani\par}
 
   {\normalsize\itshape
     Équipe :\\[0.3em]
@@ -179,6 +175,7 @@ Chaque membre de l'équipe a travaillé de façon \textbf{individuelle} sur ses 
 \textbf{Remarque importante} : Les prétraitements appliqués au texte ont un impact \textbf{direct et significatif} sur l'ensemble des résultats obtenus. La qualité du nettoyage (suppression des stopwords, normalisation, détection de la langue, filtrage des doublons) est donc un point critique qui explique la majorité des écarts observés entre les membres de l'équipe.
 \end{remarque}
 
+\pagebreak
 % ==============================================================================
 \section{Analyse statistique}
 % ==============================================================================
@@ -265,10 +262,15 @@ $\geq 12$ & 1 personne & Pattern matching (identification par motifs) \\
 
 \textbf{Question ouverte :} Existe-t-il une technique fiable permettant de différencier patients et thérapeutes sans passer par un identifiant explicite ?
 
+
+\pagebreak
 \subsection{Nombre de mots moyen par patient / thérapeute}
 
 Ces chiffres sont \textbf{fortement impactés} par le niveau de prétraitement appliqué. Les membres ayant supprimé davantage de mots (stopwords, contractions, etc.) obtiennent naturellement des moyennes plus basses.
 
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+\vspace{0pt}
 \subsubsection*{Côté patients}
 
 \begin{center}
@@ -284,7 +286,10 @@ Logan  & 16,3  \\
 \bottomrule
 \end{tabular}
 \end{center}
-
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\vspace{0pt}
 \subsubsection*{Côté thérapeutes}
 
 \begin{center}
@@ -300,9 +305,11 @@ Logan  &  60,1 \\
 \bottomrule
 \end{tabular}
 \end{center}
+\end{minipage}
 
 On observe un \textbf{rapport allant du simple au quadruple} selon le niveau de filtrage. Les thérapeutes produisent systématiquement des réponses bien plus longues que les messages des patients, ce qui est cohérent avec la nature de l'échange thérapeutique.
 
+\pagebreak
 % ==============================================================================
 \section{Analyse lexicale --- Mots les plus fréquents}
 % ==============================================================================
@@ -326,14 +333,14 @@ Ces résultats, bien que représentatifs du corpus brut, sont peu exploitables :
 Certains membres ont étendu la liste des stopwords pour exclure des mots peu informatifs mais non présents dans les listes standards :
 
 \begin{lstlisting}
-# Exemple - Logan
-extra_stopwords = {
+  # Exemple - Logan
+  extra_stopwords = {
     "feel", "like", "want", "know", "time",
     "thing", "good", "need", "year", "think",
     "tell", "say", "come", "go"
-}
-\end{lstlisting}
-
+    }
+  \end{lstlisting}
+  
 \begin{lstlisting}
 # Exemple - Lucas
 mots_inutiles = set([
@@ -374,6 +381,8 @@ Ces résultats confirment que le corpus est centré sur les \textbf{relations in
 
 L'analyse lexicale donne ainsi une première image du corpus, ce dont les patients parlent et comment les thérapeutes leur répondent. Pour aller plus loin et identifier des \textbf{thématiques structurées} au sein de ces échanges, \textbf{quatre méthodes} de topic modeling ont été appliquées et comparées.
 
+
+\pagebreak
 % ==============================================================================
 \section{Topic Modeling --- Méthode 1 : Lexique personnalisé}
 % ==============================================================================
@@ -382,14 +391,17 @@ L'analyse lexicale donne ainsi une première image du corpus, ce dont les patien
 
 Un dictionnaire thématique est construit \textbf{manuellement}, en associant chaque thème de santé mentale à une liste de mots-clés. Chaque question peut être assignée à \textbf{plusieurs thèmes simultanément} (classification multi-label).
 
+\textbf{Approche minimaliste (Trésor)}
 \begin{lstlisting}
-# Exemple - Tresor
 lexique = {
     'Anxiete':    ['anxious', 'anxiety', 'panic', 'fear'],
     'Depression': ['depress', 'depression', 'sad', 'suicide'],
     'Relation':   ['relationship', 'husband', 'wife', 'partner']
 }
+\end{lstlisting}
 
+\textbf{Approche étendue (Diogo)}
+\begin{lstlisting}
 # Exemple - Diogo (version etendue)
 LEXICON = {
     'Anxiety':    ['anxiety', 'anxious', 'panic', 'worry', 'worried', 'nervous',
@@ -420,6 +432,7 @@ LEXICON = {
 }
 \end{lstlisting}
 
+\pagebreak
 \subsection{Résultats}
 
 Les thèmes apparaissant de façon \textbf{transversale} dans toutes les conversations sont :
@@ -441,12 +454,13 @@ Avoir le thème \textit{Relation} comme le plus fréquent peut sembler logique a
 \midrule
 Très \textbf{interprétable} et explicable & \textbf{Rigide} : ne capte que les mots explicitement listés \\
 Facile à adapter au domaine & Ne gère pas les \textbf{synonymes} non prévus \\
-Résultats stables et reproductibles & Nécessite une \textbf{expertise métier} pour construire le lexique \\
+Résultats stables et reproductibles & Nécessite une \textbf{expertise métier} \\ & pour construire le lexique \\
 Classification multi-label naturelle & Insensible au \textbf{contexte} d'usage d'un mot \\
 \bottomrule
 \end{tabular}
 \end{center}
 
+\pagebreak
 % ==============================================================================
 \section{Topic Modeling --- Méthode 2 : TF-IDF + K-Means}
 % ==============================================================================
@@ -531,6 +545,7 @@ vec = TfidfVectorizer(
 \end{lstlisting}
 
 \begin{center}
+\small
 \begin{tabular}{llrl}
 \toprule
 \textbf{Topic} & \textbf{Effectif} & \textbf{Part} & \textbf{Mots-clés principaux} \\
@@ -547,6 +562,7 @@ Meilleur résultat TF-IDF : thèmes distincts, tailles équilibrées, couvrant 1
 \subsection{Évaluation critique}
 
 \begin{center}
+\small
 \begin{tabular}{ll}
 \toprule
 \textbf{Avantage} & \textbf{Limite} \\
@@ -560,6 +576,7 @@ Compatible avec LSA pour de meilleurs résultats & Mots traités comme des entit
 
 \textbf{Question ouverte :} Existe-t-il une méthode plus robuste que le coude pour déterminer automatiquement le nombre optimal de clusters ?
 
+\pagebreak
 % ==============================================================================
 \section{Topic Modeling --- Méthode 3 : Word Embeddings}
 % ==============================================================================
@@ -662,6 +679,7 @@ Résultats insuffisants : clusters 0 et 2 très similaires, plusieurs clusters d
 \subsection{Bilan comparatif --- Méthode 3}
 
 \begin{center}
+\small
 \begin{tabular}{llll}
 \toprule
 \textbf{Modèle} & \textbf{Qualité} & \textbf{Points forts} & \textbf{Limites} \\
@@ -675,6 +693,7 @@ spaCy & Passable & Rapide, simple & Perte de contexte \\
 
 Sentence Transformer est la méthode la plus robuste pour ce corpus.
 
+\pagebreak
 % ==============================================================================
 \section{Topic Modeling --- Méthode 4 : LDA}
 % ==============================================================================
@@ -692,16 +711,16 @@ LDA (\textit{Latent Dirichlet Allocation}) est un modèle probabiliste générat
 
 \begin{center}
 \begin{tikzpicture}[
-  node distance=1.5cm,
-  box/.style={draw, rounded corners, minimum width=3cm, minimum height=1cm,
+  node distance=1cm,
+  box/.style={draw, rounded corners, minimum width=2cm, minimum height=1cm,
               align=center, fill=blue!8},
   topic/.style={draw, rounded corners, minimum width=2.5cm, minimum height=0.8cm,
                align=center, fill=green!10},
   arr/.style={-Stealth, thick}
 ]
   \node[box] (conv) {Conversation\\(contexte brut)};
-  \node[box, right=2cm of conv] (lda) {LDA\\Modèle probabiliste};
-  \node[box, right=2cm of lda] (mix) {Mélange\\de thèmes};
+  \node[box, right=1.3cm of conv] (lda) {LDA\\Modèle probabiliste};
+  \node[box, right=1.3cm of lda] (mix) {Mélange\\de thèmes};
   \node[topic, above right=0.5cm and 2cm of mix] (t1) {Anxiété\\45\,\%};
   \node[topic, right=2cm of mix] (t2) {Sommeil\\30\,\%};
   \node[topic, below right=0.5cm and 2cm of mix] (t3) {Relations\\25\,\%};
@@ -752,7 +771,9 @@ Thérapie et problématiques de couple     & normal, issue, wife, therapy, walk,
 \end{tabular}
 \end{center}
 
-Résultats relativement bons, bonne distinction entre trois types de relations différentes.
+\begin{remarque}
+  Résultats relativement bons, bonne distinction entre trois types de relations différentes.
+\end{remarque}
 
 \subsubsection*{Résultats à 6 topics --- Diogo}
 
@@ -770,9 +791,15 @@ Family anger and conflict               & therapist, money, phone, relationship,
 \bottomrule
 \end{tabular}
 \end{center}
+\begin{remarque}
+  Résultats différents de ceux de Logan mais tout aussi pertinents. 
+  On note quelques résidus de mots vides comme \textit{shes} et \textit{hes} 
+  (contractions de \textit{she's} et \textit{he's} passées à travers les 
+  mailles du filet lors du pré-traitement), mais les différents types de 
+  relations sont bien identifiables.
+\end{remarque}
 
-Résultats différents de ceux de Logan mais tout aussi pertinents. On note quelques résidus de mots vides comme \textit{shes} et \textit{hes} (contractions de \textit{she's} et \textit{he's} passées à travers les mailles du filet lors du pré-traitement), mais les différents types de relations sont bien identifiables.
-
+\break
 \subsubsection*{Résultats à 5 topics --- Lucas}
 
 \begin{center}
@@ -808,6 +835,8 @@ Fondement probabiliste rigoureux                  & Ne capture pas le contexte l
 \end{tabular}
 \end{center}
 
+
+\pagebreak
 % ==============================================================================
 \section{Conclusion comparée des méthodes}
 % ==============================================================================
@@ -816,7 +845,9 @@ Aucune méthode n'est universellement supérieure. Elles sont \textbf{complémen
 
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{llll}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{Méthode} & \textbf{Forces} & \textbf{Faiblesses} & \textbf{Usage recommandé} \\
 \midrule
@@ -824,24 +855,28 @@ Lexique manuel
   & Interprétable, contrôlable
   & Rigide, non-généralisant
   & Catégorisation ciblée \\
+\midrule
 TF-IDF + K-Means
   & Rapide, scalable
   & Ignore le contexte
   & Exploration initiale \\
+\midrule
 Word2Vec
   & Similarités sémantiques
   & Déséquilibre possible
   & Représentation de mots \\
+\midrule
 Sentence Transformer
   & Contexte global, homogène
   & Lourd, moins interprétable
   & Meilleur clustering \\
+\midrule
 LDA
   & Assignation douce
   & Chevauchement de topics
   & Analyse thématique \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \subsection*{Recommandation globale}
@@ -860,7 +895,8 @@ LDA
 
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{lll}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.8cm}X X@{}}
 \toprule
 \textbf{Problème} & \textbf{Description} & \textbf{Impact} \\
 \midrule
@@ -880,7 +916,7 @@ Normalisation des sorties
   & Formats de résultats différents entre membres
   & Comparaison manuelle laborieuse \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \subsection{Questions ouvertes à soumettre à l'encadrante}
