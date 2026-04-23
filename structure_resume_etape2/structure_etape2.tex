@@ -86,7 +86,57 @@
 
 % ══════════════════════════════════════════════════════════════════════════════
 \begin{document}
+% ── Page de titre ──────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
 
+  \vspace{3cm}
+
+  {\fontsize{20}{22}\selectfont\bfseries
+    STRUCTURE DU PROJET — ÉTAPE 2\\
+    Analyse de conversations patient-thérapeute\\
+    sur la santé mentale\par}
+  {\color{blue!70!black}\rule{0.5\textwidth}{1.5pt}\par}
+  \vspace{0.5cm}
+
+   {\large\bfseries Auteur: LARROUX Logan \\
+                   Encadrante : Lynda Tamine-Lechani\par}
+
+  {\normalsize\itshape
+    Équipe :\\[0.3em]
+    Ulysse Chasseigne, Idir Yahiaoui, Bantsoukissa Laure,\\
+    Cruz Fernandes Diogo, Emin Belkheir, Esso-Y-N Trésor PANA,\\
+    Logan Larroux, Yvan Sellier, Victor Blanquart--Blanchet, Lucas Da Silva\par}
+
+  \vspace{0.8cm}
+  {\fontsize{14}{18}\selectfont\today\par}
+
+  \vspace{1cm}
+  \begin{tabular}[t]{c}
+    \centering
+    \includegraphics[height=1.5cm]{universite-de-toulouse-logo.png}
+    \hspace{10px}
+    {\includegraphics[height=1.5cm]{IRIT_logo.png}}
+    \hspace{10px}
+    \raisebox{0.70cm}{\normalsize [Info5.BE-SHS]\par}
+  \end{tabular}
+
+  \vfill
+
+  {\color{blue!70!black}\rule{\textwidth}{0.4pt}\par}
+  \vspace{0.4cm}
+  {\small Données : \href{https://www.kaggle.com/datasets/thedevastator/nlp-mental-health-conversations}{Kaggle --- NLP Mental Health Conversations}\par}
+  \vspace{0.2cm}
+  {\small Code : \href{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale/tree/main/notebooks/LOGAN}{GitHub --- branche Logan}\par}
+  \vspace{0.5cm}
+\end{titlepage}
+
+
+% ──────────────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+\section{Structure visuelle de l'étape 2}
 
 \begin{figure}[H]
 \begin{center}
@@ -97,8 +147,8 @@
   >=Latex,
   box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5, align=center, text width=2.2cm, minimum height=0.9cm, inner sep=3pt, font=\small},
   method/.style={box, font=\footnotesize, text width=2cm, minimum height=0.8cm, node distance=4mm},
-  group/.style={draw=orange!75!black, rounded corners, dashed, inner sep=12pt, thick},
-  subgroup/.style={group, draw=red!70!black, inner sep=8pt},
+  group/.style={draw=red!75!black, rounded corners, dashed, inner sep=12pt, thick},
+  subgroup/.style={group, draw=green!70!black, inner sep=8pt},
   arrow/.style={-Latex, thick, draw=blue!70!black},
   line/.style={thick, draw=blue!70!black}
 ]
@@ -206,29 +256,74 @@
 \end{center}
 \end{figure}
 
-\begin{figure}[H]
-\begin{center}
-\begin{tikzpicture}[
-  scale=0.85,
-  transform shape,
-  node distance=8mm,
-  >=Latex,
-  box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5, align=center, text width=2.2cm, minimum height=0.9cm, inner sep=3pt, font=\small},
-  method/.style={box, font=\footnotesize, text width=2cm, minimum height=0.8cm, node distance=4mm},
-  group/.style={draw=orange!75!black, rounded corners, dashed, inner sep=12pt, thick},
-  subgroup/.style={group, draw=red!70!black, inner sep=8pt},
-  arrow/.style={-Latex, thick, draw=blue!70!black},
-  line/.style={thick, draw=blue!70!black}
-]
-
-
-
-\end{tikzpicture}%
-\label{fig:flowchart-etape2-legend}
-\end{center}
-\end{figure}
-
+\pagebreak
 Cette seconde partie est composée de deux grande sections: l'analyse des sentiments des conversations et la question/réponse sur la santé mentale.
+\section{Analyse des sentiments des conversations}
 
+\begin{center}
+\begin{tabular}{c|c}
+\toprule
+\textbf{Sous-groupe 1} & \textbf{Sous-groupe 2} \\
+\textbf{Méthode supervisée} & \textbf{Méthode non-supervisée} \\
+\midrule
+Diogo & Victor\\
+Ulysse & Emin\\
+Logan &  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigbreak
+
+\begin{itemize}
+  \item \textbf{Méthode supervisée}: Ce groupe devra utiliser la méthode Naive Bayes pour entrainer un modèle de classification des sentiments à partir du dataset annoté \textbf{combined.csv}. 
+  \begin{itemize}
+    \item \textbf{Découpage train/validation/test}: Le split sera de 80\% pour le train et 20\% pour le test.
+    \item \textbf{Évaluation quantitative:} Nous réccupérerons tous le R2 score, MSE et la matrice de confusion.
+    \item \textbf{Prédiction sur dataset principal}: Nous appliquerons le modèle entrainé sur le dataset principal \textbf{train.csv}.  
+  \end{itemize}
+  \item \textbf{Méthode non-supervisée}: Ce groupe devra utiliser la méthode K-Means pour faire du clustering sur les conversations à partir du dataset annoté \textbf{combined.csv}.
+  \begin{itemize}
+    \item \textbf{Analyse clusters et Comparaison labels}: Le groupe observe les groupes obtenus et compares avec les catégories réelles (annotations du dataset). Cette partie a pour but d'\textbf{interpréter} les résultats.
+    \item \textbf{Évaluation quantitative}: Le groupe évalue la qualité de regroupement grâce à purity et ARI (Adjusted Rand Index). Cette partie a pour but de \textbf{mesurer} les résultats.
+    \item \textbf{Prédiction sur dataset principal}: Nous appliquerons le modèle entrainé sur le dataset principal \textbf{train.csv}.  
+  \end{itemize}
+  \item \textbf{Évaluation catégoriseur}: Les prédictions des deux méthodes sont comparées entre elles pour en décider la plus parformante.\\
+  \textbf{PROBLEME: Comment comparer les performances d'une méthode supervisée et d'une méthode non-supervisée?}
+  \item \textbf{Annotation automatique sur train.csv}: Le meilleur modèle (supervisé ou non-supervisé) est utilisé pour annoter automatiquement le dataset principal \textbf{train.csv}. Ces annotations seront utilisées dans la section suivante pour filtrer les réponses pertinentes.
+\end{itemize}
+
+\pagebreak
+\section{Q\&A sur la santé mentale}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\toprule
+\textbf{Sous-groupe 1} & \textbf{Sous-groupe 2} & \textbf{Sous-groupe 3} \\
+\textbf{Association Q\&A } & \textbf{Stratégie 1} & \textbf{Stratégie 2} \\
+\textbf{pour chaque mot} & \textbf{Similarité Question-Question} & \textbf{Similarité Question-Réponse}\\
+\midrule
+Lucas & Yvan & Laure\\
+ & Trésor &  Idir\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigbreak
+
+\begin{itemize}
+  \item \textbf{Vectorisation (TF-IDF/Word2Vec/BERT)}: La vectorisation sera faite en priorité avec TF-IDF, puis Word2Vec puis BERT si le temps le permet.
+  \item \textbf{Indexation du corpus (index inversé)}: Un membre du groupe devra indexer le corpus, cela signifie que pour chaque mot, on définit une liste de tous les échanges qui contiennent ce mot. Cela permettra de retrouver très rapidement les conversations pertinentes sans devoir tout relire à chaque fois.
+  \begin{itemize}
+    \item \textbf{Stratégie 1 - Similarité Question-Question}: Quand "l'utilisateur" pose une question, on cherche dans le corpus les questions les plus similaires à la sienne, puis on retourne les réponses associées à ces questions.
+    \item \textbf{Évaluation mini-test}: On teste les deux stratégies sur un petit jeu de 10 question-réponses de référence, et on mesure le ratio de bonnes réponses retournées pour comparer les deux approches.
+  \end{itemize}
+  \begin{itemize}
+    \item \textbf{Stratégie 2 - Similarité Question-Réponse}: Cette fois, on compare directement la question posée avec toutes les réponses du corpus, et on retourne celles qui sont sémantiquement les plus proches de la question?
+    \item \textbf{Évaluation mini-test}: On teste les deux stratégies sur un petit jeu de 10 question-réponses de référence, et on mesure le ratio de bonnes réponses retournées pour comparer les deux approches.
+  \end{itemize}
+  \item \textbf{Filtrage par sentiments}: C'est ici qu'intervient les annotations du groupe 1. La question posée est d'abord classifiée par sentiments, puis le système ne cherche ses réponses candidates que parmi les échanges du corpus ayant le même sentiment.
+  \item \textbf{Résultats pertinents}: Les réponses les plus pertinentes sont retournées à l'utilisateur.
+\end{itemize}
 
 \end{document}
