@@ -276,13 +276,13 @@ Logan &  \\
 \bigbreak
 
 \begin{itemize}
-  \item \textbf{Méthode supervisée}: Ce groupe devra utiliser la méthode Naive Bayes pour entrainer un modèle de classification des sentiments à partir du dataset annoté \textbf{combined.csv}. 
+  \item \textbf{Méthode supervisée}: Ce groupe devra utiliser la méthode Naive Bayes avec \textbf{TF-IDF et BoW}, pour entrainer un modèle de classification des sentiments à partir du dataset annoté \textbf{combined.csv}. 
   \begin{itemize}
-    \item \textbf{Découpage train/validation/test}: Le split sera de 60\% pour le train, 20\% pour la validation et 20\% pour le test.
+    \item \textbf{Découpage train/validation/test}: Le split sera de 60\% pour le train, 20\% pour la validation et 20\% pour le test. 
     \item \textbf{Évaluation quantitative:} Nous réccupérerons tous le R2 score, MSE et la matrice de confusion.
     \item \textbf{Prédiction sur dataset principal}: Nous appliquerons le modèle entrainé sur le dataset principal \textbf{train.csv}.  
   \end{itemize}
-  \item \textbf{Méthode non-supervisée}: Ce groupe devra utiliser la méthode K-Means pour faire du clustering sur les conversations à partir du dataset annoté \textbf{combined.csv}.
+  \item \textbf{Méthode non-supervisée}: Ce groupe devra utiliser la méthode K-Means avec \textbf{TF-IDF et Word2Vec}, pour faire du clustering sur les conversations à partir du dataset annoté \textbf{combined.csv}.
   \begin{itemize}
     \item \textbf{Découpage train/validation/test}: Comme pour la méthode supervisée, le split sera de 60\% pour le train, 20\% pour la validation et 20\% pour le test. 
     \textbf{Attention !} Pour avoir des résultats comparables avec la méthode supervisée, il est nécessaire de normaliser les données !
