@@ -21,3 +21,4 @@ wordcloud==1.9.3
 
 # Notebooks
 jupyter==1.0.0
+langdetect==1.0.9
