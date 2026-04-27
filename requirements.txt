@@ -5,7 +5,8 @@ numpy==1.26.0
 # NLP & Pré-traitement
 nltk==3.8.1
 spacy==3.7.0
-gensim==4.3.2        # Word2Vec, LDA
+gensim==4.3.3 # Word2Vec, LDA
+scipy>=1.10,<1.14
 
 # Machine Learning
 scikit-learn==1.4.0  # TF-IDF, K-Means
