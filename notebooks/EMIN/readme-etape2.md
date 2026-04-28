@@ -25,9 +25,11 @@ Le template demandait d'utiliser TF-IDF dans le pipeline mais de prédire avec l
 
 J'ai aussi rajouté quelques `print` pour vérifier que tout se passe bien (nombre de lignes chargées, distribution des prédictions).
 
-### 4. B.5 (à faire)
+### 4. B.5 — Comparaison avec la méthode supervisée
 
-La comparaison avec la méthode supervisée (Naive Bayes) sera faite quand le sous-groupe de Diogo aura fini sa partie.
+J'ai récupéré les résultats de Naive Bayes (sous-groupe de Diogo) et fait l'analyse comparative. Naive Bayes TF-IDF (68.75%) bat largement K-Means + TF-IDF (46.36%) sur l'accuracy globale, ce qui est cohérent vu que le supervisé a accès aux labels pendant l'entraînement. Les deux méthodes galèrent sur les mêmes classes (Personality disorder, Stress) ce qui suggère que c'est un problème de données plutôt que d'algo.
+
+Décision : c'est Naive Bayes TF-IDF qui sera utilisé pour annoter `train.csv` transmis au Groupe 2.
 
 ## Ce que j'ai trouvé d'intéressant
 
