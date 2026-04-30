@@ -64,9 +64,11 @@ Ce qui nous donnes la moyenne $(4+4+25)/3 = 11$
 > Plus le MSE est proche de 0 mieux c'est
 #### 1.2.3. R² (Coefficient de détermination)
 Mesure combien le modèle explique la variance des données.  
+
 $$
     R^2 = 1 - \frac{\text{Erreur modèle}}{\text{Erreur moyenne}}
 $$  
+
 Par exemple, si notre modèle suit bien les vrais sentiments d'un patient: $R^2 = 0.89$.
 Cela signifie que le modèle explique **89% de la variabilité**.
 
