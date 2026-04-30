@@ -34,10 +34,10 @@ En résumé:
 
 Puisque le but de cette partie est de créer un modèle performant permettant de produire des étiquettes sur le dataset principal `train.csv`, nous allons devoir le définir en comparant les résultats des mesures suivante:
 #### 1.2.1. Accuracy 
-Définit un pourcentage de sentiments correctement prédits
+Définit un pourcentage de sentiments correctement prédits  
 $$
-Accuracy = \frac{\text{Nb. de bonne prédictions}}{\text{Nb. total d'exemples}}
-$$
+    Accuracy = \frac{\text{Nb. de bonne prédictions}}{\text{Nb. total d'exemples}}
+$$  
 *Par exemple* on a 100 images:
 - 87 bien classées
 - 13 mal classées  
@@ -48,7 +48,7 @@ On a $\text{Accuracy} = \frac{87}{100} = 0.87$ donc **87%**.
 Définit l'erreur moyenne au carré entre la vraie valeur et celle prédite.  
 $$
     MSE = \frac{1}{n}\sum{(y_i-\hat{y_i})^2}
-$$
+$$  
 Par exemple, on a les valeurs
 - vraies: [10,20,30]
 - prédites: [12,18,35]  
@@ -59,11 +59,11 @@ Ce qui nous donnes la moyenne $(4+4+25)/3 = 11$
 
 > Plus le MSE est proche de 0 mieux c'est
 #### 1.2.3. R² (Coefficient de détermination)
-Mesure combien le modèle explique la variance des données.
+Mesure combien le modèle explique la variance des données.  
 $$
     R^2 = 1 - \frac{\text{Erreur modèle}}{\text{Erreur moyenne}}
-$$
-Par exemple, si notre modèle suit bien les vrais sentiments d'un patient: $R² = 0.89$.
+$$  
+Par exemple, si notre modèle suit bien les vrais sentiments d'un patient: $R^2 = 0.89$.
 Cela signifie que le modèle explique **89% de la variabilité**.
 
 #### 1.2.4. Classification Report
@@ -71,15 +71,15 @@ C'est un très grand résumé contenant d'autre variable à comparer.
 - Precision — celui-ci pose la question *"parmi ce que j'ai prédit positif, **combien sont vraiment positifs ?**"*  
 $$
     Precision = \frac{TP}{TP+FP}
-$$
-- Recall — celui-ci pose la question "*parmi les vrais positifs, **combien j'en ai retrouvés ?***"
-$$
+$$  
+- Recall — celui-ci pose la question "*parmi les vrais positifs, **combien j'en ai retrouvés ?***"  
+$$  
     Recall = \frac{TP}{TP+FN}
 $$
-- F1-score — celui-ci est un compromis entre precision et recall:
+- F1-score — celui-ci est un compromis entre precision et recall:  
 $$
     F1 = 2 \times\frac{Precision\times Recall}{Precision + Recall}
-$$
+$$  
 
 > TP = vrai positif  
   TN = vrai négatif  
