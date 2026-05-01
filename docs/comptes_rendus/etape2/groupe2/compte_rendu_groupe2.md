@@ -18,7 +18,7 @@ Un index inversé est construit :
 
 A chaque mot, on associe la liste des questions et réponses contenant ce mot.
 
-## Méthode 
+## Méthodologie
 
 Deux approches ont été implémentées : 
 
@@ -56,6 +56,5 @@ Plus le score est proche de 1, plus les textes sont similaires
 Un mini jeu de test de 10 couples de questions-réponses a été utilisé
 
 ### Métriques d'évaluation
-\[
-Ratio = \frac{Nombre\ de\ bonnes\ réponses}{Nombre\ total\ de\ questions}
-\]
+
+Ratio = (Nombrede bonnes réponses)\(Nombre total questions)
