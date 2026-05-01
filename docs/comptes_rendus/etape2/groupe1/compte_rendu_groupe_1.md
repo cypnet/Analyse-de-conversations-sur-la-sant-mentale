@@ -98,9 +98,9 @@ $$
   FN = faux négatif  
 
 #### 1.2.5. Matrice de confusion
-La matrice de confusion elle permet de visualiser les vrais classes des classes prédites.
+La matrice de confusion, elle, permet de visualiser les vraies classes des classes prédites.
 
-Par exemple voici une matrice avec 3 classes avec 120 chats/chiens/oiseaux
+*Par exemple*, voici une matrice de 3 classes comportant 120 chats/chiens/oiseaux
 
 | | | | |
 |--|--|--|--|
@@ -109,7 +109,7 @@ Par exemple voici une matrice avec 3 classes avec 120 chats/chiens/oiseaux
 | Oiseau |   0  |   0   |   120  |
 |        | Chat | Chien | Oiseau |
 
-Les lignes correspondent aux vrais classes et les colonnes aux classes prédites, ici on remarque que le modèle a prédit correctement 100 chats mais a prédit 20 chats comme étant des chiens. De plus, il aurait prédit correctement 100 chiens mais mal les 20 autre en supposant que c'étaient des chats.
+Les lignes correspondent aux vrais classes et les colonnes aux classes prédites, ici on remarque que le modèle a prédit correctement 100 chats mais a prédit 20 chats comme étant des chiens. De plus, il a prédit correctement 100 chiens mais a supposé 20 autres comme des chats.
 
 #### 1.2.6. Purity Globale
 
@@ -235,7 +235,116 @@ Ainsi, nous pourrons comparer :
 
 ## 2. Résultats par membre
 
-### 2.1 Logan — Méthode supervisée (notebook de référence commun + Logistic Regression)
+### 2.1 Méthode supervisée — Naive Bayes (Diogo - Ulysse - Logan) et LogisticRegression (Logan)
+
+### Tout d'abord, qu'est-ce que Naive Bayes ?
+Naive Bayes répond à cette question: **"Étant donné les mots de ce texte, quelle est la catégorie la plus probable ?"**
+
+C'est un classificateur probabiliste: plutôt que de tracer une frontière entre les classes comme le ferait un SVM (*Support Vector Machine*), il calcule une probabilité pour chaque classe et retourne celle qui est la plus élevée.
+
+**Prennons un exemple:**
+
+Imaginons lire des milliers de messages de patients, pour chaque mot, on note dans quelle catégorie il apparaît le plus souvent:
+
+| Mots 	| Apparaissent surtout dans... |
+|-|-|
+| "hopeless", "empty", "worthless" 	| Depression |
+| "panic", "nervous", "heart racing" 	| Anxiety |
+| "fine", "better", "okay" 	| Normal |
+
+Maintenant arrive un nouveau message: "I feel hopeless and nervous". Naive Bayes calcule:
+- Proba que ce soit **Depression** → élevée (à cause de "hopeless")  
+- Proba que ce soit **Anxiety** → élevée (à cause de "nervous")  
+- Proba que ce soit **Normal** → faible  
+
+Il tranche en faveur de la classe avec la probabilité totale la plus haute.
+
+
+#### Le "Naïf" de Naive Bayes
+Le modèle fait une hypothèse simplificatrice: il suppose que chaque mot est **indépendants** des autres. Autrement dit, il ignore complètement l'ordre et le contexte — pour lui, "I am not happy" et "I am happy not" **sont identiques**.
+
+C'est évidemment faux en pratique, mais cette simplification rend le modèle très rapide à entraîner et étonnamment efficace sur les textes.
+
+---
+
+### Ensuite, qu'est ce que le LogisticRegression ?
+La Régression Logistique répond à la question : **"Étant donné ce vecteur TF-IDF, à quelle classe ce texte appartient-il le plus probablement ?"**  
+
+Contrairement à Naive Bayes qui calcule des probabilités indépendamment mot par mot, la Régression Logistique **apprend un poids pour chaque feature** (ici chaque n-gram TF-IDF), et combine ces poids pour produire un score par classe.
+
+#### Pourquoi est-elle meilleure que Naive Bayes ici ?
+| 	| Naive Bayes | Logistic Regression | 
+|-|-|-|
+| Hypothèse               | Mots indépendants  | Aucune hypothèse sur les features | 
+| Frontière               | Probabiliste naïve | Frontière de décision optimisée | 
+| Classes déséquilibrées  | Biais vers les classes majoritaires | Gère mieux avec class_weight='balanced' | 
+| Corrélations entre mots | Ignorées | Prises en compte implicitement | 
+
+Le paramètre clé est `C` (**inverse de la régularisation**) :  
+- `C` petit → forte régularisation, modèle simple, **évite l'overfitting**  
+- `C` grand → faible régularisation, modèle plus complexe, **peut overfit**
+
+
+### 2.1.1 Diogo et Ulysse — Méthode supervisée (Naive Bayes BoW + TF-IDF)
+Diogo et Ulysse ont produit les résultats de référence pour la méthode supervisée.
+
+**Tuning de l'hyperparamètre `alpha` (Naive Bayes)** :
+- Valeurs testées : `[0.001, 0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]`
+- Meilleur alpha BoW : **0.1** (*Accuracy: 0.6606*)
+- Meilleur alpha TF-IDF : **0.05** (*Accuracy: 0.6761*)
+
+**Résultats confirmés (NB + BoW)**
+
+| Modèle | Accuracy test |
+|---|---|
+| Naive Bayes + BoW    | **0.6666** |
+
+**Classification report (NB + BoW)** résumé :
+
+| | precision | recall | f1- score |
+|-|-|-|-|  
+| Anxiety              | 0.68 | 0.73 | 0.71 |
+| Bipolar              | 0.60 | 0.76 | 0.68 |
+| Depression           | 0.57 | 0.61 | 0.59 |
+| Normal               | 0.92 | 0.70 | 0.80 |
+| Personality disorder | 0.50 | 0.56 | 0.53 |
+| Stress               | 0.52 | 0.43 | 0.47 |
+| Suicidal             | 0.60 | 0.72 | 0.65 |
+
+**Observations** : Les performances reproduisent le profil connu du NB sur données déséquilibrées — très bonne précision sur les classes rares mais recall faible. *Personality disorder* et *Stress* sont systématiquement sous-détectés.
+
+![Matrice de confusion NB+BoW Ulysse et Diogo](img/matriceConfusion_NB_BoW_Diogo_Ulysse.png)
+
+**Résultats confirmés (NB + TF-IDF)**
+
+| Modèle | Accuracy test |
+|---|---|
+| Naive Bayes + TF-IDF | **0.6875** |  
+
+**Classification report (NB + BoW)** résumé :
+
+| | precision | recall | f1- score |
+|-|-|-|-|  
+| Anxiety              | 0.76 | 0.71 | 0.73 |       
+| Bipolar              | 0.82 | 0.58 | 0.68 |       
+| Depression           | 0.54 | 0.77 | 0.63 |      
+| Normal               | 0.90 | 0.77 | 0.83 |      
+| Personality disorder | 0.97 | 0.29 | 0.45 |     
+| Stress               | 0.83 | 0.27 | 0.41 |       
+| Suicidal             | 0.65 | 0.60 | 0.62 |      
+
+**Observation** : TF-IDF est meilleur sur les deux classes les plus représentées (*Normal* et *Depression*), ce qui tire son accuracy globale vers le haut. Mais sur les 5 autres classes, **BoW gagne à chaque fois**, parfois très largement comme *Stress* (43% vs 27%) ou *Bipolar* (76% vs 58%)
+
+> **Pourquoi ce phénomène ?**
+**TF-IDF prénalise les mots fréquents**. C'est utile pour séparer *Normal* de *Depression*, mais pour les classes rares comme *Stress* ou *Personality disorder*, **leus mots caractéristiques sont précisément des mots fréquents** dans le corpus global (*overwhelmed*, *pressure*, *relationship*...).
+TF-IDF les "dépouille" de leur signal, et le modèle, lui, les classe massivement en *Depression* faute d'indices.
+Le cas *Personality disorder* avec TF-IDF est particulièrement frappant: **précision 0.98 mais recall 0.21** — le modèle est très sûr de lui quand il prédit cette classe, mais il rate 79% des vrais cas.
+
+![Matrice de confusion NB+TF-IDF Ulysse et Diogo](img/matriceConfusion_NB_TF-IDF_Diogo_Ulysse.png)
+
+---
+
+### 2.1.2 Logan — Méthode supervisée (notebook de référence commun + Logistic Regression)
 
 Avec la grand aide de Diogo, Logan a produit le notebook de base structurant le travail commun. Sa contribution principale sur la partie individuelle est l'implémentation d'une **Régression Logistique** (LR + TF-IDF optimisé) en plus du Naive Bayes, identifiée comme « version extra-performante ».
 
@@ -244,83 +353,70 @@ Avec la grand aide de Diogo, Logan a produit le notebook de base structurant le 
 
 **Tuning de l'hyperparamètre `alpha` (Naive Bayes)** :
 - Valeurs testées : `[0.001, 0.005, 0.01, 0.03, 0.05, 0.07, 0.1]`
-- Meilleur alpha BoW : **0.05**
-- Meilleur alpha TF-IDF : **0.05**
+- Meilleur alpha BoW : **0.1** (*Accuracy: 0.6606*) 
+- Meilleur alpha TF-IDF : **0.07** (*Accuracy: 0.6816*)
 
 **Résultats NB sur l'ensemble test** :
 
 | Modèle | Accuracy test |
 |---|---|
-| Naive Bayes + BoW | ~0.65 (estimé) |
-| Naive Bayes + TF-IDF | **0.6875** |
+| Naive Bayes + BoW           | **0.6666** |
+| Naive Bayes + TF-IDF        | **0.6927** |
+| LogisticRegression + TF-IDF | **0.7532** |
 
-**Analyse par classe (NB + TF-IDF)** :
+**Classification report (NB + BoW/TF-IDF)** résumé :
 
-| Classe | Recall NB TF-IDF | Recall LR TF-IDF | Évolution |
+| | precision (BoW) | recall (BoW) | f1-score (BoW) | precision (TF-IDF) | recall (TF-IDF) | f1-score (TF-IDF) | 
+|-|-|-|-|-|-|-|
+| Anxiety              | 0.68 | 0.73 | 0.71 | 0.75 | 0.70 | 0.73 |
+| Bipolar              | 0.60 | 0.76 | 0.68 | 0.82 | 0.57 | 0.67 |
+| Depression           | 0.57 | 0.61 | 0.59 | 0.54 | 0.76 | 0.63 |
+| Normal               | 0.92 | 0.70 | 0.80 | 0.89 | 0.81 | 0.85 |
+| Personality disorder | 0.50 | 0.56 | 0.53 | **1.00** | 0.25 | 0.40 |
+| Stress               | 0.52 | 0.43 | 0.47 | 0.85 | 0.24 | 0.37 |
+| Suicidal             | 0.60 | 0.72 | 0.65 | 0.66 | 0.60 | 0.63 |
+
+![Matrice de confusion NB+BoW Logan](img/matriceConfusion_NB_BoW_LOGAN.png)
+![Matrice de confusion NB+TF-IDF Logan](img/matriceConfusion_NB_TF-IDF_Logan.png)
+
+> Les résultats sont presque identiques que ceux trouvés par Diogo et Ulysse, un point à noter est que parmi ce que TF-IDF a prédit posifif *pour Personality disorder*, 100% étaient vraiment positif (precision = 1.00). Cela peut paraitre très intéressant à première vue, mais on remarque que en réalité, il n'a trouvé que 25% des vrais positifs (recall = 0.25)...
+
+**Tuning de l'hyperparamètre `C` (Logistic Regression)** :
+- Valeurs testées : `[0.01, 0.05, 0.1, 0.3, 0.5, 1.0, 3.0, 5.0, 10.0]`
+- Meilleur C TF-IDF : **3.0** (*Accuracy: 0.7457*)
+
+**Classification report (LR + TF-IDF)** résumé :
+| precision | recall | f1-score |
+|-|-|-|
+| Anxiety              | 0.77 | 0.82 | 0.80 |
+| Bipolar              | 0.82 | 0.76 | 0.79 |
+| Depression           | 0.71 | 0.67 | 0.69 |
+| Normal               | 0.88 | 0.92 | 0.90 |
+| Personality disorder | 0.70 | 0.62 | 0.66 |
+| Stress               | 0.57 | 0.57 | 0.57 |
+| Suicidal             | 0.63 | 0.65 | 0.64 |
+
+
+**Comparaison F1-score entre NB+TF-IDF et LR-TF-IDF** :
+
+| Classe | F1-score NB TF-IDF | F1-score LR TF-IDF | Évolution |
 |---|---|---|---|
-| Anxiety | 70% | 82% | +12% |
-| Bipolar | 57% | 76% | +19% |
-| Depression | 77% | 67% | **−10%** |
-| Normal | 79% | 92% | +13% |
-| Personality disorder | 21% | 62% | **+41%** |
-| Stress | 25% | 57% | **+32%** |
-| Suicidal | 60% | 65% | +5% |
+| Anxiety              | 0.73 | 0.80 | +0.07 |
+| Bipolar              | 0.67 | 0.79 | +0.16 |
+| Depression           | 0.63 | 0.69 | +0.06 |
+| Normal               | 0.85 | 0.90 | +0.15 |
+| Personality disorder | 0.40 | 0.66 | **+0.26** |
+| Stress               | 0.37 | 0.57 | **+0.20** |
+| Suicidal             | 0.63 | 0.64 | +0.01 |
 
-**Observations clés** :
-- TF-IDF pénalise les mots fréquents communs à plusieurs classes (ex. *Stress*, *Personality disorder*), ce qui cause des confusions vers *Depression*.
-- La LR avec `class_weight='balanced'` améliore très significativement les classes minoritaires mais au détriment du recall sur *Depression*.
-- Le cas *Suicidal* reste problématique : 529 vrais *Suicidal* sur 2 129 sont prédits *Depression* — une confusion à risque dans le contexte médical.
-- Le R² est jugé non pertinent pour ce problème de classification multi-classes (labels non ordonnés).
+![Matrice de confusion LR+TF-IDF Logan](img/matriceConfusion_LR_TF-IDF_Logan.png)
 
-**Modèle déployé sur `train.csv`** : `nb_model_bow` (BoW) pour produire `train_with_sentiments.csv`.
+On remarque que sur toute les classes, Logistic Regression a un meilleur score F1, en particulier sur *Personality disorder* et *Stress* mais cela n'est pas le seul point à prendre en compte:
+- *Suicidal* est le gros problème, sur la matrice de confusion on remarque que sur 2129 vrais cas *Suicidal*, 1391 sont correctement classés **mais 529 sont prédit Depression**. C'est le problème le plus grave car c'est une classe à risque critique dans le contexte médical (confondre *Suicidal* avec *Depression* peut avoir des conséquences réelles...)
+- **Depression a aussi un recall faible (0.67)**: 642 vrais Depression sont prédits Suicidal, et 156 Normal. Ces deux classes sont sémantiquement très proches dans le corpus.
 
----
 
-### 2.2 Diogo — Méthode supervisée (Naive Bayes BoW + TF-IDF)
-
-Diogo a produit les résultats de référence pour la méthode supervisée, repris dans la comparaison finale du notebook K-Means.
-
-**Résultats confirmés** :
-
-| Modèle | Accuracy test |
-|---|---|
-| Naive Bayes + TF-IDF | **0.6875** |
-
-**Classification report (NB + TF-IDF)** résumé :
-
-| Classe | F1-score |
-|---|---|
-| Normal | 0.83 |
-| Anxiety | 0.73 |
-| Bipolar | 0.68 |
-| Depression | ~0.62 |
-| Suicidal | ~0.62 |
-| Personality disorder | Précision 0.97 / Recall 0.29 |
-| Stress | Précision 0.83 / Recall 0.27 |
-
-**Observations** : Les performances reproduisent le profil connu du NB sur données déséquilibrées — très bonne précision sur les classes rares mais recall faible. *Personality disorder* et *Stress* sont systématiquement sous-détectés.
-
----
-
-### 2.3 Ulysse — Méthode supervisée (Naive Bayes BoW + TF-IDF)
-
-Ulysse a conduit une comparaison directe BoW vs. TF-IDF sur les métriques de précision et de recall par classe.
-
-**Résultats obtenus** :
-
-| Classe | Recall BoW | Précision TF-IDF | Meilleur sur recall |
-|---|---|---|---|
-| Anxiety | — | — | BoW |
-| Bipolar | — | — | BoW |
-| Depression | 0.57 | 0.54 | BoW |
-| Normal | 0.92 | 0.90 | BoW |
-| Personality disorder | 0.50 | 0.97 | BoW (recall) |
-| Stress | 0.52 | 0.83 | BoW (recall) |
-| Suicidal | 0.60 | 0.65 | TF-IDF |
-
-**Décision d'Ulysse** : Retenir le modèle **BoW** pour le déploiement, au motif que l'objectif est d'annoter le maximum de données → **le recall prime sur la précision**.
-
-**Fichier produit** : `train_with_sentiments.csv` (colonne `predicted_sentiment`, via `bow_vectorizer`).
+**Modèle déployé sur `train.csv`** : **à déterminer**, les résultats de TF-IDF sont meilleurs dans les deux cas mais le choix doit se faire sur soit Naive Bayes soit Logistic Regression (puisque celui-ci n'était pas initialement demandé)
 
 ---
 
