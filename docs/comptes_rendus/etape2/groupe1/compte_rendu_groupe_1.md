@@ -459,7 +459,13 @@ Après implémentation des méthodes Naive Bayes et Logistic Regression, le but 
 - Meilleur C BoW : **0.1** (*Accuracy : 0.7309*)
 - Meilleur C TF-IDF : **1.0** (*Accuracy : 0.7386*)
 
-> Pourquoi ne pas mettre plus de valeurs de test ? Le problème actuelle est que pour 3 valeurs, on est sur **8 min de traitement**, ce qui est beaucoup trop long, le but dans le futur étant de définir le nombre de *features* max à 50000 
+#### Pourquoi ne pas mettre plus de valeurs de test ? 
+Le problème actuelle est que pour 3 valeurs, on est sur **8 min de traitement**
+
+Une statégie permettant d'optimiser le temps d'exécution serait de réduire la dimension, en cherchant C sur un sous-ensemble stratifié, en faisant une recherche *coarse-to-fine*, puis en réentraînant une seule fois sur tout le train.
+
+> - *Coarse search* test peu de valeur de C, mais sur une plage très large (ex: 0.001, 0.01, 0.1, 1, 10, 100). L'objectif étant de repérer rapidement la bonne zone où les performances sont bonnes
+> - *Fine search* test plus précisément autour des meilleurs valeurs trouvées en *coarse search* (ex: si 1 et 3 sont les meilleurs, on teste 0.5,0.75,1,1.5,2,3,4.5, etc.) 
 
 **Classification report (LSVC+BOW)** résumé:
 | Classe               | Precision | Recall | F1-score |
