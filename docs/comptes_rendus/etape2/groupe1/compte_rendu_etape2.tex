@@ -166,7 +166,10 @@ L'étape 2 a divisé le groupe 1 en deux sous-groupes travaillant en parallèle 
 \toprule
 \textbf{Sous-groupe} & \textbf{Méthode} & \textbf{Membres} \\
 \midrule
-Supervisé    & Naive Bayes (BoW + TF-IDF) + Logistic Regression (TF-IDF) & Diogo, Ulysse, Logan \\
+Supervisé    & Naive Bayes (BoW + TF-IDF) & \\
+             & + Logistic Regression (TF-IDF) &  \\
+             & + LinearSVC (BoW + TF-IDF) & Diogo, Ulysse, Logan \\
+\midrule
 Non-supervisé & K-Means (Word2Vec + TF-IDF)                               & Emin, Victor \\
 \bottomrule
 \end{tabular}
@@ -361,6 +364,36 @@ Corrélations entre mots & Ignorées                     & Prises en compte impl
 
 Le paramètre clé de la LR est \textbf{\texttt{C}} (inverse de la régularisation)~: un \texttt{C} petit entraîne une régularisation forte (modèle simple, évite l'overfitting) ; un \texttt{C} grand entraîne une régularisation faible (modèle plus complexe, peut overfit).
 
+\subsubsection*{Qu'est-ce que LinearSVC ?}
+
+Le LinearSVC répond à la question~: \textbf{«~Quelle est la frontière optimale qui sépare le mieux les classes~?~»}
+
+Contrairement à la Régression Logistique qui estime des probabilités, le LinearSVC cherche un \textbf{hyperplan} (une droite en 2D, un plan en 3D, généralisé en $N$ dimensions) qui sépare les classes en \textbf{maximisant la marge}, c'est-à-dire la distance entre la frontière et les points les plus proches de chaque classe. Ces points les plus proches sont les \textbf{vecteurs de support}~: ils sont les seuls à définir la frontière, tous les autres exemples n'ont aucune influence.
+
+La frontière est linéaire, ce qui est parfaitement adapté aux vecteurs TF-IDF déjà en haute dimension. \textbf{En haute dimension, les classes sont souvent linéairement séparables même si elles ne le seraient pas en 2D.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lccc}
+\toprule
+ & \textbf{Naive Bayes} & \textbf{Logistic Regression} & \textbf{LinearSVC} \\
+\midrule
+Approche        & Probabiliste        & Probabiliste                  & \textbf{Géométrique} \\
+Apprend         & $P(\text{classe}|\text{mots})$ & Poids par feature & Frontière à marge max \\
+Sortie          & Probabilité         & Probabilité                   & \textbf{Score de décision} \\
+Déséquilibre    & Sensible            & Géré via \texttt{class\_weight} & Géré via \texttt{class\_weight} \\
+Vitesse         & Très rapide         & Rapide                        & Très rapide (haute dim.) \\
+Atout principal & Simplicité          & Calibration                   & \textbf{Marge max} \\
+                &                     &                               & $\rightarrow$\textbf{meilleure généralisation} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remarque}
+LinearSVC est souvent le modèle le plus performant sur des tâches de classification de texte TF-IDF, car il est nativement conçu pour les espaces de haute dimension et les données creuses (\textit{sparse}), ce qui correspond exactement aux vecteurs TF-IDF.
+\end{remarque}
+
+\pagebreak
 % ------------------------------------------------------------------------------
 \subsubsection{Diogo et Ulysse --- Naive Bayes BoW et TF-IDF}
 % ------------------------------------------------------------------------------
@@ -441,6 +474,7 @@ TF-IDF est meilleur sur les deux classes les plus représentées (\textit{Normal
 \textbf{Pourquoi ?} TF-IDF pénalise les mots fréquents. C'est utile pour séparer \textit{Normal} de \textit{Depression}, mais pour les classes rares (\textit{Stress}, \textit{Personality disorder}), les mots caractéristiques sont précisément des mots fréquents dans le corpus global (\textit{overwhelmed}, \textit{pressure}, \textit{relationship}\ldots). TF-IDF les «~dépouille~» de leur signal. Le cas de \textit{Personality disorder} est frappant~: \textbf{precision 0.97 mais recall 0.29} --- le modèle est très sûr quand il prédit cette classe, mais il rate 71\,\% des vrais cas.
 \end{remarque}
 
+\pagebreak
 % ------------------------------------------------------------------------------
 \subsubsection{Logan --- Naive Bayes + Logistic Regression}
 % ------------------------------------------------------------------------------
@@ -528,6 +562,145 @@ La Logistic Regression améliore le F1-score sur \textbf{toutes les classes}, en
 \begin{avertissement}
 \textbf{Problème critique --- classe \textit{Suicidal}~:} sur 2\,129 vrais cas \textit{Suicidal}, 1\,391 sont correctement classés \textbf{mais 529 sont prédits \textit{Depression}}. Confondre \textit{Suicidal} avec \textit{Depression} peut avoir des conséquences réelles dans un contexte médical. Ce problème est commun à toutes les approches testées.
 \end{avertissement}
+
+\pagebreak
+% ------------------------------------------------------------------------------
+\subsubsection{Diogo --- LinearSVC + BoW et TF-IDF}
+% ------------------------------------------------------------------------------
+
+Après l'implémentation de Naive Bayes et Logistic Regression, Diogo a exploré le \textbf{LinearSVC} (\textit{Linear Support Vector Classifier}), une méthode géométriquement très différente des approches probabilistes précédentes.
+
+\textbf{Tuning de l'hyperparamètre \texttt{C}~:}
+\begin{itemize}
+  \item Valeurs testées : \texttt{[0.01, 0.1, 1.0]}
+  \item Meilleur C BoW : \textbf{0.1} (accuracy : 0.7309)
+  \item Meilleur C TF-IDF : \textbf{1.0} (accuracy : 0.7386)
+\end{itemize}
+
+\begin{remarque}
+Avec seulement 3 valeurs testées, le temps de traitement atteint déjà \textbf{8 minutes}. Une stratégie d'optimisation \textit{coarse-to-fine} est envisageable~: une \textit{coarse search} sur une large plage (ex.~: 0.001, 0.01, 0.1, 1, 10, 100) pour repérer la bonne zone, puis une \textit{fine search} plus précise autour des meilleures valeurs trouvées.
+\end{remarque}
+
+\textbf{Classification report (LinearSVC + BoW)~:}
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Classe} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} \\
+\midrule
+Anxiety              & 0.77 & 0.73 & 0.75 \\
+Bipolar              & 0.79 & 0.73 & 0.76 \\
+Depression           & 0.71 & 0.65 & 0.68 \\
+Normal               & 0.84 & 0.95 & 0.89 \\
+Personality disorder & 0.68 & 0.59 & 0.63 \\
+Stress               & 0.52 & 0.46 & 0.49 \\
+Suicidal             & 0.63 & 0.63 & 0.63 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{matriceConfusion_LSVC_CBOW.png}
+  \caption{Matrice de confusion --- LinearSVC + BoW (Diogo)}
+\end{figure}
+
+\textbf{Classification report (LinearSVC + TF-IDF)~:}
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Classe} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} \\
+\midrule
+Anxiety              & 0.81 & 0.79 & 0.80 \\
+Bipolar              & 0.86 & 0.71 & 0.78 \\
+Depression           & 0.68 & 0.70 & 0.69 \\
+Normal               & 0.85 & 0.94 & 0.89 \\
+Personality disorder & 0.86 & 0.56 & 0.68 \\
+Stress               & 0.68 & 0.46 & 0.55 \\
+Suicidal             & 0.63 & 0.61 & 0.62 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{matriceConfusion_LSVC_TFIDF.png}
+  \caption{Matrice de confusion --- LinearSVC + TF-IDF (Diogo)}
+\end{figure}
+
+\textbf{Analyse détaillée des confusions~:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Modèle} & \textbf{Vrais \textit{Suicidal}} & \textbf{Vrais \textit{Depression}} \\
+                & $\to$ \textbf{prédits \textit{Depression}} & $\to$ \textbf{prédits \textit{Suicidal}} \\
+\midrule
+LinearSVC TF-IDF & 593 & 594 \\
+LinearSVC BoW    & 501 & 645 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\bigbreak
+TF-IDF est légèrement meilleur sur les deux sens de la confusion \textit{Depression}/\textit{Suicidal}, ce qui est cohérent avec son meilleur F1 global sur ces deux classes.
+
+\pagebreak
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Modèle} & \textbf{Vrais \textit{Personality disorder} classés} & \textbf{Prédits \textit{Depression}} \\
+\midrule
+LinearSVC TF-IDF & 120/215 $\to$ 56\,\% & 51 \\
+LinearSVC BoW    & 126/215 $\to$ 59\,\% & 33 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remarque}
+Résultat contre-intuitif~: BoW retrouve mieux les vrais \textit{Personality disorder} malgré une accuracy globale inférieure. TF-IDF les noie davantage dans \textit{Depression}.
+\end{remarque}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Modèle} & \textbf{Vrais \textit{Stress} classés} & \textbf{Prédits \textit{Depression}} & \textbf{Prédits \textit{Normal}} \\
+\midrule
+LinearSVC TF-IDF & 235/516 $\to$ 46\,\% & 103 & 81 \\
+LinearSVC BoW    & 238/516 $\to$ 46\,\% & 81  & 86 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Les deux modèles sont quasi identiques sur \textit{Stress}, mais BoW disperse moins vers \textit{Normal} et TF-IDF disperse moins vers \textit{Depression}.
+
+\textbf{Comparaison F1-score entre toutes les méthodes supervisées (vectorisation TF-IDF)~:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Classe} & \textbf{NB TF-IDF} & \textbf{LR TF-IDF} & \textbf{LinearSVC TF-IDF} & \textbf{Meilleur} \\
+\midrule
+Anxiety              & 0.73 & 0.80 & 0.80 & LR et LinearSVC \\
+Bipolar              & 0.68 & 0.79 & 0.78 & LR \\
+Depression           & 0.63 & 0.69 & 0.69 & LR et LinearSVC \\
+Normal               & 0.83 & 0.90 & 0.89 & LR \\
+Personality disorder & 0.45 & 0.66 & \textbf{0.68} & LinearSVC \\
+Stress               & 0.41 & \textbf{0.57} & 0.55 & LR \\
+Suicidal             & 0.62 & \textbf{0.64} & 0.62 & LR \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+LinearSVC et LR sont quasi-équivalents sur la majorité des classes~: l'écart est souvent de 0.01 à 0.02 de F1, dans la marge de variabilité normale. Le seul point où LinearSVC prend l'avantage est \textit{Personality disorder} (0.68 vs 0.66), la classe la plus difficile du dataset.
+
+NB reste nettement distancé sur toutes les classes minoritaires. Cet écart est structurel~: NB suppose l'indépendance des mots, ce qui lui fait rater les signaux contextuels que LR et LinearSVC captent tous les deux.
+
+La confusion \textit{Depression}/\textit{Suicidal} persiste quel que soit le modèle. Ce n'est donc pas un problème algorithmique mais une limite du dataset, ces deux classes partageant un vocabulaire très proche.
 
 % ------------------------------------------------------------------------------
 \subsection{Méthode non-supervisée --- K-Means (Emin et Victor)}
@@ -627,6 +800,7 @@ Pureté min cluster      & 0.30 (\textit{Personality disorder}) & 0.30 (\textit{
   \caption{Matrice de confusion --- K-Means final (TF-IDF vs Word2Vec)}
 \end{figure}
 
+\pagebreak
 \begin{remarque}
 Contra-intuitivement, TF-IDF (46\,\%) surpasse Word2Vec (20\,\%). Les catégories cliniques du dataset (\textit{Depression}, \textit{Anxiety}, etc.) se reconnaissent avant tout par un \textbf{vocabulaire symptomatique spécifique}, ce que TF-IDF met précisément en avant. Word2Vec, qui regroupe les mots par contexte sémantique large, tend à fusionner \textit{Depression} et \textit{Suicidal} dans les mêmes clusters --- le mapping glouton force alors ces gros clusters sur des labels minoritaires, effondrant l'accuracy globale.
 \end{remarque}
@@ -644,12 +818,14 @@ Contra-intuitivement, TF-IDF (46\,\%) surpasse Word2Vec (20\,\%). Les catégorie
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Critère} & \textbf{NB TF-IDF (supervisé)} & \textbf{K-Means TF-IDF (non-supervisé)} \\
+\textbf{Critère} & \textbf{NB TF-IDF } & \textbf{K-Means TF-IDF} \\
+                 & \textbf{(supervisé)} & \textbf{(non-supervisé)} \\
 \midrule
 \textbf{Accuracy test}          & \textbf{0.6875} & 0.4636 \\
 Macro avg F1                    & 0.62            & ---    \\
 Weighted avg F1                 & 0.69            & ---    \\
-Voit les labels à l'entraînement ? & Oui          & Non    \\
+Voit les labels                 &                 &    \\
+à l'entraînement ?              & Oui             & Non    \\
 Hyperparamètre clé              & alpha = 0.05    & $k = 7$ \\
 Fichier annoté                  & \texttt{train\_with\_sentiments.csv} & \texttt{train\_with\_sentiments\_kmeans.csv} \\
 \bottomrule
@@ -697,13 +873,15 @@ Modèle léger        & NB est rapide à déployer et à sérialiser (\texttt{.p
 % ==============================================================================
 
 \begin{itemize}
-  \item \textbf{Déséquilibre des classes~:} \textit{Depression} est sur-représentée dans \texttt{combined\_data.csv}, ce qui biaise tous les modèles. Une solution (non implémentée faute de temps) serait le sur-échantillonnage SMOTE ou l'ajustement de \texttt{class\_weight}.
+  \item \textbf{Déséquilibre des classes~:} \textit{Depression} est sur-représentée dans \\
+  \texttt{combined\_data.csv}, ce qui biaise tous les modèles. Une solution (non implémentée faute de temps) serait le sur-échantillonnage SMOTE ou l'ajustement de \texttt{class\_weight}.
 
   \item \textbf{Confusion \textit{Depression} / \textit{Suicidal}~:} problème critique dans le contexte médical. La LR avec régularisation L1 (\texttt{penalty='l1'}, \texttt{solver='saga'}) améliore ce point mais le temps d'entraînement est prohibitif ($\approx 4$\,h). À envisager si plus de ressources de calcul sont disponibles.
 
   \item \textbf{R² non pertinent~:} cette métrique ne doit pas être utilisée pour évaluer des classifieurs multi-classes à labels nominaux. L'accuracy, le F1-score et la matrice de confusion sont les indicateurs à retenir.
 
-  \item \textbf{Amélioration possible~:} la Logistic Regression de Logan (LR + TF-IDF, \texttt{class\_weight='balanced'}) est prometteuse --- accuracy de 75.32\,\% et gains de $+0.20$ à $+0.26$ de F1 sur les classes minoritaires --- et devrait être envisagée comme version finale si le temps de calcul le permet.
+  \item \textbf{Amélioration possible~:} la Logistic Regression de Logan (LR + TF-IDF, \\
+  \texttt{class\_weight='balanced'}) est prometteuse --- accuracy de 75.32\,\% et gains de $+0.20$ à $+0.26$ de F1 sur les classes minoritaires --- et devrait être envisagée comme version finale si le temps de calcul le permet.
 \end{itemize}
 
 \end{document}
