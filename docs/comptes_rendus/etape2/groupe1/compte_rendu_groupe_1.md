@@ -284,6 +284,33 @@ Le paramètre clé est `C` (**inverse de la régularisation**) :
 - `C` petit → forte régularisation, modèle simple, **évite l'overfitting**  
 - `C` grand → faible régularisation, modèle plus complexe, **peut overfit**
 
+#### Et enfin, qu'est ce que le LinearSVC ?
+Le linearSVC (*Linear Support Vector Classifier*) répond à la question: "**Quelle est la frontière optimale qui sépare le mieux les classes ?**"
+
+Contrairement à la régression logistique qui estime des probabilités de classe, le LinearSVC cherche une frontière de décision optimale entre les catégories.  
+Imaginons des textes représentés comme des points dans un espace à haute dimension (un par feature TF-IDF). LinearSVC cherche un **hyperplan** (*une droite en 2D, un plan en 3D, généralisé en N dimensions*) qui sépare les classes en maximisant la **marge**, c'est à dire la distance entre la frontière et les points les plus proches de chaque classe.  
+Ces points les plus proches sont les **vecteurs de support**, ils sont les seuls à définir la frontière, **tous les autres exemples n'ont aucune influence**.  
+
+> Comme la régression logistique, il apprend un poids pour chaque features (ici chaque n-gram TF-IDF), puis combine ces poids pour déterminer de quel côté de la frontière se situe un document.
+
+#### Pourquoi "Linear" ?
+La frontière est une droite, ce qui est parfaitement adapté aux vecteurs TF-IDF qui sont déjà dans un espace de haute dimension. **En haute dimension, les classes sont souvents linéairement séparables même si elles ne le seraient pas en 2D.**
+
+#### Quel est sont objectif ?
+Il permet de **maximiser la séparation entre les classes**, tout en réduisant les erreurs de classification.
+
+**Comparaison avec les autre méthodes**
+| | Naive Bayes | Logistic Regression | LinearSVC |
+|-|-|-|
+| Approche        | Probabiliste | Probabiliste |  **Géométrique** |
+| Apprend         | P(classe\|mots) | Poids par feature | Frontière à marge max |
+| Sortie          | Probabilité | Probabilité | **Score de décision** (pas de proba) |
+| Déséquilibre    | Sensible | Géré via `class_weight` | Géré via `class_weight` |
+| Vitesse         | Très rapide | Rapide | Très rapide (optimisé pour de la haute dim.) |
+| Atout principal | Simplicité | Calibration | **Marge maximale -> meilleure généralisation** |
+
+> LinearSVC est souvent le modèle le plus performant sur des tâches de classification de texte TF-IDF car il est nativement conçu pour les espaces de haute dimension et les données creuses (*sparse*), **ce qui correspond exactement aux vecteurs TF-IDF**.
+
 
 ### 2.1.1 Diogo et Ulysse — Méthode supervisée (Naive Bayes BoW + TF-IDF)
 Diogo et Ulysse ont produit les résultats de référence pour la méthode supervisée.
@@ -346,7 +373,9 @@ Le cas *Personality disorder* avec TF-IDF est particulièrement frappant: **pré
 
 ### 2.1.2 Logan — Méthode supervisée (notebook de référence commun + Logistic Regression)
 
-Avec la grand aide de Diogo, Logan a produit le notebook de base structurant le travail commun. Sa contribution principale sur la partie individuelle est l'implémentation d'une **Régression Logistique** (LR + TF-IDF optimisé) en plus du Naive Bayes, identifiée comme « version extra-performante ».
+Avec la grande aide de Diogo, Logan a produit le notebook de base structurant le travail commun. Sa contribution principale sur la partie individuelle est l'implémentation d'une **Régression Logistique** (LR + TF-IDF optimisé) en plus du Naive Bayes, identifiée comme « version extra-performante ».
+
+#### A - Naive Bayes 
 
 **Paramétrage TF-IDF amélioré** :
 - `ngram_range=(1,3)`, `max_features=50 000`, `sublinear_tf=True`, `min_df=2`, `max_df=0.95`
@@ -380,6 +409,8 @@ Avec la grand aide de Diogo, Logan a produit le notebook de base structurant le 
 ![Matrice de confusion NB+TF-IDF Logan](img/matriceConfusion_NB_TF-IDF_Logan.png)
 
 > Les résultats sont presque identiques que ceux trouvés par Diogo et Ulysse, un point à noter est que parmi ce que TF-IDF a prédit posifif *pour Personality disorder*, 100% étaient vraiment positif (precision = 1.00). Cela peut paraitre très intéressant à première vue, mais on remarque que en réalité, il n'a trouvé que 25% des vrais positifs (recall = 0.25)...
+
+#### B - Logistic Regression
 
 **Tuning de l'hyperparamètre `C` (Logistic Regression)** :
 - Valeurs testées : `[0.01, 0.05, 0.1, 0.3, 0.5, 1.0, 3.0, 5.0, 10.0]`
@@ -417,6 +448,91 @@ On remarque que sur toute les classes, Logistic Regression a un meilleur score F
 
 
 **Modèle déployé sur `train.csv`** : **à déterminer**, les résultats de TF-IDF sont meilleurs dans les deux cas mais le choix doit se faire sur soit Naive Bayes soit Logistic Regression (puisque celui-ci n'était pas initialement demandé)
+
+---
+
+### 2.1.3 Diogo — LinearSVC + CBOW/TF-IDF
+Après implémentation des méthodes Naive Bayes et Logistic Regression, le but suivant était de décrouvrir d'autres méthodes plus ou moins performantes. Une de ces méthodes est LinearSVC, en plus d'être très performante, sa stratégies est très différentes des précédentes, ce qui la rend très interessante à découvrir et exploiter.
+
+**Tuning de l'hyperparamètre `C`**
+- Valeurs testées : `[0.01, 0.1, 1.0]`
+- Meilleur C BoW : **0.1** (*Accuracy : 0.7309*)
+- Meilleur C TF-IDF : **1.0** (*Accuracy : 0.7386*)
+
+> Pourquoi ne pas mettre plus de valeurs de test ? Le problème actuelle est que pour 3 valeurs, on est sur **8 min de traitement**, ce qui est beaucoup trop long, le but dans le futur étant de définir le nombre de *features* max à 50000 
+
+**Classification report (LSVC+BOW)** résumé:
+| Classe               | Precision | Recall | F1-score |
+| -------------------- | --------- | ------ | -------- |
+| Anxiety              | 0.77      | 0.73   | 0.75     |
+| Bipolar              | 0.79      | 0.73   | 0.76     |
+| Depression           | 0.71      | 0.65   | 0.68     |
+| Normal               | 0.84      | 0.95   | 0.89     |
+| Personality disorder | 0.68      | 0.59   | 0.63     |
+| Stress               | 0.52      | 0.46   | 0.49     |
+| Suicidal             | 0.63      | 0.63   | 0.63     |
+
+![matriceConfusion_LSVC_CBOW](img/matriceConfusion_LSVC_CBOW.png)
+
+**Classification report (LSVC+TF-IDF)** résumé:
+| Classe               | Precision | Recall | F1-score |
+| -------------------- | --------- | ------ | -------- |
+| Anxiety              | 0.81      | 0.79   | 0.80     |
+| Bipolar              | 0.86      | 0.71   | 0.78     |
+| Depression           | 0.68      | 0.70   | 0.69     |
+| Normal               | 0.85      | 0.94   | 0.89     |
+| Personality disorder | 0.86      | 0.56   | 0.68     |
+| Stress               | 0.68      | 0.46   | 0.55     |
+| Suicidal             | 0.63      | 0.61   | 0.62     |
+
+![matriceConfusion_LSVC_TFIDF](img/matriceConfusion_LSVC_TFIDF.png)
+
+**Confusion Depression/Suicidal — Problème central**  
+| Modèle | Vrais *Suicidal* -> prédits *Depression* | Vrais *Depression* -> prédits *Suicidal* |
+|-|-|-|
+| LinearSVC TF-IDF | 593 | 594 |
+| LinearSVC BoW    | 501 | 645 |
+> TF-IDF est légèrement meilleur sur les deux sens de cette confusion. C'est cohérent avec son meilleur F1 global sur ces deux classes.
+
+**Personality disorder — la classe la plus difficile**
+| Modèle | Vrais *Personality disorder* classés | Prédit *Depression* |
+|-|-|-|
+| LinearSVC TF-IDF | 120/215 -> 56% | 51 |
+| LinearSVC BoW    | 126/215 -> 59% | 33 |  
+> Le résultat est contre intuitif: BoW retrouve mieux les vrais *Personality disorder* malgrès une accuracy globale inférieur. TF-IDF les noies davantage dans *Depression*.
+
+**Stress — même logique**
+| Modèle | Vrais *Stress* classés | Prédit *Depression* | Prédit *Normal* |
+|-|-|-|-|
+| LinearSVC TF-IDF | 235/516 -> 46% | 103 | 81 |
+| LinearSVC BoW    | 238/516 -> 46% | 81  | 86 |  
+> Quasi identiques sur *Stress*, mais BoW disperse moins vers *Normal* et TF-IDF disperse moins vers *Depression*.
+
+**Classes bien gérées (Normal,Bipolar,Anxiety)**
+| Modèle | TF-IDF (correct) | BoW (correct) |
+|-|-|-|
+| LinearSVC TF-IDF | 3061 / 3268 -> 94% | 3096 / 3268 -> 95% |
+| LinearSVC BoW    | 395 / 556 -> 71%   | 407 / 556 -> 73%   |
+| Anxiety          | 608 / 767 -> 79%   | 557 / 767 → 73%    |  >
+> BoW est meilleur sur Normal et Bipolar, TF-IDF prend l'avantage sur Anxiety.
+
+
+**Comparaison F1-score entre les méthode avec TF-IDF**  
+| Classe               | NB TF-IDF | LR TF-IDF | LinearSVC TF-IDF | Meilleur        |
+| -------------------- | --------- | --------- | ---------------- | --------------- |
+| Anxiety              | 0.73      | 0.80      | 0.80             | LR et LinearSVC |
+| Bipolar              | 0.68      | 0.79      | 0.78             | LR              |
+| Depression           | 0.63      | 0.69      | 0.69             | LR et LinearSVC |
+| Normal               | 0.83      | 0.90      | 0.89             | LR              |
+| Personality disorder | 0.45      | 0.66      | 0.68             | LinearSVC       |
+| Stress               | 0.41      | 0.57      | 0.55             | LR              |
+| Suicidal             | 0.62      | 0.64      | 0.62             | LR              |
+
+LinearSVC et LR sont quasi-équivalents sur la majorité des classes. L'écart est souvent de 0.01 à 0.02 de F1, ce qui est dans la marge de variabilité normale. Le seul point où LinearSVC prend l'avantage est *Personality disorder (0.68 vs 0.66), la classe la plus difficile du dataset.
+
+NB reste nettement distancé sur toutes les classes minoritaires. L'écart entre NB et les deux autre est structurel: NB suppose l'indépendance des mots, ce qui lui fait rater les signaux contextuels que LR et LinearSVC captent tous les deux.
+
+La confusion Depression/Suicidal persiste quel que soit le modèle. Ce n'est donc pas un problème algorithmique mais bien une limite du dataset où ces deux classes partagent un vocabulaire très proche.
 
 ---
 
