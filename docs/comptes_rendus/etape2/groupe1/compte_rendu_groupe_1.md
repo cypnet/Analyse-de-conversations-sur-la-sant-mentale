@@ -420,49 +420,43 @@ On remarque que sur toute les classes, Logistic Regression a un meilleur score F
 
 ---
 
-### 2.4 Emin & Victor — Méthode non-supervisée (K-Means)
+### 2.2 Emin & Victor — Méthode non-supervisée (K-Means)
 
 Le sous-groupe non-supervisé a comparé deux approches de vectorisation pour K-Means : **TF-IDF + SVD** et **Word2Vec**.
 
-#### Pipeline commun
+### Tout d'abord, qu'est-ce que le K-Means ?
+L'algorithme K-Means regroupe les textes en calculant la proximité mathématique entre les vecteurs. Il place des centres (centroïdes) de manière aléatoire, puis les déplace jusqu'à ce que chaque texte soit rattaché au groupe le plus proche.
 
-- TF-IDF : `TruncatedSVD(n_components=100)` → normalisation L2
-- Word2Vec : `vector_size=100`, `window=5`, `min_count=2` → normalisation L2 directe (pas de SVD nécessaire)
-- Sélection de `k` par maximisation du **score silhouette cosinus** sur la validation, avec plancher à `y_train.nunique() = 7`
+#### 2.2.1 Victor — Implémentation initiale et logique de Word2Vec
+Victor a privilégié l'utilisation de **Word2Vec** pour capturer le sens profond des mots.
+* **Le choix de Word2Vec** : Contrairement au TF-IDF qui ne fait que compter, Word2Vec comprend que "triste" et "déprimé" sont proches.
+* **Sélection de $k$** : Le nombre de groupes (entre 2 et 15) a été choisi automatiquement via le **score de silhouette** pour obtenir les groupes les plus nets possible.
+![Courbes WCSS et Silhouette pour le choix de k](img/selection_k_plots_Victor.png)
 
-#### Résultats comparatifs K-Means
+* **Mapping (Vote majoritaire)** : Pour nommer les groupes (Cluster 0, 1...), Victor a utilisé les étiquettes réelles pour identifier la classe dominante de chaque groupe. En cas de conflit, le groupe le plus "pur" (le plus homogène) garde l'étiquette.
+![Exemple de mapping et pureté des clusters](img/mapping_results_Victor.png)
 
-| Critère | K-Means + TF-IDF | K-Means + Word2Vec |
-|---|---|---|
-| Meilleur k retenu | 7 | 7 |
+* **Alerte technique** : Victor a corrigé une erreur du template qui tentait de mélanger TF-IDF et Word2Vec dans le déploiement final, ce qui rendait le calcul impossible.
+
+#### 2.2.2 Emin — Comparaison TF-IDF et Robustesse du pipeline
+Emin a complété l'étude en implémentant le pipeline complet sous **TF-IDF** pour comparer les deux représentations.
+* **Résultat inattendu** : Le K-Means avec TF-IDF (46% d'accuracy) surpasse largement Word2Vec (20%). Cela prouve que pour ce dataset médical, les mots-clés spécifiques (symptômes) sont plus discriminants que le contexte sémantique global.
+* **Correction du déploiement (B.6)** : Emin a standardisé la cellule finale pour utiliser le modèle TF-IDF, plus performant, assurant ainsi un pipeline cohérent pour la production du fichier final.
+* **Maintenance** : Il a également résolu des conflits de versions entre `gensim` et `scipy` dans l'environnement de travail.
+
+#### 2.2.3 Synthèse des résultats K-Means
+
+| Critère | K-Means + TF-IDF (Emin) | K-Means + Word2Vec (Victor) |
+| :--- | :--- | :--- |
 | **Accuracy sur test** | **0.4636** | 0.20 |
-| Purity globale | **0.54** | 0.51 |
-| **ARI** | **0.25** | 0.13 |
-| Besoin de SVD ? | Oui | Non |
-| Pureté max cluster | 0.85 (Depression) | 0.90 (Normal) |
-| Pureté min cluster | 0.30 (Personality disorder) | 0.30 (Bipolar) |
+| **Purity globale** | **0.54** | 0.51 |
+| **ARI (Adjusted Rand Index)** | **0.25** | 0.13 |
 
-#### Analyse des résultats
+![Matrice de confusion du modèle K-Means final](img/matriceConfusion_Kmeans_W2V_TF_IDF_Victor.png)
 
-**Pourquoi TF-IDF surpasse Word2Vec ?**
+**Modèle retenu pour le non-supervisé** : K-Means + TF-IDF.
 
-Contra-intuitivement, TF-IDF (accuracy 46%) fait plus du double de Word2Vec (20%). L'hypothèse avancée par le sous-groupe : les catégories cliniques du dataset (*Depression*, *Anxiety*, etc.) se distinguent avant tout par un **vocabulaire symptomatique spécifique**, ce que TF-IDF met précisément en avant. Word2Vec, qui regroupe les mots par contexte sémantique large, tend à fusionner *Depression* et *Suicidal* dans les mêmes clusters (vocabulaire négatif proche), puis le mapping glouton force ces gros clusters sur des labels minoritaires, effondrant l'accuracy globale.
-
-**Classes bien gérées / mal gérées** :
-
-| Classe | Pureté TF-IDF | Pureté Word2Vec |
-|---|---|---|
-| Depression | 0.85 ✅ | 0.87 ✅ |
-| Normal | 0.61 | 0.90 ✅ |
-| Anxiety | 0.56 | 0.47 |
-| Suicidal | 0.48 | 0.56 |
-| Stress | 0.34 | 0.46 |
-| Bipolar | 0.35 | 0.30 |
-| Personality disorder | 0.30 | 0.37 |
-
-**Décision du sous-groupe** : retenir **K-Means + TF-IDF** pour l'annotation.  
 **Fichier produit** : `train_with_sentiments_kmeans.csv`.
-
 ---
 
 ## 3. Comparaison globale supervisé vs. non-supervisé
