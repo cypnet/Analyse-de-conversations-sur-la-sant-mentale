@@ -280,7 +280,6 @@ Deux tokens spéciaux sont systématiquement ajoutés~:
 
 \vfill{}
 \begin{figure}[H]
-% Il faut que le graph ne dépase pas de la page
 \begin{center}
 \begin{tikzpicture}[
   scale=0.85,
@@ -462,6 +461,36 @@ $\xrightarrow{\text{LogisticRegression}}$
 \texttt{Classe prédite}
 \end{center}
 \medskip
+
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}[
+  scale=0.85,
+  transform shape,
+  node distance=8mm,
+  >=Latex,
+  box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5, align=center, text width=4cm, minimum height=1.2cm, inner sep=6pt, font=\small},
+  method/.style={box, font=\footnotesize, text width=2cm, minimum height=0.8cm, node distance=4mm},
+  group/.style={draw=red!75!black, rounded corners, dashed, inner sep=12pt, thick},
+  subgroup/.style={group, draw=green!70!black, inner sep=8pt},
+  arrow/.style={-Latex, thick, draw=blue!70!black},
+  line/.style={thick, draw=blue!70!black}
+]
+
+\node[box] (text) {Texte brut\\
+"Le chat mange la souris"};
+
+\node[box] (token) {Token + masques \\ 
+\texttt{[CLS]} Le chat mange la souris \texttt{[SEP]}};
+
+\node[box] (pred) {Classe prédite};
+
+
+\end{tikzpicture}
+\caption{\centering\small Schéma simplifié du pipeline de BERT pour la classification de texte.}
+\end{center}
+\end{figure}
+
 
 \begin{center}
 \begin{tabular}{@{}ll@{}}
