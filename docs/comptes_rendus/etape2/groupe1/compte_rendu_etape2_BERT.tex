@@ -167,7 +167,7 @@
 \newpage
 
 % ══════════════════════════════════════════════════════════════════════════════
-\section{Contexte et objectifs}
+\section{Contexte, objectifs et organisation}
 
 Ce document est un complément à l'étape~2 du projet. Tandis que la partie principale de
 l'étape~2 portait sur des méthodes classiques de classification (Naive Bayes, Régression
@@ -181,17 +181,17 @@ santé mentale, en s'appuyant sur le même corpus d'entraînement
 Ce qui change, c'est \textbf{la profondeur de la représentation~:} là où TF-IDF ne comptait que des
 mots, BERT modélise le langage dans toute sa complexité contextuelle.
 
-\textbf{Trois variantes de BERT} sont implémentées et comparées entre elles, ainsi
-qu'avec les résultats du notebook principal~:
+\textbf{Trois variantes de BERT} sont implémentées, dont l'une d'entre elles grandement privilégié par l'équipe. 
+Elles sont ensuite comparées entre elles et avec les résultats du notebook principal~:
 
 \begin{center}
-\begin{tabular}{@{}llL{6cm}@{}}
+\begin{tabular}{@{}llL{4cm}L{3cm}@{}}
   \toprule
-  Modèle & Nom court & Description \\
+  Modèle & Nom court & Description & Membres \\
   \midrule
-  A & BERT sans fine-tuning & Extraction de features, poids gelés \\
-  B & BERT avec fine-tuning & Tous les poids mis à jour sur notre dataset \\
-  C & BERT spécialisé + fine-tuning & Modèle pré-entraîné sur des sentiments (\textit{Hugging Face}) puis fine-tuné \\
+  A & BERT sans fine-tuning & Extraction de features, poids gelés & Diogo \\
+  B & BERT avec fine-tuning & Tous les poids mis à jour sur notre dataset & Diogo, Ulysse, Emin, Victor \\
+  C & BERT spécialisé + fine-tuning & Modèle pré-entraîné sur des sentiments (\textit{Hugging Face}) puis fine-tuné & Logan \\
   \bottomrule
 \end{tabular}
 \end{center}
@@ -451,8 +451,8 @@ y_test_enc  = encoder.transform(y_test)
 Dans cette première approche, \textbf{les poids de BERT sont gelés} — ils ne sont pas
 mis à jour pendant l'entraînement. BERT est utilisé comme un
 \textbf{extracteur de features}~: il produit des représentations vectorielles denses pour
-chaque texte, et un classifieur léger (régression logistique) apprend à partir de ces
-vecteurs.
+chaque texte, et un classifieur léger (\textit{logistic regression} 
+étant la plus performante entre celles testée précédement) apprend à partir de ces vecteurs.
 
 \begin{figure}[H]
 \begin{center}
@@ -544,6 +544,46 @@ interprétabilité.
 Les métriques calculées sont identiques à celles de l'étape~2~: accuracy, classification
 report (precision, recall, F1-score par classe), matrice de confusion. Les résultats seront
 renseignés à l'issue de l'implémentation.
+
+\subsection{Résultats obtenues — Diogo}
+
+Diogo s'étant occupé de cette méthode seul, les résultats obtenues sont les suivants:\\
+
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  \textbf{Modèle} & \textbf{Accuracy test}\\
+  \midrule
+  BERT sans fine-tuning & 0.7231 \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Classification Report}~:
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+  \toprule
+  Classe & Precision & Recall & F1-score \\
+  \midrule
+             Anxiety   &    0.73   &   0.67   &   0.70\\
+             Bipolar   &    0.68   &   0.62   &   0.65\\
+          Depression   &    0.64   &   0.70   &   0.67\\
+              Normal   &    0.88   &   0.93   &   0.91\\
+Personality disorder   &    0.56   &   0.38   &   0.45\\
+              Stress   &    0.52   &   0.42   &   0.46\\
+            Suicidal   &    0.65   &   0.59   &   0.62\\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\pagebreak
+\textbf{Matrice de confusion}~:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{matriceConfusion_BERT_LR_DIOGO.png}
+  \caption{Matrice de confusion --- BERT sans fine-tuning + LR (Diogo)}
+\end{figure}
+
 
 \pagebreak
 % ══════════════════════════════════════════════════════════════════════════════
@@ -714,6 +754,64 @@ Une fonction \texttt{predict(model, dataloader, device)} itère sur les batchs e
 \texttt{torch.no\_grad()}, applique un \texttt{argmax} sur les logits et retourne les
 tableaux \texttt{y\_true} et \texttt{y\_pred}. Les métriques sont ensuite calculées
 identiquement au Modèle~A.
+
+\subsection{Résultats obtenues — Diogo, Ulysse, Victor et Emin}
+
+Étant la méthode la plus apprécié par l'équipe, Diogo, Ulysse, Victor et Emin se sont occupé de 
+celle-ci, les résultats obtenues sont les suivants:\\
+
+\textbf{Fine Tuning} pour chaque epoch~:
+\begin{center}
+\begin{tabular}{@{}C{2cm}c@{}}
+  \toprule
+  \textbf{Epoch} & \textbf{Loss moyenne} \\
+  \midrule
+  1 & 0.6361 \\
+  2 & 0.3871 \\
+  3 & 0.2705 \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  \textbf{Modèle} & \textbf{Accuracy test}\\
+  \midrule
+  BERT \textbf{avec fine-tuning} & \textbf{0.8302} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Classification Report}~:
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+  \toprule
+  Classe & Precision & Recall & F1-score \\
+  \midrule
+             Anxiety   &    0.88   &   0.89   &   0.89\\
+             Bipolar   &    0.86   &   0.85   &   0.86\\
+          Depression   &    0.78   &   0.77   &   0.78\\
+              Normal   &    0.95   &   0.95   &   0.95\\
+Personality disorder   &    0.77   &   0.68   &   0.72\\
+              Stress   &    0.73   &   0.76   &   0.74\\
+            Suicidal   &    0.72   &   0.73   &   0.72\\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\pagebreak
+\textbf{Matrice de confusion}~:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{matriceConfusion_BERT_FT_DIOGO.png}
+  \caption{Matrice de confusion --- BERT avec fine-tuning (Diogo)}
+\end{figure}
+
+\textbf{Interprétation des résultats~:}\\
+On remarque une amélioration significative de l'accuracy (0.7231 $\rightarrow$ 0.8302) grâce au fine-tuning. 
+Les classes les plus difficiles à prédire (Personality disorder, Stress, Suicidal) voient une nette augmentation de leur F1-score, 
+ce qui suggère que BERT a appris des représentations plus discriminantes pour ces catégories complexes.
 
 \pagebreak
 % ══════════════════════════════════════════════════════════════════════════════
@@ -958,6 +1056,65 @@ compatibilité.
   7 classes de santé mentale.}
 \end{center}
 \end{figure}
+
+\subsection{Résultats obtenues — Logan}
+
+Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a été réalisée par Logan seul, les résultats obtenues sont les suivants:\\
+
+\textbf{Fine Tuning} pour chaque epoch~:
+\begin{center}
+\begin{tabular}{@{}C{2cm}c@{}}
+  \toprule
+  \textbf{Epoch} & \textbf{Loss moyenne} \\
+  \midrule
+  1 & 0.6483 \\
+  2 & 0.4305 \\
+  3 & 0.3156 \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  \textbf{Modèle} & \textbf{Accuracy test}\\
+  \midrule
+  BERT \textbf{avec fine-tuning} & \textbf{0.8343} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Classification Report}~:
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+  \toprule
+  Classe & Precision & Recall & F1-score \\
+  \midrule
+             Anxiety   &    0.87   &   0.90   &   0.88\\
+             Bipolar   &    0.87   &   0.83   &   0.85\\
+          Depression   &    0.80   &   0.76   &   0.78\\
+              Normal   &    0.96   &   0.95   &   0.96\\
+Personality disorder   &    0.69   &   0.73   &   0.71\\
+              Stress   &    0.74   &   0.78   &   0.76\\
+            Suicidal   &    0.71   &   0.76   &   0.73\\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\pagebreak
+\textbf{Matrice de confusion}~:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{matriceConfusion_BERT_PT_FT_LOGAN.png}
+  \caption{Matrice de confusion --- BERT pré-entrainé avec fine-tuning (Logan)}
+\end{figure}
+
+\textbf{Interprétation des résultats~:}\\
+Le Modèle~C, avec une accuracy de \textbf{0.8343}, surpasse légèrement le Modèle~B (0.8302).
+L'amélioration est particulièrement notable sur les classes difficiles (Personality disorder, Stress, Suicidal), 
+suggérant que le pré-entraînement sur des émotions a permis au modèle de mieux capturer les nuances émotionnelles 
+présentes dans ces catégories. Cependant, \textbf{les gains restent modestes}, ce qui indique que le fine-tuning sur notre dataset 
+a déjà permis au Modèle~B d'apprendre des représentations efficaces.
 
 
 \pagebreak
