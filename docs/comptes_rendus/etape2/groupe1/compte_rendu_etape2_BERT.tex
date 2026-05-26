@@ -55,6 +55,7 @@
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \setlength{\tabcolsep}{10pt}
 \renewcommand{\arraystretch}{1.5}
+\usepackage{tablefootnote}
 
 % ─── Mathématiques ────────────────────────────────────────────────────────────
 \usepackage{amsmath,amssymb}
@@ -211,9 +212,24 @@ BERT (\textit{Bidirectional Encoder Representations from Transformers}) est un m
 de langage développé par Google en 2018. Il repose sur
 l'architecture \textbf{Transformer}, mais n'en utilise que la partie \textbf{encodeur}.
 
-Sa particularité fondamentale est d'être \textbf{bidirectionnel}~: contrairement aux
+Concrètement, un encodeur transforme une séquence de tokens en une
+séquence de vecteurs denses appelés \textbf{représentations contextuelles}~: chaque token
+se voit attribuer un vecteur dont le contenu dépend de l'ensemble de la phrase (et non du
+seul mot considéré). Ce mécanisme repose sur la \textbf{self-attention multi-têtes}, qui
+permet à chaque token de "regarder" tous les autres tokens simultanément et de pondérer
+leur importance. 
+
+BERT empile ainsi 12 couches (version \textit{base}) ou 24 couches
+(version \textit{large}) de ce bloc encodeur, ce qui lui permet de construire des
+représentations de plus en plus abstraites et nuancées au fil des couches. Le décodeur
+(utilisé pour générer du texte, comme dans GPT) est délibérément absent~: BERT produit
+une \textbf{compréhension} du texte, pas une génération.
+
+De plus, sa particularité fondamentale est d'être \textbf{bidirectionnel}~: contrairement aux
 modèles précédents qui lisaient le texte uniquement de gauche à droite (ou de droite à
 gauche), BERT lit le contexte dans les deux directions simultanément.
+
+\vspace{10mm}
 
 \begin{note}[Exemple d'ambiguïté résolue par la bidirectionnalité]
 « Le chat mange la souris »\\[4pt]
@@ -221,6 +237,8 @@ BERT comprend le mot \textit{mange} en regardant à la fois \textit{chat} (conte
 et \textit{souris} (contexte droit) en une seule passe — ce qu'un modèle unidirectionnel
 ne peut pas faire.
 \end{note}
+
+\pagebreak
 
 \subsection{Étapes d'apprentissage}
 
@@ -242,8 +260,6 @@ anglophone, BooksCorpus, etc.) via deux tâches auto-supervisées~:
 \textbf{Cette phase est entièrement non supervisée}~: aucune annotation humaine n'est requise.
 Elle permet à BERT d'acquérir une compréhension riche et générale du langage.
 
-\pagebreak
-
 \subsubsection{2. Fine-tuning supervisé}
 
 C'est ici qu'intervient l'apprentissage \textbf{supervisé}. On reprend le BERT pré-entraîné
@@ -251,17 +267,18 @@ et on l'adapte à une tâche précise avec des données étiquetées, en ajoutan
 couche de sortie~:
 
 \begin{center}
-\begin{tabular}{@{}llL{5cm}@{}}
+\begin{tabular}{@{}L{6cm}L{4.5cm}L{5cm}@{}}
   \toprule
   Tâche & Exemple & Couche ajoutée \\
   \midrule
   Classification de texte & Sentiment positif/négatif & Dense sur le token \texttt{[CLS]} \\
-  NER & Identifier noms, lieux\ldots & Dense sur chaque token \\
+  NER\footnotemark & Identifier noms, lieux\ldots & Dense sur chaque token \\
   Question-Réponse & Extraire une réponse d'un passage & Deux classifieurs (début/fin) \\
   Similarité de phrases & Phrases équivalentes~? & Dense sur \texttt{[CLS]} \\
   \bottomrule
 \end{tabular}
 \end{center}
+\footnotetext{Named Entity Recognition ou reconnaissance d'entités nommées en français}
 
 Le fine-tuning ne nécessite que peu de données étiquetées et peu d'epochs, car BERT
 a déjà appris une représentation riche du langage lors du pré-entraînement.
@@ -282,7 +299,7 @@ Deux tokens spéciaux sont systématiquement ajoutés~:
   \item \texttt{[SEP]} pour séparer deux segments distincts.
 \end{itemize}
 
-\vfill{}
+\vspace{10mm}
 \begin{figure}[H]
 \begin{center}
 \begin{tikzpicture}[
@@ -382,7 +399,7 @@ cette limitation via des mécanismes d'attention clairsemée (\textit{sparse att
 Les trois modèles partagent les mêmes bibliothèques~:
 
 \begin{center}
-\begin{tabular}{@{}ll@{}}
+\begin{tabular}{@{}lL{9cm}@{}}
   \toprule
   Bibliothèque & Rôle \\
   \midrule
@@ -399,7 +416,7 @@ Les trois modèles partagent les mêmes bibliothèques~:
 \begin{warnbox}[Prérequis GPU]
 BERT est très coûteux en calcul. L'utilisation d'un GPU est fortement recommandée
 (Google Colab avec runtime GPU, ou machine locale équipée). La disponibilité se vérifie
-via \texttt{torch.cuda.is\_available()}. Sur CPU, compter 2 à 3 heures par epoch\footnote{L'epoch est le nombre de passage complet sur l'ensemble des données}
+via \texttt{torch.cuda.is\_available()}. Sur CPU, \textbf{compter 2 à 3 heures par epoch}\footnote{L'epoch est le nombre de passage complet sur l'ensemble des données}
 d'entraînement.
 \end{warnbox}
 
@@ -559,8 +576,11 @@ Diogo s'étant occupé de cette méthode seul, les résultats obtenues sont les 
 \end{tabular}
 \end{center}
 
-\textbf{Classification Report}~:
+\vspace{0.5cm}
+
 \begin{center}
+\textbf{Classification Report}~:\\
+\bigskip
 \begin{tabular}{@{}lccc@{}}
   \toprule
   Classe & Precision & Recall & F1-score \\
@@ -577,12 +597,25 @@ Personality disorder   &    0.56   &   0.38   &   0.45\\
 \end{center}
 
 \pagebreak
-\textbf{Matrice de confusion}~:
+\begin{center}
+\textbf{Matrice de confusion}~:\\
+\bigskip
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.75\textwidth]{matriceConfusion_BERT_LR_DIOGO.png}
   \caption{Matrice de confusion --- BERT sans fine-tuning + LR (Diogo)}
 \end{figure}
+\end{center}
+
+\begin{note}[Interprétation des résultats]
+Les résultats pour un BERT non fine-tuné ici sont logiques, il s'agit d'une baseline 
+solide qui montre que les embeddings \texttt{[CLS]} contiennent déjà une information 
+pertinente pour la classification de sentiments, \textbf{même sans adaptation spécifique à 
+notre dataset.}\\
+Cependant, \textbf{les performances sont généralement inférieures} à celles obtenues avec un 
+fine-tuning complet (Modèle B), ce qui souligne l'importance de l'adaptation du modèle
+aux particularités de la tâche.
+\end{note}
 
 
 \pagebreak
@@ -689,7 +722,7 @@ train uniquement.
 
 \begin{tipbox}[Pourquoi mélanger (\texttt{shuffle=True}) ?]
 Mélanger les exemples à chaque epoch évite que le modèle apprenne l'ordre des données.
-Cela stabilise la convergence et réduit le risque de sur-apprentissage.
+\textbf{Cela stabilise la convergence et réduit le risque de sur-apprentissage.}
 \end{tipbox}
 
 \subsection{Chargement du modèle et tête de classification}
@@ -760,8 +793,9 @@ identiquement au Modèle~A.
 Étant la méthode la plus apprécié par l'équipe, Diogo, Ulysse, Victor et Emin se sont occupé de 
 celle-ci, les résultats obtenues sont les suivants:\\
 
-\textbf{Fine Tuning} pour chaque epoch~:
 \begin{center}
+\textbf{Fine Tuning} pour chaque epoch~:\\
+\bigskip
 \begin{tabular}{@{}C{2cm}c@{}}
   \toprule
   \textbf{Epoch} & \textbf{Loss moyenne} \\
@@ -773,7 +807,11 @@ celle-ci, les résultats obtenues sont les suivants:\\
 \end{tabular}
 \end{center}
 
+\vspace{0.5cm}
+
 \begin{center}
+\textbf{Résultat sur l'ensemble test~:}\\
+\bigskip
 \begin{tabular}{@{}lc@{}}
   \toprule
   \textbf{Modèle} & \textbf{Accuracy test}\\
@@ -783,8 +821,11 @@ celle-ci, les résultats obtenues sont les suivants:\\
 \end{tabular}
 \end{center}
 
-\textbf{Classification Report}~:
+\vspace{0.5cm}
+
 \begin{center}
+\textbf{Classification Report~:}\\
+\bigskip
 \begin{tabular}{@{}lccc@{}}
   \toprule
   Classe & Precision & Recall & F1-score \\
@@ -801,17 +842,22 @@ Personality disorder   &    0.77   &   0.68   &   0.72\\
 \end{center}
 
 \pagebreak
-\textbf{Matrice de confusion}~:
+
+\begin{center}
+\textbf{Matrice de confusion}~:\\
+\bigskip
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.75\textwidth]{matriceConfusion_BERT_FT_DIOGO.png}
   \caption{Matrice de confusion --- BERT avec fine-tuning (Diogo)}
 \end{figure}
+\end{center}
 
-\textbf{Interprétation des résultats~:}\\
+\begin{note}[Interprétation des résultats]
 On remarque une amélioration significative de l'accuracy (0.7231 $\rightarrow$ 0.8302) grâce au fine-tuning. 
 Les classes les plus difficiles à prédire (Personality disorder, Stress, Suicidal) voient une nette augmentation de leur F1-score, 
 ce qui suggère que BERT a appris des représentations plus discriminantes pour ces catégories complexes.
+\end{note}
 
 \pagebreak
 % ══════════════════════════════════════════════════════════════════════════════
@@ -924,7 +970,7 @@ Compter environ \textbf{25~minutes} pour 3~epochs d'entraînement.
 \subsection{Adaptation de la tête de classification}
 
 Le modèle importé a été fine-tuné pour un certain nombre de classes (souvent 2 ou 3
-pour positif/négatif/neutre). Notre dataset possède 7 classes. Il faut donc
+pour positif/négatif/neutre, dans notre cas 6). Notre dataset possède 7 classes. Il faut donc
 \textbf{remplacer la tête de classification} par une nouvelle couche adaptée.
 
 \begin{lstlisting}[language=Python]
@@ -936,7 +982,7 @@ model = AutoModelForSequenceClassification.from_pretrained(
 \end{lstlisting}
 
 Le paramètre \texttt{ignore\_mismatched\_sizes=True} est indispensable~: la tête
-originale (ex.\ 2 classes) est remplacée par une nouvelle tête à \texttt{num\_labels}
+originale est remplacée par une nouvelle tête à \texttt{num\_labels}
 classes — les dimensions ne correspondent plus, sans ce paramètre PyTorch lèverait
 une erreur.
 
@@ -1061,8 +1107,10 @@ compatibilité.
 
 Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a été réalisée par Logan seul, les résultats obtenues sont les suivants:\\
 
-\textbf{Fine Tuning} pour chaque epoch~:
+
 \begin{center}
+\textbf{Fine Tuning} pour chaque epoch~:\\
+\bigskip
 \begin{tabular}{@{}C{2cm}c@{}}
   \toprule
   \textbf{Epoch} & \textbf{Loss moyenne} \\
@@ -1074,18 +1122,25 @@ Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a
 \end{tabular}
 \end{center}
 
+\vspace{1cm}
+
 \begin{center}
+\textbf{Résultat sur l’ensemble test}:\\
+\bigskip
 \begin{tabular}{@{}lc@{}}
   \toprule
   \textbf{Modèle} & \textbf{Accuracy test}\\
   \midrule
-  BERT \textbf{avec fine-tuning} & \textbf{0.8343} \\
+  BERT \textbf{spécialisé avec fine-tuning} & \textbf{0.8343} \\
   \bottomrule
 \end{tabular}
 \end{center}
 
-\textbf{Classification Report}~:
+\vspace{1cm}
+
 \begin{center}
+\textbf{Classification Report}~:\\
+\bigskip
 \begin{tabular}{@{}lccc@{}}
   \toprule
   Classe & Precision & Recall & F1-score \\
@@ -1102,20 +1157,24 @@ Personality disorder   &    0.69   &   0.73   &   0.71\\
 \end{center}
 
 \pagebreak
-\textbf{Matrice de confusion}~:
+
+\begin{center}
+\textbf{Matrice de confusion}~:\\
+\bigskip
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.75\textwidth]{matriceConfusion_BERT_PT_FT_LOGAN.png}
   \caption{Matrice de confusion --- BERT pré-entrainé avec fine-tuning (Logan)}
 \end{figure}
+\end{center}
 
-\textbf{Interprétation des résultats~:}\\
+\begin{note}[Interprétation des résultats]
 Le Modèle~C, avec une accuracy de \textbf{0.8343}, surpasse légèrement le Modèle~B (0.8302).
 L'amélioration est particulièrement notable sur les classes difficiles (Personality disorder, Stress, Suicidal), 
 suggérant que le pré-entraînement sur des émotions a permis au modèle de mieux capturer les nuances émotionnelles 
 présentes dans ces catégories. Cependant, \textbf{les gains restent modestes}, ce qui indique que le fine-tuning sur notre dataset 
 a déjà permis au Modèle~B d'apprendre des représentations efficaces.
-
+\end{note}
 
 \pagebreak
 % ══════════════════════════════════════════════════════════════════════════════
@@ -1123,7 +1182,7 @@ a déjà permis au Modèle~B d'apprendre des représentations efficaces.
 
 \subsection{Tableau récapitulatif}
 
-Le tableau ci-dessous synthétisera les performances des cinq modèles (Naive Bayes
+Le tableau ci-dessous synthétise les performances des cinq modèles (Naive Bayes
 et K-Means issus du notebook principal, plus les trois variantes BERT). Les valeurs
 marquées d'un point d'interrogation seront renseignées à l'issue de l'implémentation.
 
@@ -1132,35 +1191,46 @@ marquées d'un point d'interrogation seront renseignées à l'issue de l'implém
   \toprule
   Modèle & Accuracy test & Temps approx. & Remarque \\
   \midrule
-  Naive Bayes + TF-IDF & 0.6875 & Quelques secondes & — \\
-  LinearSVC + BoW & 0.7359 & Quelques secondes & — \\
-  LinearSVC + TF-IDF & 0.7532 & Quelques secondes & Non supervisé \\
+  K-Means + W2V & 0.20 & Quelques minutes & Non supervisé \\
   K-Means + TF-IDF & 0.4636 & Quelques minutes & Non supervisé \\
+  Naive Bayes + BoW & 0.6666 & Quelques secondes & Supervisé \\
+  Naive Bayes + TF-IDF & 0.6927 & Quelques secondes & Supervisé \\
+  LinearSVC + BoW & 0.7309 & Quelques minutes & Supervisé \\
+  Logistic Regression + TF-IDF & 0.7532 & Quelques secondes & supervisé \\
+  LinearSVC + TF-IDF & 0.7586 & Quelques minutes & Supervisé \\
   \midrule
-  BERT sans fine-tuning (A) & ? & Minutes (CPU) & Baseline BERT \\
-  BERT avec fine-tuning (B) & ? & Heures (GPU) & Fine-tuning complet \\
+  BERT sans fine-tuning (A) & 0,7231 & Minutes (CPU) & Baseline BERT \\
+  BERT avec fine-tuning (B) & 0,8302 & Heures (GPU) & Fine-tuning complet \\
   BERT spécialisé + FT (C) & 0.8343 & ~30min (GPU) \newline 2-3h (CPU) & Meilleur point de départ \\
   \bottomrule
 \end{tabular}
 \end{center}
 
-\subsection{Questions d'analyse}
 
-À l'issue des expériences, les points suivants seront discutés~:
+\subsection{Que peut-on en conclure?}
 
-\begin{enumerate}[leftmargin=1.5cm]
-  \item \textbf{Quel modèle obtient la meilleure accuracy~?} Est-ce le résultat attendu
-    selon la théorie~?
-  \item \textbf{Apport du fine-tuning} (Modèle B vs Modèle A)~: à combien estime-t-on
-    le gain en F1 moyen~?
-  \item \textbf{Modèle spécialisé vs BERT-base} (Modèle C vs Modèle B)~: le modèle
-    pré-entraîné sur des sentiments apporte-t-il un avantage mesurable~?
-  \item \textbf{Compromis coût/performance}~: si le déploiement en production est
-    contraint en temps de réponse, quel modèle recommander et pourquoi~?
-  \item \textbf{Classes difficiles}~: les mêmes classes (Personality disorder, Stress,
-    confusion Depression/Suicidal) posent-elles problème aux modèles BERT comme aux
-    méthodes classiques~?
-\end{enumerate}
+\subsubsection{1. Quel modèle obtient la meilleure accuracy~?}
+On remarque que globalement les modèles \textbf{BERT surpassent largement les méthodes classiques}, 
+avec un gain d'environ 8 points de pourcentage. Cela illustre la puissance des représentations 
+contextuelles et du pré-entraînement massif de BERT .
+
+\subsubsection{2. Apport du fine-tuning (Modèle B vs Modèle A)}
+L'apport du fine tuning est clairement visible (Modèle B vs A), avec une amélioration de plus de 10 points d'accuracy.
+Le Modèle C, malgré son pré-entraînement spécialisé, n'apporte qu'une amélioration marginale par rapport au Modèle B, 
+suggérant que le fine-tuning sur notre dataset a déjà permis d'extraire des représentations efficaces, 
+et que le gain du pré-entraînement spécialisé est limité dans ce cas.
+
+\subsubsection{3. Modèle spécialisé vs BERT-base (Modèle C vs Modèle B)}
+Le compromis coût/performance penche en faveur du Modèle B pour une utilisation en production,
+car il offre une excellente performance pour un coût d'entraînement raisonnable, tandis que le Modèle C, bien que légèrement meilleur,
+nécessite un pré-entraînement plus coûteux et n'apporte qu'un gain marginal.
+Malgrès une grande amélioration des classes difficiles (Personality disorder, Stress, Suicidal) avec les modèles BERT,
+ces classes restent les plus problématiques. 
+
+\subsubsection{4. Classes difficiles}
+On remarque que \textit{Depression} et \textit{Suicidal} restent souvent confondus, 
+ce qui suggère que même les modèles les plus avancés ont du mal à capturer les nuances entre ces catégories émotionnellement proches.
+
 
 \subsection{Points de vigilance}
 
@@ -1185,6 +1255,7 @@ marquées d'un point d'interrogation seront renseignées à l'issue de l'implém
 \section*{Références}
 \addcontentsline{toc}{section}{Références}
 
+\textbf{Papier de référence}
 \begin{itemize}[leftmargin=1.5cm]
   \item Devlin, J., Chang, M.-W., Lee, K., \& Toutanova, K. (2018).
     \textit{BERT: Pre-training of Deep Bidirectional Transformers for Language
@@ -1194,7 +1265,35 @@ marquées d'un point d'interrogation seront renseignées à l'issue de l'implém
   \item Loshchilov \& Hutter (2019)
     \textit{Pre-Training and Fine-Tuning BERT for the IPU}
     \url{https://docs.graphcore.ai/projects/bert-training/en/latest/bert.html}
-  \item Sentiment Analysis for Mental Health — Kaggle.
+\end{itemize}
+
+\textbf{Modèles Hugging Face}
+\begin{itemize}[leftmargin=1.5cm]
+  \item RoBERTa — Hugging Face. 
+    \url{https://huggingface.co/docs/transformers/model_doc/roberta}
+  
+  \item RoBERTa-large — Hugging Face. 
+    \url{https://huggingface.co/docs/transformers/model_doc/roberta_large}
+
+  \item DistilBERT — Hugging Face. 
+    \url{https://huggingface.co/docs/transformers/model_doc/distilbert}
+
+  \item cardiffnlp/twitter-roberta-base-sentiment-latest — Hugging Face.
+    \url{https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest}
+
+  \item nlptown/bert-base-multilingual-uncased-sentiment — Hugging Face.
+    \url{https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment}
+
+  \item siebert/sentiment-roberta-large-english — Hugging Face.
+    \url{https://huggingface.co/siebert/sentiment-roberta-large-english}
+
+  \item j-hartmann/emotion-english-distilroberta-base — Hugging Face.
+    \url{https://huggingface.co/j-hartmann/emotion-english-distilroberta-base}
+\end{itemize}
+
+\textbf{Ressources}
+\begin{itemize}[leftmargin=1.5cm]
+    \item Sentiment Analysis for Mental Health — Kaggle.
     \url{https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health}
 \end{itemize}
 
