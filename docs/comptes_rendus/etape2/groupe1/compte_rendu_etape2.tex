@@ -836,7 +836,7 @@ Les mêmes classes sont difficiles pour les deux approches (\textit{Personality 
 % ==============================================================================
 
 \begin{center}
-\Large $\rightarrow$ \textbf{Modèle retenu : Naive Bayes + TF-IDF}
+\Large $\rightarrow$ \textbf{Modèle retenu : LogisticRegression + TF-IDF}
 \end{center}
 
 \begin{center}
@@ -845,10 +845,10 @@ Les mêmes classes sont difficiles pour les deux approches (\textit{Personality 
 \toprule
 \textbf{Critère} & \textbf{Justification} \\
 \midrule
-Accuracy 68.75\,\% & Meilleure performance absolue parmi tous les modèles testés \\
+Accuracy 75,32\,\% & Meilleure performance absolue parmi tous les modèles testés \\
 Annotations fiables & Les labels transmis au Groupe 2 doivent être les plus corrects \\
                     & possible pour que le filtrage par sentiments soit utile \\
-Modèle léger        & NB est rapide à déployer et à sérialiser (\texttt{.pkl}) \\
+Modèle léger        & LR est rapide à déployer et à sérialiser (\texttt{.pkl}) \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -858,7 +858,13 @@ Modèle léger        & NB est rapide à déployer et à sérialiser (\texttt{.p
 \textbf{Classes prédites~:} \texttt{Anxiety}, \texttt{Bipolar}, \texttt{Depression}, \texttt{Normal}, \texttt{Personality disorder}, \texttt{Stress}, \texttt{Suicidal}
 
 \begin{avertissement}
-\textbf{Note pour le Groupe 2~:} la précision sur \textit{Personality disorder} et \textit{Stress} reste faible (recall $\approx 25$--$30\,\%$). Ces classes sont sous-annotées dans le dataset source. Il est conseillé de traiter les réponses filtrées sur ces deux classes avec prudence, ou d'élargir le seuil de similarité pour compenser.
+\textbf{Note pour le Groupe 2~:} Il existe toujours une confusion importante entre 
+les classes \textit{Depression} et \textit{Suicidal} (529 vrais \textit{Suicidal} 
+prédits \textit{Depression}), ce qui peut biaiser les analyses de sentiments. 
+Il est recommandé de traiter ces deux classes avec prudence, 
+voire de les regrouper en une seule catégorie «~At Risk~» pour les besoins 
+du filtrage par sentiments.
+
 \end{avertissement}
 
 % ==============================================================================
