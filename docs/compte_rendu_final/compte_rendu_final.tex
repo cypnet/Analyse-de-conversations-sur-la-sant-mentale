@@ -1,0 +1,170 @@
+\documentclass[12pt,a4paper]{article}
+
+% ─── Encodage et langue ───────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% ─── Mise en page ─────────────────────────────────────────────────────────────
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage{parskip}
+\setlength{\parindent}{0pt}
+
+% ─── Typographie ──────────────────────────────────────────────────────────────
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ─── Couleurs et boîtes ───────────────────────────────────────────────────────
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+\definecolor{bertblue}{RGB}{37,99,235}
+\definecolor{bertlightblue}{RGB}{219,234,254}
+\definecolor{warnorange}{RGB}{234,88,12}
+\definecolor{warnlight}{RGB}{255,237,213}
+\definecolor{tipgreen}{RGB}{22,163,74}
+\definecolor{tiplight}{RGB}{220,252,231}
+\definecolor{sectiongray}{RGB}{248,250,252}
+\definecolor{ruleblue}{RGB}{59,130,246}
+
+% ─── Boîtes d'information ─────────────────────────────────────────────────────
+\newtcolorbox{note}[1][]{
+  colback=bertlightblue,colframe=bertblue,fonttitle=\bfseries,
+  title={#1},breakable,arc=3pt,boxrule=0.8pt
+}
+\newtcolorbox{warnbox}[1][Attention]{
+  colback=warnlight,colframe=warnorange,fonttitle=\bfseries,
+  title={#1},breakable,arc=3pt,boxrule=0.8pt
+}
+\newtcolorbox{tipbox}[1][Astuce]{
+  colback=tiplight,colframe=tipgreen,fonttitle=\bfseries,
+  title={#1},breakable,arc=3pt,boxrule=0.8pt
+}
+\newtcolorbox{critbox}[1][Problème critique]{
+  colback=warnlight,colframe=red!70!black,fonttitle=\bfseries,
+  title={#1},breakable,arc=3pt,boxrule=0.8pt
+}
+
+% ─── Tableaux ─────────────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.5}
+\usepackage{tablefootnote}
+
+% ─── Mathématiques ────────────────────────────────────────────────────────────
+\usepackage{amsmath,amssymb}
+
+% ── Graphics ───────────────────────────────────────────────────────────────────
+\usepackage{graphicx}
+\graphicspath{{img/}{../img/}{../../img/}{../../../img/}{../../../../img/}}
+
+% ── Schémas ───────────────────────────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, fit}
+
+% ── wrapfigure ─────────────────────────────────────────────────────────────────
+\usepackage{wrapfig}
+\usepackage{float}
+
+% ─── Code ─────────────────────────────────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{sectiongray},
+  frame=single,framerule=0.4pt,rulecolor=\color{gray!60},
+  breaklines=true,
+  keywordstyle=\color{bertblue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{tipgreen},
+  showstringspaces=false,
+  xleftmargin=8pt,xrightmargin=8pt,
+  aboveskip=6pt,belowskip=6pt
+}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% ─── En-têtes et pieds de page ────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Compte-rendu technique — Étape 2 EXTRA}
+\rhead{\small LARROUX Logan}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ─── Titres de sections ───────────────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{}{0pt}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{}{0pt}{}
+
+% ─── Liens ────────────────────────────────────────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=bertblue,urlcolor=bertblue}
+
+% ─── Divers ───────────────────────────────────────────────────────────────────
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ─── Page de garde ────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+
+  \vspace{3cm}
+
+  {\fontsize{20}{22}\selectfont\bfseries
+    COMPTE-RENDU TECHNIQUE COMPLET\\
+    Analyse de conversations patient-thérapeute\\
+    sur la santé mentale\par}
+  {\color{blue!70!black}\rule{0.5\textwidth}{1.5pt}\par}
+  \vspace{0.5cm}
+
+  {\large\bfseries Auteur: LARROUX Logan \\
+                  Encadrante : Lynda Tamine-Lechani\par}
+
+  {\normalsize\itshape
+    Équipe :\\[0.3em]
+    Ulysse Chasseigne, Idir Yahiaoui, Bantsoukissa Laure,\\
+    Cruz Fernandes Diogo, Emin Belkheir, Esso-Y-N Trésor PANA,\\
+    Logan Larroux, Yvan Sellier, Victor Blanquart--Blanchet, Lucas Da Silva\par}
+
+  \vspace{0.8cm}
+  {\fontsize{14}{18}\selectfont\today\par}
+
+  \vspace{1cm}
+  \begin{tabular}[t]{c}
+    \centering
+    \includegraphics[height=1.5cm]{universite-de-toulouse-logo.png}
+    \hspace{10px}
+    {\includegraphics[height=1.5cm]{IRIT_logo.png}}
+    \hspace{10px}
+    \raisebox{0.70cm}{\normalsize [Info5.BE-SHS]\par}
+  \end{tabular}
+
+  \vfill
+
+  {\color{blue!70!black}\rule{\textwidth}{0.4pt}\par}
+  \vspace{0.4cm}
+  {\small Données : \href{https://www.kaggle.com/datasets/thedevastator/nlp-mental-health-conversations}{Kaggle --- NLP Mental Health Conversations}\par
+                    \href{https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health}{Kaggle --- Sentiment Analysis for Mental Health}\par}
+  \vspace{0.2cm}
+  {\small Code : \href{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale}{GitHub --- branche main}\par}
+  \vspace{0.5cm}
+\end{titlepage}
+
+% ─── Table des matières ───────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+\end{document}
