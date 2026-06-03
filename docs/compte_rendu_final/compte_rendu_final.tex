@@ -15,7 +15,7 @@
 \titleformat{\chapter}[display]
   {\normalfont\huge\bfseries}          % Format du titre
   {\chaptertitlename\ \thechapter}     % Étiquette (ex: "Chapitre 1")
-  {10pt}                               % Espace entre l'étiquette et le titre
+  {5pt}                                % Espace entre l'étiquette et le titre
   {\Huge}                              % Format du titre lui-même
   []
   
@@ -23,7 +23,7 @@
 \titlespacing*{\chapter}
   {0pt}       % Marge gauche (0 = pas de retrait)
   {-30pt}     % Espace vertical AVANT le titre (valeur négative = remonte)
-  {20pt}      % Espace vertical APRÈS le titre (réduit)
+  {10pt}      % Espace vertical APRÈS le titre (réduit)
 \onehalfspacing
 
 % ── Typographie ────────────────────────────────────────────────────────────────
@@ -41,7 +41,7 @@
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \setlength{\tabcolsep}{10pt}
-\renewcommand{\arraystretch}{1.5}
+\renewcommand{\arraystretch}{1}
 \usepackage{tablefootnote}
 
 % ── Graphics ───────────────────────────────────────────────────────────────────
@@ -89,6 +89,8 @@
 \usepackage{mdframed}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins,breakable}
+\definecolor{warnorange}{RGB}{234,88,12}
+\definecolor{warnlight}{RGB}{255,237,213}
 
 \newmdenv[
   backgroundcolor=blue!5,
@@ -119,6 +121,19 @@
   title={#1},breakable,arc=3pt,boxrule=0.8pt
 }
 
+\newtcolorbox{warn}[1][Attention]{
+  colback=warnlight,colframe=warnorange,fonttitle=\bfseries,
+  title={#1},breakable,arc=3pt,boxrule=0.8pt
+}
+\newtcolorbox{tip}[1][Astuce]{
+  colback=tiplight,colframe=tipgreen,fonttitle=\bfseries,
+  title={#1},breakable,arc=3pt,boxrule=0.8pt
+}
+\newtcolorbox{crit}[1][Problème critique]{
+  colback=warnlight,colframe=red!70!black,fonttitle=\bfseries,
+  title={#1},breakable,arc=3pt,boxrule=0.8pt
+}
+
 % ── Hyperliens ─────────────────────────────────────────────────────────────────
 \usepackage[colorlinks=true, linkcolor=blue!70!black, urlcolor=blue!70!black]{hyperref}
 \usepackage{bookmark}
@@ -129,7 +144,7 @@
 \addtolength{\topmargin}{-2.2pt}
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\small Rapport Final - Analyse de conversations patient-thérapeute}
+\lhead{\small Rapport Final}
 \rhead{\small \leftmark}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -245,140 +260,72 @@ L'organisation a évolué en deux phases :
 \end{itemize}
 
 \section{Définition des rôles}
+La direction du projet dans sa globalité est assurée par \textbf{Logan LARROUX}, 
+qui supervise les deux groupes et garantit la cohérence des livrables.
+Après constatation de l'ampleur des tâches à réaliser lors de l'étape 1, une bien meilleur organisation a été mise en place pour l'étape 2, avec des chefs de groupe dédiés à chaque axe d'analyse.
 
+\subsection{Organisation étape 1: Exploration du jeu de données}
+Lors de l'étape 1 chaque membre de l'équipe s'est vue assigné les mêmes tâches, afin d'en comparer et de contraster les résultats.
+
+\textbf{Liste des membres: }
 \begin{itemize}
-    \item \textbf{Chef de Projet (Global) :} Logan LARROUX — garant de la cohérence globale, supervise les deux groupes, consolide les livrables.
-    \item \textbf{Chef de Groupe 1 (Résumé conversations) :} Cruz Fernandes Diogo
-    \item \textbf{Chef de Groupe 2 (Q/R santé mentale) :} Idir Yahiaoui
+    \item Ulysse Chasseigne
+    \item Idir Yahiaoui
+    \item Bantsoukissa Laure
+    \item Cruz Fernandes Diogo
+    \item Emin Belkheir
+    \item Esso-Y-N Trésor PANA
+    \item Logan Larroux
+    \item Yvan Sellier
+    \item Victor Blanquart-Blanchet
+    \item Lucas Da Silva
 \end{itemize}
+
+\subsection{Organisation étape 2: Développement du système d'analyse de sentiments et de question-réponse}
+Comme dit précédemment, l'étape 2 a été divisée en deux groupes distincts, avec des rôles clairement définis pour chaque membre.
+En plus de cette séparation dans ses deux groupes, nous avons de nouveau séparé les tâches en sous-tâches, afin de mieux répartir le travail et d'assurer une meilleure coordination entre les membres.
+
+\subsubsection{Groupe 1: Analyse des sentiments des conversations}
+\textbf{Chef de groupe: Cruz Fernandes Diogo}
+\begin{center}
+\begin{tabular}{@{}cc@{}}
+\toprule
+\textbf{Sous-groupe 1} & \textbf{Sous-groupe 2} \\
+\textbf{Méthode supervisée} & \textbf{Méthode non-supervisée} \\
+\midrule
+Diogo & Victor\\
+Ulysse & Emin\\
+Logan &  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Groupe 2: Question-réponse sur la santé mentale}
+\textbf{Chef de groupe: Yahiaoui Idir}
+\begin{center}
+\begin{tabular}{@{}C{4.5cm}|C{4.5cm}|C{4.5cm}@{}}
+\toprule
+\textbf{Sous-groupe 1} & \textbf{Sous-groupe 2} & \textbf{Sous-groupe 3} \\
+\textbf{Association Q\&A } & \textbf{Stratégie 1} & \textbf{Stratégie 2} \\
+\textbf{pour chaque mot} & \textbf{Similarité} & \textbf{Similarité}\\
+                         & \textbf{Question-Question} & \textbf{Question-Réponse}\\
+\midrule
+Lucas & Yvan & Laure\\
+ & Trésor &  Idir\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+
+\begin{note}[Petite précision]
+Les étapes de développement de chaque groupe seront détaillées plus loin dans la deuxième et troisième partie du rapport.
+\end{note}
 
 \pagebreak
 
 \subsection{Étape 2: Développement du système d'analyse de sentiments et de question-réponse}
 
-\begin{figure}[H]
-\begin{center}
-\begin{tikzpicture}[
-  scale=0.75,
-  transform shape,
-  node distance=8mm,
-  >=Latex,
-  box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5, align=center, text width=2.2cm, minimum height=0.9cm, inner sep=3pt, font=\small},
-  method/.style={box, font=\footnotesize, text width=2cm, minimum height=0.8cm, node distance=4mm},
-  group/.style={draw=red!75!black, rounded corners, dashed, inner sep=12pt, thick},
-  subgroup/.style={group, draw=green!70!black, inner sep=8pt},
-  arrow/.style={-Latex, thick, draw=blue!70!black},
-  line/.style={thick, draw=blue!70!black}
-]
-
-  %=======================================
-
-  % ETAPE 2 ==============================
-
-  \node[box, text width=4cm] (step1) {Étape 1\\Exploration du jeu de données};
-  \node[box, below=2cm of step1, text width=3cm] (conversations) {Analyse et accès\\aux conversations};
-  \node[box, left=1cm of conversations, text width=3cm, yshift=-2cm] (conversationG1) {Analyse des sentiments\\des conversations};
-  \node[box, right=1cm of conversations, text width=3cm, yshift=-2cm] (conversationG2) {Q/A sur la santé mentale};
-
-  % Analyse des sentiments
-  % Groupe 1
-  \node[box, below=of conversationG1, xshift=-2.6cm](sentimentsG1) {Méthode supervisée};
-  \node[method, below=of sentimentsG1, text width=3.5cm] (sg1m1) {Découpage\\train/validation/test};
-  \node[method, below=of sg1m1, text width=3.5cm] (sg1m2) {Évaluation quantitative};
-  \node[method, below=of sg1m2, text width=3.5cm] (sg1m3) {Prédiction sur dataset principal};
-  % Groupe 2
-  \node[box, below=of conversationG1, xshift=2cm, text width=2.6cm] (sentimentsG2) {Méthode\\non-supervisée};
-  \node[method, below=of sentimentsG2, text width=3.5cm] (sg2m1) {Découpage\\train/validation/test};
-  \node[method, below=of sg2m1, text width=3.5cm] (sg2m2) {Évaluation quantitative};
-  \node[method, below=of sg2m2, text width=3.5cm] (sg2m3) {Prédiction sur dataset principal};
-  % Annotation automatique
-  \node[box, below=of sg2m3, xshift=-2.2cm, text width=3.6cm] (evalCateg){Évaluation catégoriseur};
-  \node[box, below=of evalCateg, text width=3.5cm] (annotation) {Annotation automatique\\sur \textbf{train.csv}};
-  % groupe Analyse des sentiments des conversations
-  \node[group, fit=(conversationG1) (sentimentsG1) (sg1m1) (sg1m2) (sg1m3) (sentimentsG2) (sg2m1) (sg2m2) (sg2m3) (evalCateg) (annotation)] {};
-  % sous-groupes Méthode supervisée et non-supervisée
-  \node[subgroup, fit=(sentimentsG1) (sg1m1) (sg1m2) (sg1m3)] {};
-  \node[subgroup, fit=(sentimentsG2) (sg2m1) (sg2m2) (sg2m3)] {};
-
-  % Q&A
-  \node[box, below=of conversationG2, xshift=1.5cm, text width=5cm](vectQA){Vectorisation (TF-IDF/Word2Vec/BERT)};
-  % Groupe 1
-  \node[box, below=of vectQA, text width=4cm] (qaG1) {Indexation du corpus\\(index inversé)};
-  % Groupe 2
-  \node[box, below=of qaG1, xshift=-2.2cm, text width=3.3cm] (qaG2) {Stratégie 1:\\Similarité Question-Question};
-  \node[method, below=of qaG2](qaG2Test){Évaluation mini-test};
-  % Groupe 3
-  \node[box, below=of qaG1, xshift=2.2cm, text width=3.3cm] (qaG3) {Stratégie 2:\\Similarité Question-Réponse};
-  \node[method, below=of qaG3](qaG3Test){Évaluation mini-test};
-
-  \node[box, below=of qaG2Test, xshift=2.2cm, yshift=-3cm, text width=3.5cm] (filtrage) {Filtrage par sentiments};
-  \node[box, below=of filtrage, text width=3.5cm] (resultats) {Réponses pertinentes};
-  % groupe Q&A sur la santé mentale
-  \node[group, fit=(conversationG2) (vectQA) (qaG1) (qaG2) (qaG2Test) (qaG3) (qaG3Test) (filtrage) (resultats)] {};
-  % sous-groupes Indexation du corpus
-  \node[subgroup, fit=(qaG2) (qaG2Test)] {};
-  \node[subgroup, fit=(qaG3) (qaG3Test)] {};
-
-  %LEGENDE
-  % Group vide avec la signification à côté
-  \node[group, below=2cm of annotation, minimum width=0.5cm, minimum height=0.5cm, xshift=-2.5cm] (g1) {};
-  \node[right=0.5cm of g1, font=\footnotesize, color=blue!70!black] {Groupe de tâches};
-  \node[subgroup, below=0.25cm of g1, minimum width=0.5cm, minimum height=0.5cm] (sg1) {};
-  \node[right=0.5cm of sg1, font=\footnotesize, color=blue!70!black] {Sous-groupe de tâches};
-
-  % Flèches du pipeline
-  \draw[arrow] (step1) -- (conversations);
-  % Groupe 1
-  \draw[arrow] (conversations) -| (conversationG1);
-  % Supervisée
-  \draw[arrow] (conversationG1) -| (sentimentsG1);
-  \draw[arrow] (sentimentsG1) -- (sg1m1);
-  \draw[arrow] (sg1m1) -- (sg1m2);
-  \draw[arrow] (sg1m2) -- (sg1m3);
-  \draw[arrow] (sg1m3) |- (evalCateg);
-  % Non-supervisée
-  \draw[arrow] (conversationG1) -| (sentimentsG2);
-  \draw[arrow] (sentimentsG2) -- (sg2m1);
-  \draw[arrow] (sg2m1) -- (sg2m2);
-  \draw[arrow] (sg2m2) -- (sg2m3);
-  \draw[arrow] (sg2m3) |- (evalCateg);
-
-  \draw[arrow] (evalCateg) -- (annotation);
-
-
-  % Groupe 2
-  \draw[arrow] (conversations) -| (conversationG2);
-  \draw[arrow] (conversationG2.south) -| (vectQA);
-  \draw[arrow] (vectQA) -- (qaG1);
-  \draw[arrow] (qaG1) -| (qaG2);
-  \draw[arrow] (qaG1) -| (qaG3);
-  \draw[arrow] (qaG2) -- (qaG2Test);
-  \draw[arrow] (qaG3) -- (qaG3Test);
-  \draw[arrow] (filtrage) -- (resultats);
-
-  % Flèche entre le groupe 1 et le groupe 2
-  % Lier les flèches allant de annotation et qaG2Test/qaG3Test qui vont ensuite vers filtrage
-  \draw[line] (annotation) -| (qaG2Test);
-  \draw[line] (annotation) -| (qaG3Test);
-  \draw[arrow] (annotation.east) -- ++(8.5,0) -| (filtrage.north);
-  % Annotation sur la flèche
-  \node[below=2pt of annotation.east, xshift=3.25cm, font=\footnotesize, color=blue!70!black] {fichier train.csv avec annotations};
-
-  % flèche de sortie 
-  \draw[arrow] (resultats) -- ++(0,-1.5) node[below, yshift=2pt, font=\footnotesize, color=blue!70!black] {résultats finaux};
-  
-  %=======================================
-
-\end{tikzpicture}%
-\label{fig:flowchart-etape2}
-\caption{Pipeline détaillé de la seconde étape: Analyse et accès aux conversations}
-\end{center}
-\end{figure}
-
-\begin{note}[Petite précision]
-Tout les traitements qui compose l'étape 2 seront détaillés plus loin dans la Troisième partie du rapport. 
-Si vous préféré avoir un condensé, celles-ci sont aussi présent dans le cahier des charges.
-\end{note}
 
 % ══════════════════════════════════════════════════════════════════════════════
 % PARTIE II : ÉTAPE 1
@@ -471,12 +418,110 @@ Cette première partie comporte :
 
 \pagebreak
 
-\chapter{Analyse statistique}
+\chapter{Pré-traitement des données}
 
-\section{Prétraitement des données}
+\section{Nettoyage — Structure générale}
 
-Chaque membre a adopté une stratégie de nettoyage plus ou moins stricte, ce qui a conduit à des résultats 
-différents en termes de nombre de patients et de thérapeutes uniques, ainsi que de la longueur moyenne des conversations.
+Avant toute analyse, plusieurs étapes de nettoyage ont été appliquées dans l'ordre suivant.
+
+\textbf{Suppression des cellules vides et des doublons.}
+Les lignes contenant des valeurs nulles dans les colonnes \texttt{Context} ou \texttt{Response}
+ont été supprimées, ainsi que les lignes entièrement dupliquées.
+
+\textbf{Filtrage des textes non-anglais.}
+Le corpus contenait des phrases en espagnol. La bibliothèque \texttt{langdetect} a été utilisée
+pour détecter la langue de chaque ligne et ne conserver que les textes identifiés comme anglais.
+Cette détection est effectuée au niveau de la phrase entière, ce qui est bien plus fiable qu'une
+détection mot par mot.
+
+\begin{lstlisting}
+from langdetect import detect, LangDetectException
+
+def is_english_text(text):
+    try:
+        return detect(str(text)) == 'en'
+    except LangDetectException:
+        return True  # texte trop court -> on garde
+
+mask = df['Context'].apply(is_english_text) \
+     & df['Response'].apply(is_english_text)
+df = df[mask].reset_index(drop=True)
+\end{lstlisting}
+
+\textbf{Normalisation.}
+Tous les textes ont été passés en minuscules afin d'éviter que \textit{"Toto"} et \textit{"toto"}
+soient traités comme deux mots distincts. Les espaces insécables (\texttt{\textbackslash xa0}),
+fréquents dans des données extraites du web, ont également été supprimés.
+
+\subsection{Tokenisation}
+
+La tokenisation consiste à découper chaque phrase en unités élémentaires appelées
+\textit{tokens}. La bibliothèque \textbf{spaCy} (\texttt{en\_core\_web\_sm}) a été utilisée
+pour cette étape, via \texttt{nlp.pipe()} afin de traiter les données en batch et réduire le
+temps de traitement.
+
+\subsection{Suppression de la ponctuation et des mots vides}
+\label{stopwords}
+
+Les \textit{stopwords} (mots vides) sont des mots sans réelle signification sémantique
+(pronoms, adverbes, mots de liaison). spaCy les identifie automatiquement via l'attribut
+\texttt{token.is\_stop}. Les tokens de ponctuation ont été supprimés de la même façon avec
+\texttt{token.is\_punct}.
+
+Des mots trop génériques mais non reconnus comme stopwords ont également été filtrés
+manuellement, voici deux exemple de listes d'extra\_stopwords utilisées par Logan et Lucas:
+
+\begin{lstlisting}
+# Exemple - Logan
+extra_stopwords = {
+    "feel", "like", "want", "know", "time",
+    "thing", "good", "need", "year", "think",
+    "tell", "say", "come", "go"
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+# Exemple - Lucas
+mots_inutiles = set([
+    "i", "me", "my", "myself", "we", "our", "ours", "ourselves",
+    # ... [liste complete dans le notebook]
+    "there", "back", "even", "every", "years", "told", "going", "still"
+])
+\end{lstlisting}
+
+\subsection{Lemmatisation}
+
+La lemmatisation transforme chaque mot en sa forme de base (\textit{"running"} $\rightarrow$
+\textit{"run"}, \textit{"better"} $\rightarrow$ \textit{"good"}). Cette étape réduit
+drastiquement le nombre de tokens distincts et regroupe les formes similaires. Elle permet également
+de filtrer les URLs, emails et chiffres dans une seule passe:
+
+\begin{lstlisting}
+df["Context_clean"] = [
+    [
+        token.lemma_
+        for token in doc
+        if not token.is_stop
+        #...et autres filtres (is_punct, is_url, is_email, etc.)
+        and token.lemma_ not in extra_stopwords
+    ]
+    for doc in docs_context
+]
+\end{lstlisting}
+
+\begin{note}[Remarque importante]
+  \texttt{spaCy} lemmatise différemment selon le contexte grammatical. Par exemple,
+  \textit{"feeling"} utilisé comme nom reste tel quel au lieu d'être ramené à \textit{"feel"}.
+  C'est pourquoi \textit{"feel"} a été retiré manuellement des extra\_stopwords pour éviter
+  les doublons sémantiques.
+\end{note}
+
+
+
+\section{Nettoyage — Approches comparées}
+
+Puisque ce pipeline n'a pas était imposé, chaque membre a pu appliquer son propre pré-traitement, avec des niveaux de filtrage différents.
+Prennons l'exemple de deux approches contrastées, celle d'Emin et celle de Diogo.
 
 \subsection{Approche minimaliste (Emin)}
 
@@ -533,18 +578,24 @@ Son pipeline est donc le suivant:
 % df = df[mask].reset_index(drop=True)
 % \end{lstlisting}
 
+\begin{warn}[Lemmatisation et tokenisation]
+L'application de la lemmatisation (et de la tokenisation) pour l'analyse du texte a été un débat au seins de l'équipe.
+La grande majorité de l'équipe a décider de ne pas l'appliquer lors de l'analyse statistique et lexicale du corpus, 
+afin de conserver les formes originales des mots.
+\end{warn}
+
 \section{Résultats}
 
 \subsection{Nombre de patients uniques}
 
 \begin{center}
-\begin{tabular}{llll}
+\begin{tabular}{@{}L{1.5cm}lL{5cm}L{4cm}@{}}
 \toprule
 \textbf{Résultat} & \textbf{Nb. Membres} & \textbf{Nom Membres} & \textbf{Méthode} \\
 \midrule
-995 & 8 personnes & \textbf{TODO} & Sans prétraitement \\
-819 & 1 personne  & \textbf{TODO} & Prétraitement + filtre espagnol \\
-796 & 1 personne  & \textbf{TODO} & Prétraitement + filtre espagnol \\
+995 & 8 personnes & Ulysse - Emin - Victor - Laure - Trésor - Yvan - Idir - Lucas & Sans prétraitement \\
+819 & 1 personne  & Logan & Prétraitement + filtre espagnol \\
+796 & 1 personne  & Diogo & Prétraitement + filtre espagnol \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -552,21 +603,21 @@ Son pipeline est donc le suivant:
 \subsection{Nombre de thérapeutes uniques}
 
 \begin{center}
-\begin{tabular}{llll}
+\begin{tabular}{@{}llL{5cm}l@{}}
 \toprule
 \textbf{Résultat} & \textbf{Nb. Membres} & \textbf{Nom Membres} & \textbf{Méthode} \\
 \midrule
-2 479 & 6 personnes & \textbf{TODO} & Sans prétraitement \\
-2 472 & 1 personne  & \textbf{TODO} & Léger prétraitement \\
-2 409 & 1 personne  & \textbf{TODO} & Prétraitement complet \\
-$\geq 12$ & 1 personne & \textbf{TODO} & Pattern matching \\
+2 479 & 6 personnes & Emin - Victor - Idir - Laure - Yvan - Lucas & Sans prétraitement \\
+2 472 & 1 personne  & Ulysse & Léger prétraitement \\
+2 409 & 1 personne  & Logan & Prétraitement complet \\
+$\geq 12$ & 1 personne & Diogo & Pattern matching \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\begin{avertissement}
-\textbf{Limite importante :} Les valeurs autour de 2 400--2 479 correspondent très probablement au nombre de lignes/réponses dans le fichier, et non au nombre réel de thérapeutes distincts. En l'absence d'identifiant unique (ID), il est impossible de différencier les thérapeutes entre eux avec certitude.
-\end{avertissement}
+\begin{warn}[Limite importante]
+Les valeurs autour de 2 400--2 479 correspondent très probablement au nombre de lignes/réponses dans le fichier, et non au nombre réel de thérapeutes distincts. En l'absence d'identifiant unique (ID), il est impossible de différencier les thérapeutes entre eux avec certitude.
+\end{warn}
 
 \subsection{Nombre de mots moyen par patient / thérapeute}
 
@@ -585,11 +636,21 @@ Logan  & 16,3  & Logan  &  60,1 \\
 \end{tabular}
 \end{center}
 
-On observe un rapport allant du simple au quadruple selon le niveau de filtrage.
-Dans chaque cas, les thérapeutes ont tendance à produire des réponses plus longues que les patients, ce qui est cohérent avec la nature de leur rôle dans la conversation.
+\begin{note}[Interprétation]
+  On observe un rapport allant du simple au quadruple selon le niveau de filtrage.
+  Dans chaque cas, \textbf{les thérapeutes ont tendance à produire des réponses plus longues que les patients}, ce qui est cohérent avec la nature de leur rôle dans la conversation.
+\end{note}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=0.50\textwidth]{correlationPatientVSTherapeute_Logan.png}
+  \caption{Corrélation entre le nombre de mots côté patient et côté thérapeute — Logan}
+  \end{center}
+\end{figure}
 
 \bigbreak
-Maintenant que nous avons une idée de la structure générale du corpus, nous allons pouvoir nous pencher plus en détail sur les thématiques abordées dans les conversations, 
+
+Maintenant que nous avons une idée de la structure générale du corpus, nous allons pouvoir nous pencher plus en détail sur les \textbf{thématiques abordées dans les conversations}, 
 à travers une analyse lexicale afin de mieux comprendre les sujets centraux des échanges.
 
 \chapter{Analyse lexicale}
@@ -610,26 +671,6 @@ Cependant, \textbf{il est crucial de filtrer les mots vides} (stop-words) pour �
 \end{center}
 
 \subsection{Avec filtrage renforcé}
-
-\begin{lstlisting}
-# Exemple - Logan
-extra_stopwords = {
-    "feel", "like", "want", "know", "time",
-    "thing", "good", "need", "year", "think",
-    "tell", "say", "come", "go"
-}
-\end{lstlisting}
-
-\begin{lstlisting}
-# Exemple - Lucas
-mots_inutiles = set([
-    "i", "me", "my", "myself", "we", "our", "ours", "ourselves",
-    "you", "your", "yours", "yourself", "yourselves",
-    # ... [liste complete dans le notebook]
-    "feel", "really", "things", "just", "like", "very", "too", "lot",
-    "there", "back", "even", "every", "years", "told", "going", "still"
-])
-\end{lstlisting}
 
 \begin{center}
 \begin{tabular}{lll}
@@ -1093,16 +1134,137 @@ Normalisation des sorties
 \section{Répartition des tâches — Groupe 2 (Q/R)}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{@{}lL{5.5cm}l@{}}
 \toprule
 \textbf{Sous-groupe} & \textbf{Méthode} & \textbf{Membres} \\
 \midrule
 Association mots-questions/réponses & Counter & Lucas \\
+\midrule
 Similarité question-question & Cosine similarity (TF-IDF+Word2Vec+BERT) & Yvan, Trésor \\
+\midrule
 Similarité question-réponse & Cosine similarity (TF-IDF+Word2Vec+BERT) & Idir, Laure \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}[
+  scale=0.75,
+  transform shape,
+  node distance=8mm,
+  >=Latex,
+  box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5, align=center, text width=2.2cm, minimum height=0.9cm, inner sep=3pt, font=\small},
+  method/.style={box, font=\footnotesize, text width=2cm, minimum height=0.8cm, node distance=4mm},
+  group/.style={draw=red!75!black, rounded corners, dashed, inner sep=12pt, thick},
+  subgroup/.style={group, draw=green!70!black, inner sep=8pt},
+  arrow/.style={-Latex, thick, draw=blue!70!black},
+  line/.style={thick, draw=blue!70!black}
+]
+
+  %=======================================
+
+  % ETAPE 2 ==============================
+
+  \node[box, text width=4cm] (step1) {Étape 1\\Exploration du jeu de données};
+  \node[box, below=2cm of step1, text width=3cm] (conversations) {Analyse et accès\\aux conversations};
+  \node[box, left=1cm of conversations, text width=3cm, yshift=-2cm] (conversationG1) {Analyse des sentiments\\des conversations};
+  \node[box, right=1cm of conversations, text width=3cm, yshift=-2cm] (conversationG2) {Q/A sur la santé mentale};
+
+  % Analyse des sentiments
+  % Groupe 1
+  \node[box, below=of conversationG1, xshift=-2.6cm](sentimentsG1) {Méthode supervisée};
+  \node[method, below=of sentimentsG1, text width=3.5cm] (sg1m1) {Découpage\\train/validation/test};
+  \node[method, below=of sg1m1, text width=3.5cm] (sg1m2) {Évaluation quantitative};
+  \node[method, below=of sg1m2, text width=3.5cm] (sg1m3) {Prédiction sur dataset principal};
+  % Groupe 2
+  \node[box, below=of conversationG1, xshift=2cm, text width=2.6cm] (sentimentsG2) {Méthode\\non-supervisée};
+  \node[method, below=of sentimentsG2, text width=3.5cm] (sg2m1) {Découpage\\train/validation/test};
+  \node[method, below=of sg2m1, text width=3.5cm] (sg2m2) {Évaluation quantitative};
+  \node[method, below=of sg2m2, text width=3.5cm] (sg2m3) {Prédiction sur dataset principal};
+  % Annotation automatique
+  \node[box, below=of sg2m3, xshift=-2.2cm, text width=3.6cm] (evalCateg){Évaluation catégoriseur};
+  \node[box, below=of evalCateg, text width=3.5cm] (annotation) {Annotation automatique\\sur \textbf{train.csv}};
+  % groupe Analyse des sentiments des conversations
+  \node[group, fit=(conversationG1) (sentimentsG1) (sg1m1) (sg1m2) (sg1m3) (sentimentsG2) (sg2m1) (sg2m2) (sg2m3) (evalCateg) (annotation)] {};
+  % sous-groupes Méthode supervisée et non-supervisée
+  \node[subgroup, fit=(sentimentsG1) (sg1m1) (sg1m2) (sg1m3)] {};
+  \node[subgroup, fit=(sentimentsG2) (sg2m1) (sg2m2) (sg2m3)] {};
+
+  % Q&A
+  \node[box, below=of conversationG2, xshift=1.5cm, text width=5cm](vectQA){Vectorisation (TF-IDF/Word2Vec/BERT)};
+  % Groupe 1
+  \node[box, below=of vectQA, text width=4cm] (qaG1) {Indexation du corpus\\(index inversé)};
+  % Groupe 2
+  \node[box, below=of qaG1, xshift=-2.2cm, text width=3.3cm] (qaG2) {Stratégie 1:\\Similarité Question-Question};
+  \node[method, below=of qaG2](qaG2Test){Évaluation mini-test};
+  % Groupe 3
+  \node[box, below=of qaG1, xshift=2.2cm, text width=3.3cm] (qaG3) {Stratégie 2:\\Similarité Question-Réponse};
+  \node[method, below=of qaG3](qaG3Test){Évaluation mini-test};
+
+  \node[box, below=of qaG2Test, xshift=2.2cm, yshift=-3cm, text width=3.5cm] (filtrage) {Filtrage par sentiments};
+  \node[box, below=of filtrage, text width=3.5cm] (resultats) {Réponses pertinentes};
+  % groupe Q&A sur la santé mentale
+  \node[group, fit=(conversationG2) (vectQA) (qaG1) (qaG2) (qaG2Test) (qaG3) (qaG3Test) (filtrage) (resultats)] {};
+  % sous-groupes Indexation du corpus
+  \node[subgroup, fit=(qaG2) (qaG2Test)] {};
+  \node[subgroup, fit=(qaG3) (qaG3Test)] {};
+
+  %LEGENDE
+  % Group vide avec la signification à côté
+  \node[group, below=2cm of annotation, minimum width=0.5cm, minimum height=0.5cm, xshift=-2.5cm] (g1) {};
+  \node[right=0.5cm of g1, font=\footnotesize, color=blue!70!black] {Groupe de tâches};
+  \node[subgroup, below=0.25cm of g1, minimum width=0.5cm, minimum height=0.5cm] (sg1) {};
+  \node[right=0.5cm of sg1, font=\footnotesize, color=blue!70!black] {Sous-groupe de tâches};
+
+  % Flèches du pipeline
+  \draw[arrow] (step1) -- (conversations);
+  % Groupe 1
+  \draw[arrow] (conversations) -| (conversationG1);
+  % Supervisée
+  \draw[arrow] (conversationG1) -| (sentimentsG1);
+  \draw[arrow] (sentimentsG1) -- (sg1m1);
+  \draw[arrow] (sg1m1) -- (sg1m2);
+  \draw[arrow] (sg1m2) -- (sg1m3);
+  \draw[arrow] (sg1m3) |- (evalCateg);
+  % Non-supervisée
+  \draw[arrow] (conversationG1) -| (sentimentsG2);
+  \draw[arrow] (sentimentsG2) -- (sg2m1);
+  \draw[arrow] (sg2m1) -- (sg2m2);
+  \draw[arrow] (sg2m2) -- (sg2m3);
+  \draw[arrow] (sg2m3) |- (evalCateg);
+
+  \draw[arrow] (evalCateg) -- (annotation);
+
+
+  % Groupe 2
+  \draw[arrow] (conversations) -| (conversationG2);
+  \draw[arrow] (conversationG2.south) -| (vectQA);
+  \draw[arrow] (vectQA) -- (qaG1);
+  \draw[arrow] (qaG1) -| (qaG2);
+  \draw[arrow] (qaG1) -| (qaG3);
+  \draw[arrow] (qaG2) -- (qaG2Test);
+  \draw[arrow] (qaG3) -- (qaG3Test);
+  \draw[arrow] (filtrage) -- (resultats);
+
+  % Flèche entre le groupe 1 et le groupe 2
+  % Lier les flèches allant de annotation et qaG2Test/qaG3Test qui vont ensuite vers filtrage
+  \draw[line] (annotation) -| (qaG2Test);
+  \draw[line] (annotation) -| (qaG3Test);
+  \draw[arrow] (annotation.east) -- ++(8.5,0) -| (filtrage.north);
+  % Annotation sur la flèche
+  \node[below=2pt of annotation.east, xshift=3.25cm, font=\footnotesize, color=blue!70!black] {fichier train.csv avec annotations};
+
+  % flèche de sortie 
+  \draw[arrow] (resultats) -- ++(0,-1.5) node[below, yshift=2pt, font=\footnotesize, color=blue!70!black] {résultats finaux};
+  
+  %=======================================
+
+\end{tikzpicture}%
+\label{fig:flowchart-etape2}
+\caption{Pipeline détaillé de la seconde étape: Analyse et accès aux conversations}
+\end{center}
+\end{figure}
 
 \chapter{Analyse des sentiments — Approches classiques}
 
