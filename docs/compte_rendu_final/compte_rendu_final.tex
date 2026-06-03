@@ -653,13 +653,13 @@ Logan  & 16,3  & Logan  &  60,1 \\
 Maintenant que nous avons une idée de la structure générale du corpus, nous allons pouvoir nous pencher plus en détail sur les \textbf{thématiques abordées dans les conversations}, 
 à travers une analyse lexicale afin de mieux comprendre les sujets centraux des échanges.
 
-\chapter{Analyse lexicale}
+\chapter{Analyse lexicale et statistique}
 
 \section{Mots les plus fréquents}
 La fréquence des mots les plus utilisés dans les conversations peut révéler les thématiques centrales abordées par les patients et les thérapeutes.
 Cependant, \textbf{il est crucial de filtrer les mots vides} (stop-words) pour éviter que des termes génériques ne dominent l'analyse.
 \subsection{Sans filtrage renforcé}
-
+Ulysse, Emin, Victor, Idir, Trésor et Yvan ont appliqué un filtrage minimal, ce qui a permis de conserver des mots très fréquents mais peu informatifs.
 \begin{center}
 \begin{tabular}{lll}
 \toprule
@@ -671,7 +671,7 @@ Cependant, \textbf{il est crucial de filtrer les mots vides} (stop-words) pour �
 \end{center}
 
 \subsection{Avec filtrage renforcé}
-
+Diogo, Logan, Laure et Lucas eux ont appliqué un filtrage plus poussé, en retirant des mots génériques comme \textit{feel}, \textit{like}, \textit{may}, qui sont très fréquents mais peu spécifiques.
 \begin{center}
 \begin{tabular}{lll}
 \toprule
@@ -693,18 +693,175 @@ Cependant, \textbf{il est crucial de filtrer les mots vides} (stop-words) pour �
 Ces résultats confirment que le corpus est centré sur les relations interpersonnelles, sujet le plus fréquent, couplé à des états psychologiques comme l'anxiété.
 \end{note}
 
+\section{Analyse lexicale — N-grams}
+
+\subsection{Définition}
+
+Un \textbf{n-gram} est une séquence de $n$ mots consécutifs dans un texte. Cette approche
+permet de capturer non seulement les mots isolés, mais aussi les associations de mots fréquentes.
+\begin{itemize}
+  \item \textbf{Unigram (n=1)} : mots individuels, ex. \textit{"anxiety"}, \textit{"depression"}.
+  \item \textbf{Bigram (n=2)} : paires de mots, ex. \textit{"mental health"}, \textit{"feel like"}.
+  \item \textbf{Trigram (n=3)} : triplets de mots, ex. \textit{"feel like cry"}, \textit{"family support system"}.
+  \item ainsi de suite\dots
+\end{itemize}
+\vspace{1px}
+
+Dans notre travail, nous allons devoir repérer des formulations récurrentes qui ont du sens:
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Type} & \textbf{Exemple} & \textbf{Interprétation} \\
+\midrule
+Unigram (n=1) & \textit{anxiety} (fréq. 342) & Thème dominant \\
+Bigram  (n=2) & \textit{mental health} (fréq. 87) & Expression caractéristique \\
+Trigram (n=3) & \textit{feel like cry} (fréq. 54) & Patron de détresse \\
+\bottomrule
+\end{tabularx}
+\caption{Exemples de n-grams et leur interprétation}
+\end{table}
+
+\subsection{Choix du n optimal}
+
+Il n'existe pas de valeur universelle pour $n$. Deux indicateurs ont été utilisés pour guider
+ce choix :
+
+\begin{itemize}
+  \item \textbf{Fréquence moyenne} : si elle chute sous un seuil de 5, les n-grams sont trop
+        rares pour être statistiquement significatifs.
+  \item \textbf{Pourcentage d'hapax} : si plus de 70\,\% des n-grams n'apparaissent qu'une
+        seule fois, la taille $n$ est trop grande pour le corpus.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{graph_n_optimal.png}
+\caption{Graphe de fréquence moyenne et pourcentage d'hapax en fonction de $n$}
+\end{figure}
+
+On remarque qu'à partir de $n = 1$, la fréquence diminue déjà fortement. Cependant,
+les bigrams et trigrams restent exploitables car le seuil d'hapax n'est pas dépassé.
+
+\pagebreak
+
+\subsection{Résultats — Logan, Victor et Lucas}
+
+Les bigrams et trigrams apportent un contexte nettement plus riche que les unigrams seuls.
+Ils peuvent permettre par la suite d'identifier des patrons linguistiques et des thèmes récurrents
+pour le topic modeling mais malheureusement leur fréquence est relativement faible,
+ce qui rend leur exploitation plus délicate\dots
+
+
+\vspace{10px}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{0.65\textwidth}{lc||lc}
+\toprule
+\textbf{Unigram} & \textbf{fréquence} & \textbf{Unigram} & \textbf{fréquence}\\
+\midrule
+\textit{relationship} & 486 & \textit{help} & 2150\\
+\textit{love} & 431 & \textit{relationship} & 1933\\
+\textit{friend} & 369 & \textit{way} & 1668\\
+\bottomrule
+\end{tabularx}
+\caption{Trois plus fréquent \textbf{unigram} pour les patients (gauche) et thérapeutes (droite)}
+\end{table}
+
+\vspace{10px}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{0.65\textwidth}{lc||lc}
+\toprule
+\textbf{Bigram} & \textbf{fréquence} & \textbf{Bigram} & \textbf{fréquence}\\
+\midrule
+\textit{issue address} & 94 & \textit{therapist help} & 160\\
+\textit{self esteem} & 65 & \textit{ask question} & 154\\
+\textit{month ago} & 64 & \textit{mental health} & 153\\
+\bottomrule
+\end{tabularx}
+\caption{Trois plus fréquent \textbf{bigram} pour les patients (gauche) et thérapeutes (droite)}
+\end{table}
+
+\vspace{10px}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{0.9\textwidth}{lc||lc}
+\toprule
+\textbf{Trigram} & \textbf{fréquence} & \textbf{Trigram} & \textbf{fréquence}\\
+\midrule
+\textit{history sexual abuse} & 51 & \textit{hello thank question} & 68\\
+\textit{low self esteem} & 50 & \textit{mental health professional} & 52\\
+\textit{couple therapy session} & 48 & \textit{landwehr dbh lpc} & 51\\
+\bottomrule
+\end{tabularx}
+\caption{Trois plus fréquent \textbf{trigram} pour les patients (gauche) et thérapeutes (droite)}
+\end{table}
+
+\bigskip
+
+Maintenant que nous avons une idée des mots les plus fréquents, nous allons devoir identifier
+les thématiques majeures abordées dans les conversations.
+Pour cela, nous allons appliquer différentes méthodes de \textbf{topic modeling}, en comparant leurs avantages et limites respectifs.
+
+\pagebreak
+
 \chapter{Topic Modeling}
+
+\section{Préambule}
+Le \textbf{topic modeling} est une technique d'extraction de thèmes latents à partir d'un corpus de textes.
+Il existe plusieurs méthodes pour réaliser cette tâche, chacune avec ses propres avantages et limites.
+Dans cette section, nous allons présenter quatre approches différentes pour identifier les thématiques majeures dans les conversations de santé mentale, 
+en commençant par une méthode manuelle basée sur un lexique personnalisé, puis en explorant des méthodes plus automatisées et robustes comme TF-IDF, Word2Vec et LDA.
+
+\begin{note}[Remarque importante]
+\textbf{Chaque membre de l'équipe a appliqué sa propre version de ces méthodes}, ce qui nous a permis d'avoir une diversité d'approches et de résultats à comparer.
+Par question de clareté, nous allons présenter les résultats de chaque méthode de manière synthétique, en présentant les résultats les plus pertinents et en discutant de leurs avantages et limites respectifs.\\
+(\textit{voir les notebooks\footnotemark{} individuels pour les détails de chaque implémentation}).
+\end{note}
+\footnotetext{\href{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale/tree/main/notebooks}{Liens github des notebooks}}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{@{}lL{6cm}@{}}
+\toprule
+\textbf{Méthode} & \textbf{Membres} \\
+\midrule
+Lexique personnalisé & Diogo, Trésor, Emin, Logan, Victor, Idir, Trésor, Yvan, Lucas \\
+\midrule
+TF-IDF + K-Means & Ulysse, Diogo, Trésor, Emin, Logan, Victor, Idir, Laure, Trésor, Yvan, Lucas\\
+\midrule
+Word2Vec + Clustering & Ulysse, Diogo, Trésor, Emin, Logan, Victor, Idir, Trésor, Yvan, Lucas \\
+\midrule
+LDA (Latent Dirichlet Allocation) & Ulysse, Diogo, Trésor, Emin, Logan, Victor, Idir, Trésor, Yvan, Lucas \\
+\bottomrule
+\end{tabular}
+\caption{Répartition des méthodes de topic modeling entre les membres de l'équipe}
+\end{center}
+\end{table}
+
+\pagebreak
 
 \section{Méthode 1 : Lexique personnalisé}
 
 \subsection{Principe}
 
-Un dictionnaire thématique est construit manuellement, en associant chaque thème de santé mentale 
+Un dictionnaire thématique est construit \textbf{manuellement}, en associant chaque thème de santé mentale 
 à une liste de mots-clés. Chaque question peut être assignée à plusieurs thèmes simultanément 
 (classification multi-label).\\
 Le but de cette première section était de nous introduire le principe de dictionnaire thématique,
 ainsi que de nous familiariser avec les thématiques récurrentes dans les conversations de santé mentale.
-Ce filtrage manuelle étant bien entendu subjectif, il ne sera pas appliqué dans les méthodes de topic modeling, qui sont plus robustes à ce type de bruit lexical.
+
+\begin{note}[Remarque]
+  Ce filtrage manuelle étant bien entendu subjectif, il ne sera pas appliqué dans les méthodes de topic modeling, qui sont plus robustes à ce type de bruit lexical.
+\end{note}
+
+Nous allons présenter deux exemples de lexiques, l'un minimaliste (Trésor) et l'autre plus étendu (Diogo). 
+Bien entendu chaque membre de l'équipe a réalisé son propre lexique.
 
 \subsection{Approche minimaliste (Trésor)}
 
@@ -740,7 +897,7 @@ Les thèmes apparaissant de façon transversale :
 \subsection{Évaluation critique}
 
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{@{}ll@{}}
 \toprule
 \textbf{Avantage} & \textbf{Limite} \\
 \midrule
@@ -752,13 +909,72 @@ Classification multi-label naturelle & Insensible au contexte d'usage d'un mot \
 \end{tabular}
 \end{center}
 
+\bigskip
+
+Toute l'équipe est en accord avec trois thématiques principales: anxiété, dépression et relations.
+Or cela ne signifie pas que ses thématiques sont les plus fréquentes,
+bien au contraire! D'autres thèmes bien plus spécifique auquels on ne pensserais pas peuvent faire leur apparition. 
+D'où l'intérêt de méthodes plus robustes et moins sujetives que le lexique manuel. 
+
+\pagebreak
+
 \section{Méthode 2 : TF-IDF + K-Means}
 
-\subsection{Principe}
+\subsection{Principe de TF-IDF}
 
-Chaque texte est transformé en un vecteur numérique via TF-IDF, puis regroupé par l'algorithme K-Means.
+Le \textbf{TF-IDF} (\textit{Term Frequency — Inverse Document Frequency}) est une méthode
+de pondération évaluant l'importance d'un mot au sein d'un document par rapport à l'ensemble
+du corpus. Il combine deux composantes :
 
-\subsection{Sélection du nombre de clusters ($k$)}
+\begin{itemize}
+  \item \textbf{Term Frequency (TF)} : fréquence d'un terme dans le document.
+  $$tf_{i,j} = \frac{n_{i,j}}{\sum_k n_{k,j}}$$
+  où $n_{i,j}$ est le nombre d'occurrences du terme $i$ dans le document $j$.
+
+  \item \textbf{Inverse Document Frequency (IDF)} : pondération par la rareté du mot dans
+  le corpus.
+  $$idf(w) = \log\!\left(\frac{N}{df_t}\right)$$
+  où $N$ est le nombre total de documents et $df_t$ le nombre de documents contenant le terme $t$.
+\end{itemize}
+
+Le score final est :
+$$w_{i,j} = tf_{i,j} \times \log\!\left(\frac{N}{df_i}\right)$$
+
+Les vecteurs sont ensuite normalisés par la norme L2 afin que la longueur des documents ne
+biaise pas les comparaisons.
+
+Grâce au pré-traitement déjà effectué (suppression des stopwords, lemmatisation), l'IDF
+discrimine mieux les termes et les scores sont plus significatifs.
+
+\subsubsection{Vectorisation TF-IDF}
+On ne peut malheureusement pas utiliser TF-IDF directement sur les textes bruts, il faut d'abord les vectoriser.
+Vectoriser un texte signifie le transformer en une représentation numérique, pour que par la suite les algorithme puisse les traiter.\\
+Pour cela, nous allons utiliser la fonction \texttt{TfidfVectorizer} de la bibliothèque \textbf{scikit-learn}.
+Cette fonction à de grand avantages, elle permet de:
+\begin{itemize}
+  \item lister tout les mots uniques
+  \item définir le score TF
+  \item définir le score IDF
+  \item définir le score final et vecteur L2
+\end{itemize}
+\vspace{10px}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{hist_tfidf_top_mot_important.png}
+\caption{Exemple d'histogramme des 10 mots les plus importants selon le score TF-IDF (Logan)}
+\end{figure}
+
+\pagebreak
+
+\subsubsection{Clustering K-Means}
+Après avoir vectorisé les textes en utilisant TF-IDF, nous obtenons une matrice de taille $N \times M$ (où $N$ est le nombre de documents et $M$ le nombre de mots uniques).
+Gràce à cette matrice, nous allons pouvoir maintenant regroupper les mots similaires en \textbf{clusters},
+or nous devons dans un premier temps définir le nombre de clusters $K$ à utiliser.
+Un des risques est de choisir un $K$ trop petit ou trop grand, 
+ce qui peut conduire à des clusters peu significatifs ou à un sur-apprentissage.
+
+\subsection{Sélection du nombre de clusters ($K$)}
 
 Plusieurs stratégies explorées :
 \begin{itemize}
@@ -767,12 +983,26 @@ Plusieurs stratégies explorées :
   \item Équilibrage des tailles
 \end{itemize}
 
-La méthode du coude suggère $k = 6$, mais la courbe décroît faiblement à partir de ce point.
+\begin{note}[Remarque]
+  Une méthode que nous aurions pu explorer mais que nous n'avons pas fait est la \textbf{silhouette score}, qui mesure la cohésion et la séparation des clusters pour différents $K$.
+  Combiné avec la méthode du coude, cela aurait pu nous aider à trouver un compromis entre la qualité des clusters et leur interprétabilité.
+\end{note}
 
-\subsection{Résultats selon $k$}
+\pagebreak
+
+\subsection{Résultats selon $K$}
 
 \subsubsection*{$K = 6$ — Clusters déséquilibrés — Logan}
+La méthode du coude (\textit{elbow method}) a été utilisée pour déterminer le nombre optimal
+de clusters $K$. L'inertie diminue fortement jusqu'à $K = 6$, puis la courbe se stabilise.
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.45\textwidth]{graph_methode_coude.png}
+\caption{Graphe de la méthode du coude pour déterminer le nombre optimal de clusters $K$}
+\end{figure}
+
+\textbf{K = 6 a donc été retenu.}
 \begin{center}
 \begin{tabular}{lr}
 \toprule
@@ -788,29 +1018,71 @@ Problèmes familiaux — divorce — identité & 139 \\
 \end{tabular}
 \end{center}
 
-\begin{avertissement}
-Résultat insuffisant : fort déséquilibre de taille (46 vs 1 718), thèmes qui se recoupent.
-\end{avertissement}
+\begin{warn}[Résultat peu satisfaisant]
+Fort déséquilibre de taille (46 vs 1 718), thèmes qui se recoupent.
+Une des solutions aurait été d'agrandir la plage de $K$ testée, mais cela aurait conduit à des clusters encore plus petits et moins interprétables.
+\end{warn}
 
-\subsubsection*{$K = 3$ — Meilleure configuration avec LSA}
+\pagebreak
 
-En appliquant une décomposition LSA (SVD) sur la matrice TF-IDF avant le clustering :
+\subsubsection*{$K = 3$ — Meilleure configuration avec LSA — Diogo}
+
+\textbf{Très petite explication du LSA}
+% \begin{lstlisting}
+% vec = TfidfVectorizer(
+%     max_features=10000,
+%     ngram_range=(1, 3),
+%     min_df=3,
+%     max_df=0.5,
+%     sublinear_tf=True,
+%     stop_words=list(STOPWORDS),
+%     strip_accents="unicode",
+%     token_pattern=r"(?u)\b[a-zA-Z]{2,}\b"
+% )
+% \end{lstlisting}
+
+La \textbf{LSA} (\textit{Latent Semantic Analysis}) est une technique de réduction de
+dimension appliquée à la matrice TF-IDF. Elle repose sur la \textbf{décomposition en
+valeurs singulières} (SVD) :
+
+$$M = U \cdot \Sigma \cdot V^\top$$
+
+où $M \in \mathbb{R}^{d \times n}$ est la matrice terme-document ($d$ termes, $n$ documents),
+$U$ les vecteurs de termes, $\Sigma$ la matrice diagonale des valeurs singulières, et $V^\top$
+les vecteurs de documents dans l'espace latent.
+
+En ne conservant que les $k$ premières composantes ($k \ll d$), on projette les documents
+dans un espace sémantique réduit avec deux avantages principaux :
+
+\begin{itemize}
+  \item \textbf{Réduction du bruit lexical} : des termes synonymes (ex. \textit{sad} et
+        \textit{depressed}) qui co-occurrent dans des contextes similaires se rapprochent
+        dans l'espace réduit.
+  \item \textbf{Amélioration du clustering} : K-Means est sensible à la \textit{malédiction
+        de la dimensionnalité} ; réduire la dimension améliore la qualité des clusters.
+\end{itemize}
+
+Dans l'implémentation de Diogo, la LSA est appliquée via \texttt{TruncatedSVD} de
+\texttt{scikit-learn} avec 50 composantes, après vectorisation TF-IDF :
 
 \begin{lstlisting}
-vec = TfidfVectorizer(
-    max_features=10000,
-    ngram_range=(1, 3),
-    min_df=3,
-    max_df=0.5,
-    sublinear_tf=True,
-    stop_words=list(STOPWORDS),
-    strip_accents="unicode",
-    token_pattern=r"(?u)\b[a-zA-Z]{2,}\b"
-)
+from sklearn.decomposition import TruncatedSVD
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import Normalizer
+
+svd = TruncatedSVD(n_components=50, random_state=42)
+X_lsa = make_pipeline(X)
+X_norm = Normalizer().fit_transform(X_lsa) # Normalisation L2
 \end{lstlisting}
 
+La normalisation finale (norme L2) garantit que les distances cosinus restent interprétables
+après la projection. Comme montré dans les résultats ($K = 3$), l'ajout de la LSA conduit à
+des clusters plus équilibrés et thématiquement plus distincts par rapport au clustering TF-IDF seul.
+
+Cela nous permet d'obtenir des clusters plus équilibrés et thématiquement plus distincts, couvrant 100\,\% du corpus.
+
 \begin{center}
-\begin{tabular}{llrl}
+\begin{tabular}{@{}L{5cm}lrL{4cm}@{}}
 \toprule
 \textbf{Topic} & \textbf{Effectif} & \textbf{Part} & \textbf{Mots-clés principaux} \\
 \midrule
@@ -821,27 +1093,62 @@ Romantic relationships and intimacy       & 203 & 25,5\,\% & love, relationship,
 \end{tabular}
 \end{center}
 
-Meilleur résultat TF-IDF : thèmes distincts, tailles équilibrées, couvrant 100\,\% du corpus.
+Même si les résultats sont meilleurs, on observe que les thèmes restent assez larges et se recoupent partiellement (ex. \textit{family} peut apparaître dans les deux premiers clusters).
 
 \subsection{Évaluation critique}
 
+Bien que la méthode TF-IDF + K-Means soit rapide et facile à implémenter, elle présente plusieurs limites :
+
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{@{}L{7.5cm}L{7.5cm}@{}}
 \toprule
 \textbf{Avantage} & \textbf{Limite} \\
 \midrule
-Méthode rapide et scalable & Sensible au choix de $k$ \\
+Méthode rapide et scalable & Sensible au choix de $K$ \\
 Bien documentée et reproductible & Ignore la sémantique contextuelle des mots \\
 Compatible avec LSA pour de meilleurs résultats & Mots traités comme des entités indépendantes \\
 \bottomrule
 \end{tabular}
 \end{center}
 
+Ses limites peuvent être partiellement atténuées en combinant avec une réduction de dimension (LSA) ou en utilisant des représentations plus riches comme les word embeddings, \textbf{ce qui nous amène à la méthode suivante}.
+
+\pagebreak
+
 \section{Méthode 3 : Word Embeddings}
 
-\subsection{Word2Vec (Skip-gram) — Logan}
+\subsection{Principe du Word Embedding}
 
-Le mode Skip-gram est préféré au CBOW car notre corpus est petit et spécialisé.
+Le \textbf{Word Embedding} (plongement lexical) est une représentation sémantique des mots
+sous forme de vecteurs de nombres réels. Deux mots de sens proche ont des vecteurs proches
+dans l'espace mathématique.
+
+Contrairement à TF-IDF qui est une \textbf{représentation statistique} (fréquence d'apparition),
+Word2Vec est une \textbf{représentation sémantique} : il apprend ce que le mot signifie en
+observant les mots qui l'entourent dans le corpus. Ainsi, \textit{"sad"} et \textit{"depressed"}
+se trouvent proches dans l'espace vectoriel parce qu'ils apparaissent dans des contextes
+similaires.
+
+\subsection{Skip-Gram vs CBOW}
+
+Word2Vec propose deux architectures :
+\begin{itemize}
+  \item \textbf{CBOW} (\textit{Continuous Bag of Words}) : prédit le mot central à partir de
+        son contexte. Très rapide sur les grands corpus, mais la moyenne du contexte
+        \textit{lisse le bruit}, ce qui peut effacer des nuances importantes.
+  \item \textbf{Skip-Gram} (\texttt{sg=1}) : prédit le contexte à partir du mot central.
+        Plus adapté aux \textbf{corpus petits et spécialisés} car il génère plus d'exemples
+        d'entraînement par mot, compensant le manque de données.
+\end{itemize}
+
+\begin{note}[Remarque]
+  Étant donné que notre corpus est relativement \textbf{petit et spécialisé}, le mode \textbf{Skip-Gram est généralement recommandé}\footnote{Référence à cette décision: \href{https://www.geeksforgeeks.org/nlp/word-embeddings-in-nlp-comparison-between-cbow-and-skip-gram-models/}{geeksforgeeks.org}} 
+  pour capturer des relations sémantiques plus fines.
+\end{note}
+
+\pagebreak
+
+\subsection{Word2Vec (Skip-gram) — Logan}
 
 \begin{lstlisting}
 model = Word2Vec(
@@ -1657,25 +1964,35 @@ Meilleur score obtenu : \textbf{0,702} (BERT, stratégie question-réponse, avec
 \section*{Papiers de référence}
 
 \begin{itemize}
-  \item Devlin, J., Chang, M.-W., Lee, K., \& Toutanova, K. (2018). \textit{BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding}. \url{https://arxiv.org/pdf/1810.04805}
-  \item Wolf, T. et al. (2020). \textit{Transformers: State-of-the-Art Natural Language Processing}. \url{https://arxiv.org/pdf/1910.03771}
-  \item Loshchilov \& Hutter (2019). \textit{Pre-Training and Fine-Tuning BERT for the IPU}. \url{https://docs.graphcore.ai/projects/bert-training/en/latest/bert.html}
+  \item Thomas Hofmann (2013). \textit{Probabilistic Latent Semantic Analysis}. \\\url{https://arxiv.org/pdf/1301.6705}
+  \item Devlin, J., Chang, M.-W., Lee, K., \& Toutanova, K. (2018). \textit{BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding}. \\\url{https://arxiv.org/pdf/1810.04805}
+  \item Wolf, T. et al. (2020). \textit{Transformers: State-of-the-Art Natural Language Processing}. \\\url{https://arxiv.org/pdf/1910.03771}
+  \item Loshchilov \& Hutter (2019). \textit{Pre-Training and Fine-Tuning BERT for the IPU}. \\\url{https://docs.graphcore.ai/projects/bert-training/en/latest/bert.html}
 \end{itemize}
 
 \section*{Modèles Hugging Face}
 
 \begin{itemize}
-  \item \texttt{bert-base-uncased} — \url{https://huggingface.co/google-bert/bert-base-uncased}
-  \item \texttt{cardiffnlp/twitter-roberta-base-sentiment-latest} — \url{https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest}
-  \item \texttt{j-hartmann/emotion-english-distilroberta-base} — \url{https://huggingface.co/j-hartmann/emotion-english-distilroberta-base}
-  \item \texttt{sentence-transformers/all-MiniLM-L6-v2} — \url{https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2}
+  \item \texttt{bert-base-uncased} \\\url{https://huggingface.co/google-bert/bert-base-uncased}
+  \item \texttt{cardiffnlp/twitter-roberta-base-sentiment-latest} \\\url{https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest}
+  \item \texttt{j-hartmann/emotion-english-distilroberta-base} \\\url{https://huggingface.co/j-hartmann/emotion-english-distilroberta-base}
+  \item \texttt{sentence-transformers/all-MiniLM-L6-v2} \\\url{https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2}
 \end{itemize}
 
 \section*{Données}
 
 \begin{itemize}
-  \item NLP Mental Health Conversations — \url{https://www.kaggle.com/datasets/thedevastator/nlp-mental-health-conversations}
-  \item Sentiment Analysis for Mental Health — \url{https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health}
+  \item Github — Page principal du projet \\\url{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale}
+  \item Github — Répertoire des notebooks \\\url{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale/tree/main/notebooks}
+  \item NLP Mental Health Conversations \\\url{https://www.kaggle.com/datasets/thedevastator/nlp-mental-health-conversations}
+  \item Sentiment Analysis for Mental Health \\\url{https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health}
+\end{itemize}
+
+\section*{Outils}
+\begin{itemize}
+  \item Python 3.8+
+  \item Bibliothèques : scikit-learn, transformers, sentence-transformers, pandas, numpy, matplotlib, seaborn
+  \item Environnement : Jupyter Notebook, Google Colab
 \end{itemize}
 
 \end{document}
