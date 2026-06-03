@@ -1149,19 +1149,28 @@ Word2Vec propose deux architectures :
 \pagebreak
 
 \subsection{Word2Vec (Skip-gram) — Logan}
+La version de logan implémente Word2Vec en mode Skip-Gram, avec les hyperparamètres suivants:
+\begin{itemize}
+  \item \textbf{vector\_size=100} : chaque mot est représenté par un vecteur de 100 dimensions, ce qui permet de capturer une sémantique riche tout en restant gérable pour le clustering.
+  \item \textbf{window=5} : le contexte de chaque mot est défini comme les 5 mots précédents et les 5 mots suivants, ce qui permet de capturer des relations à la fois locales et globales.
+  \item \textbf{min\_count=3} : les mots apparaissant moins de 3 fois sont ignorés, ce qui réduit le bruit et améliore la qualité des embeddings.
+  \item \textbf{epochs=10} : le modèle est entraîné pendant 10 itérations sur le corpus, ce qui permet d'obtenir des vecteurs stables sans sur-apprentissage.
+  \item \textbf{seed=42} : pour assurer la reproductibilité des résultats.
+  \item \textbf{sg=1} : pour activer le mode Skip-Gram, qui est plus adapté à notre corpus de taille modérée.
+\end{itemize}
 
-\begin{lstlisting}
-model = Word2Vec(
-    sentences=all_sentences,
-    vector_size=100,
-    window=5,
-    min_count=3,
-    workers=4,
-    epochs=10,
-    seed=42,
-    sg=1               # Skip-gram
-)
-\end{lstlisting}
+% \begin{lstlisting}
+% model = Word2Vec(
+%     sentences=all_sentences,
+%     vector_size=100,
+%     window=5,
+%     min_count=3,
+%     workers=4,
+%     epochs=10,
+%     seed=42,
+%     sg=1               # Skip-gram
+% )
+% \end{lstlisting}
 
 \subsubsection*{Résultats avec $K = 6$ (patients)}
 
@@ -1180,34 +1189,60 @@ model = Word2Vec(
 \end{tabular}
 \end{center}
 
+Le problème que l'on pourrait avoir sur cette méthode est que les clusters sont très déséquilibrés, ce qui rend l'interprétation plus difficile.
+La prochaine méthode que nous allons présenter, basée sur les \textbf{Sentence Transformers}, permet de mieux équilibrer les clusters et d'obtenir des thématiques plus distinctes.
+
+\pagebreak
+
 \subsection{Sentence Transformer (BERT / all-MiniLM-L6-v2) — Idir}
 
-Produit un vecteur par phrase entière en 384 dimensions.
+\subsubsection{Introduction rapide à BERT}
+BERT (\textit{Bidirectional Encoder Representations from Transformers}) est un modèle de langage pré-entraîné développé par Google en 2018. 
+Contrairement à Word2Vec, qui génère des embeddings statiques pour chaque mot, BERT produit des embeddings contextuels : le vecteur d'un mot dépend donc de la phrase dans laquelle il apparaît.
+
+\begin{note}[Remarque]
+Le modèle BERT, ayant sa partie dédié dans la troisièmre partie, sera expliqué bien plus en détails à ce moment là.
+\end{note}
 
 \subsubsection*{Résultats avec $K = 8$}
 
 \begin{center}
-\begin{tabular}{rll}
+\begin{tabular}{@{}cll@{}}
 \toprule
 \textbf{Effectif} & \textbf{Thème du cluster} & \textbf{Mots représentatifs} \\
 \midrule
-111 & Marriage and infidelity          & husband, married, relationship, love, wife \\
-86  & Seeking therapy and abuse        & therapist, counseling, child, therapy, issues \\
+111 & Marriage and infidelity           & husband, married, relationship, love, wife \\
+86  & Seeking therapy and abuse         & therapist, counseling, child, therapy, issues \\
 121 & Romantic relationships and dating & love, relationship, boyfriend, guy, dating \\
-101 & Family and parenting             & mom, dad, child, mother, family \\
-95  & Anxiety and mental disorder      & anxiety, depression, attacks, sleep, panic \\
-105 & Social anxiety and communication & thoughts, friends, talking, upset, anger \\
-75  & Sexuality and gender identity    & sex, girl, love, men, afraid, girls \\
-102 & Depression and social life       & friends, school, sad, depressed, family \\
+101 & Family and parenting              & mom, dad, child, mother, family \\
+95  & Anxiety and mental disorder       & anxiety, depression, attacks, sleep, panic \\
+105 & Social anxiety and communication  & thoughts, friends, talking, upset, anger \\
+75  & Sexuality and gender identity     & sex, girl, love, men, afraid, girls \\
+102 & Depression and social life        & friends, school, sad, depressed, family \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\begin{remarque}
+\begin{note}[Remarque]
 \textbf{Meilleur résultat} de la méthode 3 : clusters de taille homogène ($\approx$75--121), thèmes distincts et bien interprétables.
-\end{remarque}
+\end{note}
+
+Les clusters obtenus avec les embeddings de BERT sont plus équilibrés et thématiquement plus distincts que ceux obtenus avec Word2Vec, 
+ce qui confirme l'importance de la contextualisation dans la représentation des textes.
+Une autre façon est d'obtenir des \textbf{embeddings de phrase} est d'utiliser les \textbf{embeddings moyennés de spaCy}, mais cela conduit à des résultats moins satisfaisants,
+comme nous allons le voir dans la section suivante.
+
+\pagebreak
 
 \subsection{spaCy (embeddings moyennés) — Emin}
+
+Dans cette approche, les embeddings de chaque mot sont extraits à l'aide de spaCy, puis moyennés pour obtenir une représentation vectorielle de chaque document.
+Cependant, cette méthode présente plusieurs limites :
+\begin{itemize}
+  \item \textbf{Perte de contexte} : en moyennant les embeddings de tous les mots, on perd la structure syntaxique et les relations entre les mots, ce qui peut conduire à des représentations moins précises.
+  \item \textbf{Mots peu informatifs} : les mots fréquents et peu discriminants (ex. \textit{know}, \textit{like}, \textit{feel}) peuvent dominer la représentation, masquant les thèmes plus spécifiques.
+  \item \textbf{Résultats moins cohérents} : les clusters obtenus sont souvent moins thématiquement distincts et plus difficiles à interpréter que ceux obtenus avec des modèles plus avancés comme BERT.
+\end{itemize}
 
 \subsubsection*{Résultats avec $K = 5$}
 
@@ -1225,47 +1260,81 @@ Produit un vecteur par phrase entière en 384 dimensions.
 \end{tabular}
 \end{center}
 
-\begin{avertissement}
-Résultats insuffisants : clusters 0 et 2 très similaires, plusieurs clusters dominés par des mots peu informatifs.
-\end{avertissement}
+\begin{warn}[Résultat insatisfaisant]
+Clusters 0 et 2 très similaires, plusieurs clusters dominés par des mots peu informatifs.
+\end{warn}
 
 \subsection{Bilan comparatif — Méthode 3}
 
 \begin{center}
-\begin{tabular}{llll}
+\begin{tabular}{@{}llL{4cm}l@{}}
 \toprule
 \textbf{Modèle} & \textbf{Qualité} & \textbf{Points forts} & \textbf{Limites} \\
 \midrule
 Sentence Transformer & Très bonne & Contexte global, tailles homogènes & Modèle lourd \\
+\midrule
 Word2Vec (Skip-gram) & Bonne & Granularité thématique fine & Déséquilibre de taille \\
+\midrule
 spaCy & Passable & Rapide, simple & Perte de contexte \\
 \bottomrule
 \end{tabular}
 \end{center}
 
+L'équipe entière s'accorde pour dire que les embeddings de BERT (\textit{via Sentence Transformers}) offrent une meilleure qualité de clustering que les embeddings moyennés de spaCy ou les vecteurs Word2Vec,
+grâce à leur capacité à capturer le contexte et les nuances sémantiques des textes.
+Cependant, cette méthode est \textbf{plus lourde à entraîner et à utiliser}, ce qui peut être un frein pour des applications en temps réel ou sur des ressources limitées.
+La dernière méthode que nous allons présenter, basée sur \textbf{LDA}, offre une approche différente en se concentrant sur la \textbf{modélisation thématique} plutôt que sur la représentation sémantique.
+
+\pagebreak
+
 \section{Méthode 4 : LDA (Latent Dirichlet Allocation)}
 
-\subsection{Principe}
+\subsection{Qu'est ce que le LDA ?}
 
-LDA est un modèle probabiliste génératif qui produit une assignation douce : chaque document reçoit une distribution de probabilités sur l'ensemble des topics.
+Le \textbf{LDA} (\textit{Latent Dirichlet Allocation}) est un modèle génératif probabiliste
+permettant de découvrir des sujets latents dans un corpus. C'est une approche bayésienne qui
+suppose que chaque document est un \textbf{mélange de thèmes}, et que chaque thème est une
+\textbf{distribution de mots}.
 
-\begin{lstlisting}
-N_TOPICS = 6
-PASSES = 15
+Contrairement à K-Means où chaque document appartient à un unique cluster, LDA assigne à
+chaque conversation un mélange de thèmes avec des probabilités. Par exemple :
 
-model = LdaModel(
-    corpus=corpus,
-    id2word=dictionary,
-    num_topics=n_topics,
-    random_state=42,
-    passes=passes
-)
-\end{lstlisting}
+\begin{center}
+\textit{"I feel sad and anxious"} $\longrightarrow$ 70\,\% dépression + 30\,\% anxiété
+\end{center}
+
+LDA produit deux sorties :
+\begin{enumerate}
+  \item \textbf{Thèmes $\to$ mots} : distribution des mots caractéristiques pour chaque thème.
+  \item \textbf{Documents $\to$ thèmes} : proportion de chaque thème dans chaque conversation.
+\end{enumerate}
+
+\bigskip
+
+Dans cette méthode, nous allons utiliser la bibliothèque \textbf{gensim} pour implémenter LDA, en utilisant les représentations de documents au format bag-of-words (corpus) et le dictionnaire de mots (id2word).
+De plus, selon les membres, nous avons définit un nombre de thèmes $N\_TOPICS$ et un nombre de passes $PASSES$ pour l'entraînement du modèle.
+\begin{figure}[ht]
+  \begin{lstlisting}
+    N_TOPICS = 6
+    PASSES = 15
+    
+    model = LdaModel(
+      corpus=corpus, 
+      id2word=dictionary, 
+      num_topics=n_topics, 
+      random_state=42, 
+      passes=passes
+    )
+  \end{lstlisting}
+  \caption{Exemple d'implémentation de LDA avec la bibliothèque gensim — Logan}
+\end{figure}
+
+\pagebreak
 
 \subsection{Résultats à 6 topics — Logan}
 
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{@{}ll@{}}
 \toprule
 \textbf{Thème} & \textbf{Mots représentatifs} \\
 \midrule
@@ -1279,10 +1348,15 @@ Thérapie et problématiques de couple     & normal, issue, wife, therapy, walk,
 \end{tabular}
 \end{center}
 
+\begin{note}[Interprétation]
+Sur 6 topics, on retrouve des thèmes cohérents et distincts, couvrant les relations de couple, les relations familiales, l'anxiété, la détresse émotionnelle et la thérapie.
+Cependant, certains thèmes se recoupent partiellement (ex. \textit{relationship} apparaît dans plusieurs topics), ce qui est une limite de l'approche.
+\end{note}
+
 \subsection{Résultats à 6 topics — Diogo}
 
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{@{}ll@{}}
 \toprule
 \textbf{Thème} & \textbf{Mots représentatifs} \\
 \midrule
@@ -1296,10 +1370,18 @@ Family anger and conflict               & therapist, money, phone, relationship,
 \end{tabular}
 \end{center}
 
+\begin{note}[Interprétation]
+Pour Diogo, les thèmes sont similaires à ceux de Logan, mais avec des nuances différentes. Par exemple, le thème "\textit{Therapy, communication and coping}" 
+regroupe des mots liés à la vie quotidienne et à la gestion de l'anxiété, tandis que "\textit{Relationship trust and family}" met davantage l'accent sur les 
+relations de confiance et les dynamiques familiales.
+\end{note}
+
+\pagebreak
+
 \subsection{Résultats à 5 topics — Lucas}
 
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{@{}ll@{}}
 \toprule
 \textbf{Thème} & \textbf{Mots représentatifs} \\
 \midrule
@@ -1312,10 +1394,16 @@ Relations de couple et vie familiale    & boyfriend, make, counseling, child, li
 \end{tabular}
 \end{center}
 
+\begin{note}[Interprétation]
+Avec 5 topics, les thèmes sont plus larges et moins distincts que dans les configurations à 6 topics. Par exemple, le thème "\textit{Santé mentale, sexualité et famille}" 
+regroupe des concepts très différents, ce qui rend l'interprétation plus difficile.
+\end{note}
+
 \subsection{Évaluation critique}
+Lors de l'analyse des ses représentations thématiques, nous avons identifié plusieurs avantages et limites de la méthode LDA :
 
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{@{}ll@{}}
 \toprule
 \textbf{Avantage} & \textbf{Limite} \\
 \midrule
@@ -1327,7 +1415,15 @@ Fondement probabiliste rigoureux         & Ne capture pas le contexte long \\
 \end{tabular}
 \end{center}
 
-\chapter{Conclusion comparée des méthodes}
+\bigskip
+
+Les résultats obtenues avec LDA sont généralement plus interprétables que ceux obtenus avec les méthodes basées sur les embeddings, car ils fournissent une distribution de mots pour chaque thème. 
+Cependant, le choix du nombre de topics ($N\_TOPICS$) est crucial et peut grandement influencer la qualité des résultats. De plus, \textbf{LDA ne capture pas les relations à long terme entre les mots}, ce qui peut limiter sa capacité à identifier des thèmes plus complexes.
+
+\smallskip
+\textbf{Mais alors dans ce cas, quelle méthode est la meilleure?} Nous allons faire une conclusion comparée de toutes les méthodes présentées dans ce chapitre.
+
+\section{Comparaison des méthodes}
 
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
@@ -1363,13 +1459,35 @@ LDA
 \end{tabularx}
 \end{center}
 
-\subsection*{Recommandation globale}
+\section*{Recommandation globale}
 
 \begin{itemize}
   \item Pour \textbf{interpréter} les données : \textbf{LDA} est le plus lisible et le plus informativement riche.
   \item Pour \textbf{regrouper} les documents : \textbf{Sentence Transformer} (BERT) offre la meilleure qualité de clustering.
   \item Pour une \textbf{catégorisation stricte} : le \textbf{lexique manuel} reste le plus fiable si le domaine est bien défini.
 \end{itemize}
+
+\textbf{Que peut-on en conclure?} Il n'existe pas de méthode universelle pour l'analyse de texte, et \textbf{le choix dépend fortement des objectifs spécifiques, 
+de la nature du corpus et des ressources disponibles}. Dans notre cas spécifique, la combinaison de plusieurs méthodes (ex. LDA pour l'analyse thématique + Sentence Transformer pour le clustering) 
+pourrait offrir une approche plus complète et nuancée. 
+Cepandant, cela nécessite une expertise plus approfondie et une validation rigoureuse pour éviter les biais et les interprétations erronées.
+
+\chapter{Bilan de l'étape 1}
+
+Cette première étape a permis de comprendre la structure du corpus et d'extraire les thèmes
+principaux des conversations patient-thérapeute. Le pré-traitement rigoureux (filtrage des
+langues, lemmatisation, stopwords) a été déterminant pour la qualité des résultats de topic
+modeling.
+
+Les différentes méthodes explorées (TF-IDF + K-Means, Word2Vec, Sentence Transformer, LDA) ont chacune leurs avantages et limites,
+et ont permis d'obtenir des perspectives complémentaires sur les thèmes abordés dans les conversations.
+Cependant, des problèmes techniques (hétérogénéité du nettoyage, gestion des doublons)
+ainsi que des questions ouvertes (standardisation du nettoyage, identification des thérapeutes) 
+restent à résoudre pour améliorer la qualité et la comparabilité des résultats.
+
+Maintenant que nous avons une bonne compréhension des thèmes présents dans les conversations, 
+nous allons pouvoir passer à l'étape suivante qui consiste à analyser les sentiments exprimés 
+et à implémenter un système de question-réponse sur la santé mentale.
 
 \chapter{Problèmes rencontrés et questions ouvertes}
 
