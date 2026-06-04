@@ -53,7 +53,6 @@
 \usepackage{pdflscape}
 \graphicspath{{img/}{../img/}{../../img/}{../../../img/}{../../../../img/}}
 
-
 % ── Schémas ───────────────────────────────────────────────────────────────────
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, shapes.geometric, fit, calc}
@@ -327,9 +326,6 @@ Les étapes de développement de chaque groupe seront détaillées plus loin dan
 \end{note}
 
 \pagebreak
-
-\subsection{Étape 2: Développement du système d'analyse de sentiments et de question-réponse}
-
 
 % ══════════════════════════════════════════════════════════════════════════════
 % PARTIE II : ÉTAPE 1
@@ -3391,6 +3387,303 @@ ces classes restent les plus problématiques.
 On remarque que \textit{Depression} et \textit{Suicidal} restent souvent confondus, 
 ce qui suggère que même les modèles les plus avancés ont du mal à capturer les nuances entre ces catégories émotionnellement proches.
 
+\chapter{Système Question-Réponse}
+
+\section{Contexte et organisation}
+
+Dans cette partie du projet, nous avons developpé un système de questions réponses
+basé sur des techniques de traitement automatique du langage naturel(NLP). L’objectif principal est de concevoir un modèle capable de retrouver automatiquement les réponses les plus pertinentes à partir d’une question donnée.
+
+Le groupe a été réparti en 3 sous-groupes travaillant en parallèle sur le même jeu de données. Chaque sous-groupe était chargé d’implémenter une partie spécifique du système de question-réponse, notamment l’indexation inverse ainsi que les approches de similarité question-question et question-réponse.
+
+Le travail a été réparti entre les membres du groupe. Le tableau suivant présente l’organisation des tâches :
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Sous-groupe} & \textbf{Méthode} & \textbf{Membres} \\
+\midrule
+Association mots-questions/réponses & Counter                               & Lucas \\
+\midrule
+Similarité question-question    & Cosine similarity & \\
+             & (TF-IDF+Word2Vec+Bert) & Yvan, Trésor \\
+\midrule
+Similarité question-question    & Cosine similarity & \\
+             & (TF-IDF+Word2Vec+Bert) & Idir, Laure \\
+\bottomrule
+\end{tabular}
+\end{center}
+\bigskip
+Avant l’implémentation des fonctions principales, nous avons fixé le jeu de données utilisé
+(train\_unique\_e2p2.csv) en supprimant les doublons de paires (question, réponse). Nous
+avons également constitué un ensemble de test en sélectionnant aléatoirement dix paires
+issues du jeu de données (test\_unique\_e2p2.csv). Enfin, un module commun de prétraitement a été développé afin de nettoyer les données (mise en minuscule, suppression de la
+ponctuation et des stopwords), garantissant ainsi une comparaison cohérente des résultats.
+
+\newpage
+\section{Détails de l'implémentation}
+Cette section présente les différentes étapes techniques de l’implémentation du système de question-réponse. Elle décrit les choix méthodologiques ainsi que les approches utilisées pour la construction de l’indexation et la mise en place des différentes méthodes de recherche de réponses. Les étapes sont ensuite détaillées dans les sous-sections suivantes.
+\subsection{Indexation inversée}
+L’indexation inversée est une structure de données permettant d’associer chaque mot du corpus aux différentes questions et réponses dans lesquelles il apparaît.
+
+Sur le plan technique, le processus commence par le prétraitement de chaque question et
+réponse. Chaque texte est normalisé en minuscules, puis la ponctuation est supprimée et
+les mots vides (stopwords) sont retirés. Les textes sont ensuite tokenisés afin d’obtenir une
+liste de mots exploitables.
+
+Le code ci-dessous montre illustre le procesus de prétraitement des données : 
+\begin{lstlisting}
+# Nettoyage des données
+def text_process(mess):
+    lower_mess = mess.lower()
+    nopunc = [char for char in lower_mess if char not in string.punctuation]
+    nopunc = ''.join(nopunc)
+    clean_mess = [word for word in nopunc.split() if word not in stop_words]
+    return clean_mess
+\end{lstlisting}
+
+Ensuite, pour chaque paire (question, réponse), les tokens issus des deux éléments sont combinés
+afin de former un ensemble unique de mots représentatifs de la discussion. Ensuite, un
+dictionnaire Python est utilisé pour construire l’index inversé. Les clés de ce dictionnaire
+correspondent aux mots du corpus, tandis que les valeurs sont des listes contenant les
+textes associés.
+
+Un compteur de type \textbf{Counter} est utilisé afin de comptabiliser les occurrences des mots
+dans chaque discussion.
+
+Formellement, la structure obtenue peut être représentée comme suit :
+
+\begin{center}
+    \(\text{mot} \rightarrow \{(\text{question}, \text{réponse})\}\)
+\end{center}
+
+\newpage
+Cette représentation permet, pour un mot donné, d’accéder directement à l’ensemble des discussions dans lesquelles il apparaît, ce qui améliore considérablement l’efficacité des étapes de recherche et de similarité dans le système de question-réponse.
+
+Le code ci-dessous montre les détails de l'implémentation de cette fonction
+\begin{lstlisting}
+train_data["Context_clean"] = train_data["Context"].apply(text_process)
+train_data["Response_clean"] = train_data["Response"].apply(text_process)
+# Structure du dictionnaire : mot -> liste des discussions contenant ce type de mot
+index_inverse = {}
+SEUIL = 1
+for idx, row in train_data.iterrows():
+    question = row["Context"]
+    response = row["Response"]
+    #combine les mots de la question et de la réponse
+    mots = row["Context_clean"] + row["Response_clean"]
+    # Compter le nombre d'apparitions de chaque mot
+    from collections import Counter
+    compteur = Counter(mots)
+    for mot,count in compteur.items():
+        if count >= SEUIL:
+        #Si le mot n'existe pas encore dans le dictionnaire, on l'initialise
+            if mot not in index_inverse:
+                index_inverse[mot] = []
+            #On ajoute la discussion associée à ce mot dans la liste
+            index_inverse[mot].append({
+                "id": idx,
+                "question": question,
+                "response": response
+            })
+\end{lstlisting}
+\newpage
+\subsection{Implémentation du système question-réponse}
+Le système de question-réponse a été implémenté selon deux approches : une première basée sur la similarité entre questions, et une seconde reposant sur la comparaison directe entre la question et l’ensemble des réponses du corpus.
+\subsubsection{1. Similarité entre questions}
+Cette approche consiste à retrouver des réponses pertinentes à partir de la similarité entre la question de l’utilisateur et les questions présentes dans le corpus. L’hypothèse principale est que des questions sémantiquement proches doivent partager des réponses similaires.
+
+Dans notre système, deux versions ont été développées. La première repose sur une recherche de similarité appliquée à l’ensemble du corpus, tandis que la seconde limite cette recherche aux questions appartenant au même thème que la question en entrée.
+
+Dans la première version, chaque question est vectorisée afin d’être représentée dans un espace vectoriel commun. La question de l’utilisateur ainsi que l’ensemble des questions du corpus sont projetées dans ce même espace.
+
+Une mesure de similarité cosinus est ensuite appliquée entre la question utilisateur et l’ensemble des questions du corpus. Les scores obtenus sont triés afin de sélectionner les k questions les plus proches (k = 5). Enfin, les réponses associées à ces questions sont récupérées et retournées comme résultats du système. On résume la méthode de traitement dans schéma suivant :
+
+\begin{center}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners, align=center, minimum width=3.5cm, minimum height=1cm},
+    arrow/.style={-{Latex}}
+]
+
+\node[box] (qu) {Question utilisateur};
+\node[box, right=4cm of qu] (qc) {Questions corpus};
+\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
+\node[box, below=of qc] (vc) {Vectorisation\\corpus};
+\node[box, below=2.5cm of qu, xshift=4cm] (s) {Similarité cosinus};
+\node[box, below=of s] (t) {Tri des scores};
+\node[box, below=of t] (k) {Sélection des $k$ plus proches questions};
+\node[box, below=of k] (r) {Retour des réponses};
+
+\draw[arrow] (qu) -- (vu);
+\draw[arrow] (qc) -- (vc);
+\draw[arrow] (vu) |- (s);
+\draw[arrow] (vc) |- (s);
+\draw[arrow] (s) -- (t);
+\draw[arrow] (t) -- (k);
+\draw[arrow] (k) -- (r);
+
+\end{tikzpicture}
+\end{center}
+
+Dans la seconde version, la même méthode de vectorisation et de calcul de similarité est conservée, mais appliquée uniquement à un sous-ensemble du corpus composé des questions partageant le même thème que la question en entrée. Cette restriction permet de réduire l’espace de recherche et de favoriser des résultats plus cohérents sémantiquement en évitant de comparer la question à des thématiques non pertinentes. On résume la méthode de traitement dans schéma suivant :
+
+\begin{center}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners, align=center, minimum width=3.5cm, minimum height=1cm},
+    arrow/.style={-{Latex}}
+]
+
+\node[box] (qu) {Question utilisateur};
+\node[box, right=6cm of qu] (qc) {Questions corpus};
+\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
+\node[box, right=of vu] (ext) {Extraction de thème};
+\node[box, below=of qc] (flt) {Filtrer selon thème\\ de la question entrée};
+\node[box, below=of flt] (vc) {Vectorisation\\corpus};
+\node[box, below=6cm of qu, xshift=4cm] (s) {Similarité cosinus};
+\node[box, below=of s] (t) {Tri des scores};
+\node[box, below=of t] (k) {Sélection des $k$ plus proches questions};
+\node[box, below=of k] (r) {Retour des réponses};
+
+\draw[arrow] (qu) -- (vu);
+\draw[arrow] (qu) -- (ext);
+\draw[arrow] (qc) -- (flt);
+\draw[arrow] (flt) -- (vc);
+\draw[arrow] (ext) -- (flt);
+\draw[arrow] (vu) |- (s);
+\draw[arrow] (vc) |- (s);
+\draw[arrow] (s) -- (t);
+\draw[arrow] (t) -- (k);
+\draw[arrow] (k) -- (r);
+
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{2. Similarité entre question et réponses}
+Cette approche consiste à retrouver directement les réponses les plus pertinentes en se basant sur la similarité entre la question de l’utilisateur et l’ensemble des réponses présentes dans le corpus. L’idée principale est qu’une réponse pertinente doit être sémantiquement proche de la question posée.
+
+Dans notre système, deux versions ont été développées. La première repose sur une recherche de similarité appliquée à l’ensemble des réponses du corpus, tandis que la seconde limite cette recherche aux réponses appartenant au même thème que la question en entrée.
+
+Dans la première version, chaque réponse est vectorisée afin d’être représentée dans un espace vectoriel commun. La question de l’utilisateur ainsi que l’ensemble des réponses du corpus sont projetées dans ce même espace.
+
+Une mesure de similarité cosinus est ensuite calculée entre la question de l’utilisateur et toutes les réponses du corpus. Les scores obtenus sont triés afin de sélectionner les k réponses les plus proches (k = 5), lesquelles sont ensuite retournées comme résultats du système. On résume la méthode de traitement dans schéma suivant :
+
+\begin{center}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners, align=center, minimum width=3.5cm, minimum height=1cm},
+    arrow/.style={-{Latex}}
+]
+
+\node[box] (qu) {Question utilisateur};
+\node[box, right=4cm of qu] (qc) {Réponses corpus};
+\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
+\node[box, below=of qc] (vc) {Vectorisation\\corpus};
+\node[box, below=2.5cm of qu, xshift=4cm] (s) {Similarité cosinus};
+\node[box, below=of s] (t) {Tri des scores};
+\node[box, below=of t] (k) {Retour des $k$ plus proches réponses};
+
+\draw[arrow] (qu) -- (vu);
+\draw[arrow] (qc) -- (vc);
+\draw[arrow] (vu) |- (s);
+\draw[arrow] (vc) |- (s);
+\draw[arrow] (s) -- (t);
+\draw[arrow] (t) -- (k);
+
+\end{tikzpicture}
+\end{center}
+
+Dans la seconde version, la même méthode de vectorisation et de calcul de similarité est conservée, mais appliquée uniquement à un sous-ensemble du corpus composé des réponses partageant le même thème que la question en entrée. Cette restriction permet de réduire l’espace de recherche et de favoriser des résultats plus cohérents sémantiquement en évitant de comparer la question à des thématiques non pertinentes. On résume la méthode de traitement dans schéma suivant :
+
+\begin{center}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners, align=center, minimum width=3.5cm, minimum height=1cm},
+    arrow/.style={-{Latex}}
+]
+
+\node[box] (qu) {Question utilisateur};
+\node[box, right=6cm of qu] (qc) {Réponses corpus};
+\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
+\node[box, right=of vu] (ext) {Extraction de thème};
+\node[box, below=of qc] (flt) {Filtrer selon thème\\ de la question entrée};
+\node[box, below=of flt] (vc) {Vectorisation\\corpus};
+\node[box, below=6cm of qu, xshift=4cm] (s) {Similarité cosinus};
+\node[box, below=of s] (t) {Tri des scores};
+\node[box, below=of t] (k) {Retour des $k$ plus proches réponses};
+
+\draw[arrow] (qu) -- (vu);
+\draw[arrow] (qu) -- (ext);
+\draw[arrow] (qc) -- (flt);
+\draw[arrow] (flt) -- (vc);
+\draw[arrow] (ext) -- (flt);
+\draw[arrow] (vu) |- (s);
+\draw[arrow] (vc) |- (s);
+\draw[arrow] (s) -- (t);
+\draw[arrow] (t) -- (k);
+
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{3. Détails de vectorisation}
+La vectorisation constitue une étape essentielle dans les systèmes de traitement automatique du langage naturel. Elle permet de transformer des données textuelles en représentations numériques exploitables par des algorithmes de calcul de similarité.
+
+Dans ce travail, plusieurs approches de vectorisation sont utilisées afin de représenter les questions et réponses dans un espace vectoriel commun. L’objectif est de capturer différents niveaux d’information, allant de la similarité lexicale à la similarité sémantique.
+
+Afin de transformer les données textuelles en représentations exploitables par le modèle, plusieurs méthodes de vectorisation ont été étudiées et mises en œuvre.
+
+\begin{itemize}
+    \item \textbf{TF-IDF : }C'est une méthode statistique de représentation des textes qui attribue un poids aux mots en fonction de leur fréquence dans un document et de leur rareté dans le corpus. Elle permet de mettre en avant les termes les plus discriminants.
+    \item \textbf{Word2Vec : }C'est une méthode de représentation vectorielle dans laquelle chaque mot est transformé en vecteur numérique dans un espace continu. La représentation d’une phrase est ensuite obtenue en calculant la moyenne des vecteurs des mots qui la composent, ce qui permet de capturer une similarité sémantique entre les textes.
+    \newpage
+    \item \textbf{BERT (all-MiniLM-L6-v2) : }BERT est un modèle de langage basé sur les Transformers qui génère des représentations contextuelles des phrases, en tenant compte du sens des mots selon leur contexte global.
+\end{itemize}
+
+\subsection{ Evaluation des résultats}
+Afin d’évaluer les performances du système de question-réponse, nous avons réalisé des tests sur un ensemble de données de test composé de 100 paires (question, réponse) extraites du corpus.
+
+L’objectif de cette évaluation est de mesurer la capacité des différents modèles à retrouver les réponses pertinentes en fonction d’une question donnée.
+
+Dans notre implémentation, nous avons utilisé la similarité cosinus afin de mesurer la proximité entre la réponse prédite et la réponse attendue. Le score obtenu varie entre 0 et 1, où une valeur proche de 1 indique une forte similarité sémantique.
+
+Afin d’obtenir une mesure globale de performance, nous avons calculé la moyenne des scores de similarité obtenus sur l’ensemble du jeu de test. Cette approche permet de pénaliser davantage les réponses peu similaires à la réponse attendue.
+
+\[
+\text{Score} = \frac{1}{N} \sum_{i=1}^{N} \text{cosine\_similarity}(R^{\text{pred}}_i, R^{\text{true}}_i)
+\]
+
+Bien que cette méthode s’inspire du principe du MRR (Mean Reciprocal Rank), elle repose ici directement sur les scores de similarité et non sur un classement explicite des réponses.
+
+Dans ce contexte, un score proche de 1 indique une bonne performance du modèle, car cela signifie que la similarité entre les réponses est élevée.
+
+Pour la première version de cette méthode, on a obtenu les résultats suivant :
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Méthode} & \textbf{TF-IDF} & \textbf{Word2Vec} & \textbf{BERT} \\
+\midrule
+Similarité question-question & 0.3141& 0.4242&0.4627 \\
+\midrule
+Similarité question-réponse & 0.32& 0.53& 0.5627\\ 
+\bottomrule
+\end{tabular}
+\end{center}
+\bigskip
+\newpage
+
+Pour la seconde version de cette méthode, on a trouvé les résultats suivant:
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Méthode} & \textbf{TF-IDF} & \textbf{Word2Vec} & \textbf{BERT} \\
+\midrule
+Similarité question-question & 0.4101&  0.622&0.67 \\
+\midrule
+Similarité question-réponse & 0.4101&  0.664& 0.702\\ 
+\bottomrule
+\end{tabular}
+\end{center}
+\bigskip
+
+Les résultats obtenus montrent que les méthodes basées sur BERT et Word2Vec offrent de meilleures performances que TF-IDF, ce dernier étant limité à une similarité lexicale et ne prenant pas en compte le sens global des phrases.
 % ══════════════════════════════════════════════════════════════════════════════
 % PARTIE IV : CONCLUSION GÉNÉRALE
 % ══════════════════════════════════════════════════════════════════════════════
@@ -3438,6 +3731,7 @@ Meilleur score obtenu : \textbf{0,702} (BERT, stratégie question-réponse, avec
   \item \textbf{Modèles plus avancés} : tester des modèles plus récents comme RoBERTa-large, DeBERTa, ou des modèles génératifs.
   \item \textbf{Intégration complète} : fusionner le classificateur de sentiments et le système Q/R en un pipeline unifié.
   \item \textbf{Évaluation humaine} : compléter les métriques automatiques par une évaluation qualitative par des experts du domaine.
+  \item  \textbf{Interface utilisateur} : Développer une application web ou mobile afin de de faciliter l’interaction avec le système et d’améliorer l’expérience utilisateur. 
 \end{itemize}
 
 % ══════════════════════════════════════════════════════════════════════════════
