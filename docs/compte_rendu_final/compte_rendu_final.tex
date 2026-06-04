@@ -147,7 +147,6 @@
 \addtolength{\topmargin}{-2.2pt}
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\small Rapport Final}
 \rhead{\small \leftmark}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -1698,7 +1697,7 @@ Les détails du calcul de similarité, l'implémentation, les résultats complet
 \end{center}
 \end{figure}
 
-\chapter{Analyse des sentiments — Approches classiques}
+\chapter{Module 1: Analyse des sentiments — Approches classiques}
 
 % ==============================================================================
 \section{Contexte et organisation}
@@ -2367,7 +2366,7 @@ La prochaine partie introduit une nouvelle famille de modèles basés sur les \t
 
 \pagebreak
 
-\chapter{Analyse des sentiments — Approches BERT}
+\chapter{Module 1 EXTRA: Analyse des sentiments — Approches BERT}
 
 \section{Qu'est-ce que BERT~?}
 
@@ -2754,7 +2753,7 @@ Personality disorder   &    0.56   &   0.38   &   0.45\\
 \bigskip
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.55\textwidth]{matriceConfusion_BERT_LR_DIOGO.png}
+  \includegraphics[width=0.70\textwidth]{matriceConfusion_BERT_LR_DIOGO.png}
   \caption{Matrice de confusion --- BERT sans fine-tuning + LR (Diogo)}
 \end{figure}
 \end{center}
@@ -2948,7 +2947,11 @@ identiquement au Modèle~A.
 celle-ci, les résultats obtenues sont les suivants:\\
 
 \begin{center}
-\textbf{Fine Tuning} pour chaque epoch~:\\
+  \textbf{Fine Tuning} pour chaque epoch et \textbf{Résultat} sur l'ensemble test~:\\
+\end{center}
+
+\begin{table}[H]
+\begin{center}
 \bigskip
 \begin{tabular}{@{}C{2cm}c@{}}
   \toprule
@@ -2959,14 +2962,9 @@ celle-ci, les résultats obtenues sont les suivants:\\
   3 & 0.2705 \\
   \bottomrule
 \end{tabular}
-\end{center}
-
-\vspace{0.5cm}
-
-\begin{center}
-\textbf{Résultat sur l'ensemble test~:}\\
+\quad
 \bigskip
-\begin{tabular}{@{}lc@{}}
+\begin{tabular}{@{}L{2cm}c@{}}
   \toprule
   \textbf{Modèle} & \textbf{Accuracy test}\\
   \midrule
@@ -2974,6 +2972,7 @@ celle-ci, les résultats obtenues sont les suivants:\\
   \bottomrule
 \end{tabular}
 \end{center}
+\end{table}
 
 \vspace{0.5cm}
 
@@ -3057,6 +3056,8 @@ avec des choix d'entraînement sensiblement améliorés~:
 \end{itemize}
 En pratique, RoBERTa surpasse BERT-base sur quasi toutes les tâches de classification
 et est aujourd'hui la base la plus utilisée pour l'analyse de sentiments.
+
+\vfill
 
 \subsubsection{DistilBERT}
 
@@ -3257,13 +3258,17 @@ compatibilité.
 \end{center}
 \end{figure}
 
+\pagebreak
+
 \subsection{Résultats obtenues — Logan}
 
 Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a été réalisée par Logan seul, les résultats obtenues sont les suivants:\\
 
+\begin{center}
+  \textbf{Fine Tuning} pour chaque epoch et \textbf{Résultat} sur l'ensemble test~:\\
+\end{center}
 
 \begin{center}
-\textbf{Fine Tuning} pour chaque epoch~:\\
 \bigskip
 \begin{tabular}{@{}C{2cm}c@{}}
   \toprule
@@ -3274,14 +3279,9 @@ Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a
   3 & 0.3156 \\
   \bottomrule
 \end{tabular}
-\end{center}
-
-\vspace{1cm}
-
-\begin{center}
-\textbf{Résultat sur l’ensemble test}:\\
+\quad
 \bigskip
-\begin{tabular}{@{}lc@{}}
+\begin{tabular}{@{}L{3cm}c@{}}
   \toprule
   \textbf{Modèle} & \textbf{Accuracy test}\\
   \midrule
@@ -3290,7 +3290,7 @@ Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a
 \end{tabular}
 \end{center}
 
-\vspace{1cm}
+\vspace{0.5cm}
 
 \begin{center}
 \textbf{Classification Report}~:\\
@@ -3751,6 +3751,9 @@ Meilleur score obtenu : \textbf{0,702} (BERT, stratégie question-réponse, avec
 
 \section*{Modèles Hugging Face}
 \begin{itemize}
+  \item all-MiniLM-L6-v2 — Hugging Face.\\
+    \url{https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2}
+
   \item RoBERTa — Hugging Face.\\
     \url{https://huggingface.co/docs/transformers/model_doc/roberta}
   
