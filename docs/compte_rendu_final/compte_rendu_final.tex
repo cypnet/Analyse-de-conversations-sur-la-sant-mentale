@@ -3423,7 +3423,7 @@ ponctuation et des stopwords), garantissant ainsi une comparaison cohérente des
 \newpage
 \section{Détails de l'implémentation}
 Cette section présente les différentes étapes techniques de l’implémentation du système de question-réponse. Elle décrit les choix méthodologiques ainsi que les approches utilisées pour la construction de l’indexation et la mise en place des différentes méthodes de recherche de réponses. Les étapes sont ensuite détaillées dans les sous-sections suivantes.
-\subsection{Indexation inversée}
+\subsection{Indexation inversée (Lucas)}
 L’indexation inversée est une structure de données permettant d’associer chaque mot du corpus aux différentes questions et réponses dans lesquelles il apparaît.
 
 Sur le plan technique, le processus commence par le prétraitement de chaque question et
@@ -3431,16 +3431,6 @@ réponse. Chaque texte est normalisé en minuscules, puis la ponctuation est sup
 les mots vides (stopwords) sont retirés. Les textes sont ensuite tokenisés afin d’obtenir une
 liste de mots exploitables.
 
-Le code ci-dessous montre illustre le procesus de prétraitement des données : 
-\begin{lstlisting}
-# Nettoyage des données
-def text_process(mess):
-    lower_mess = mess.lower()
-    nopunc = [char for char in lower_mess if char not in string.punctuation]
-    nopunc = ''.join(nopunc)
-    clean_mess = [word for word in nopunc.split() if word not in stop_words]
-    return clean_mess
-\end{lstlisting}
 
 Ensuite, pour chaque paire (question, réponse), les tokens issus des deux éléments sont combinés
 afin de former un ensemble unique de mots représentatifs de la discussion. Ensuite, un
@@ -3457,37 +3447,8 @@ Formellement, la structure obtenue peut être représentée comme suit :
     \(\text{mot} \rightarrow \{(\text{question}, \text{réponse})\}\)
 \end{center}
 
-\newpage
 Cette représentation permet, pour un mot donné, d’accéder directement à l’ensemble des discussions dans lesquelles il apparaît, ce qui améliore considérablement l’efficacité des étapes de recherche et de similarité dans le système de question-réponse.
 
-Le code ci-dessous montre les détails de l'implémentation de cette fonction
-\begin{lstlisting}
-train_data["Context_clean"] = train_data["Context"].apply(text_process)
-train_data["Response_clean"] = train_data["Response"].apply(text_process)
-# Structure du dictionnaire : mot -> liste des discussions contenant ce type de mot
-index_inverse = {}
-SEUIL = 1
-for idx, row in train_data.iterrows():
-    question = row["Context"]
-    response = row["Response"]
-    #combine les mots de la question et de la réponse
-    mots = row["Context_clean"] + row["Response_clean"]
-    # Compter le nombre d'apparitions de chaque mot
-    from collections import Counter
-    compteur = Counter(mots)
-    for mot,count in compteur.items():
-        if count >= SEUIL:
-        #Si le mot n'existe pas encore dans le dictionnaire, on l'initialise
-            if mot not in index_inverse:
-                index_inverse[mot] = []
-            #On ajoute la discussion associée à ce mot dans la liste
-            index_inverse[mot].append({
-                "id": idx,
-                "question": question,
-                "response": response
-            })
-\end{lstlisting}
-\newpage
 \subsection{Implémentation du système question-réponse}
 Le système de question-réponse a été implémenté selon deux approches : une première basée sur la similarité entre questions, et une seconde reposant sur la comparaison directe entre la question et l’ensemble des réponses du corpus.
 \subsubsection{1. Similarité entre questions}
@@ -3630,10 +3591,10 @@ Dans ce travail, plusieurs approches de vectorisation sont utilisées afin de re
 Afin de transformer les données textuelles en représentations exploitables par le modèle, plusieurs méthodes de vectorisation ont été étudiées et mises en œuvre.
 
 \begin{itemize}
-    \item \textbf{TF-IDF : }C'est une méthode statistique de représentation des textes qui attribue un poids aux mots en fonction de leur fréquence dans un document et de leur rareté dans le corpus. Elle permet de mettre en avant les termes les plus discriminants.
-    \item \textbf{Word2Vec : }C'est une méthode de représentation vectorielle dans laquelle chaque mot est transformé en vecteur numérique dans un espace continu. La représentation d’une phrase est ensuite obtenue en calculant la moyenne des vecteurs des mots qui la composent, ce qui permet de capturer une similarité sémantique entre les textes.
+    \item \textbf{TF-IDF : }(Idir,Yvan) C'est une méthode statistique de représentation des textes qui attribue un poids aux mots en fonction de leur fréquence dans un document et de leur rareté dans le corpus. Elle permet de mettre en avant les termes les plus discriminants.
+    \item \textbf{Word2Vec : }(Laure,Trésor) C'est une méthode de représentation vectorielle dans laquelle chaque mot est transformé en vecteur numérique dans un espace continu. La représentation d’une phrase est ensuite obtenue en calculant la moyenne des vecteurs des mots qui la composent, ce qui permet de capturer une similarité sémantique entre les textes.
     \newpage
-    \item \textbf{BERT (all-MiniLM-L6-v2) : }BERT est un modèle de langage basé sur les Transformers qui génère des représentations contextuelles des phrases, en tenant compte du sens des mots selon leur contexte global.
+    \item \textbf{BERT (all-MiniLM-L6-v2) : (Idir,Yvan)}BERT est un modèle de langage basé sur les Transformers qui génère des représentations contextuelles des phrases, en tenant compte du sens des mots selon leur contexte global.
 \end{itemize}
 
 \subsection{ Evaluation des résultats}
