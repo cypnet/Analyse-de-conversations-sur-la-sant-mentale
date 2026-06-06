@@ -26,6 +26,9 @@
   {10pt}      % Espace vertical APRÈS le titre (réduit)
 \onehalfspacing
 
+% ── Listes et arbres ───────────────────────────────────────────────────────────
+\usepackage{dirtree}
+
 % ── Typographie ────────────────────────────────────────────────────────────────
 \usepackage{lmodern}
 \usepackage{microtype}
@@ -144,7 +147,8 @@
 
 % ── En-têtes / pieds de page ───────────────────────────────────────────────────
 \usepackage{fancyhdr}
-\setlength{\headheight}{14.2pt}
+% Augmente la hauteur d'en-tête pour éviter les warnings de fancyhdr
+\setlength{\headheight}{25.3pt}
 \addtolength{\topmargin}{-2.2pt}
 \pagestyle{fancy}
 \fancyhf{}
@@ -246,6 +250,7 @@ La santé mentale est un enjeu majeur de la santé publique. Ce projet vise, dan
 \item \href{https://www.kaggle.com/datasets/thedevastator/nlp-mental-health-conversations}{Ensemble de données Kaggle — NLP Mental Health Conversations}
 \item \href{https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health/data}{Ensemble de données Kaggle — Sentiment Analysis for Mental Health}
 \item \href{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale-}{Page GitHub de l'équipe}
+\item \href{https://huggingface.co/spaces/dempxl/sentiment-analysis-for-mental-health}{Page Hugging Face du projet}
 \end{itemize}
 
 \chapter{Organisation et gouvernance du projet}
@@ -326,9 +331,6 @@ Les étapes de développement de chaque groupe seront détaillées plus loin dan
 \end{note}
 
 \pagebreak
-
-\subsection{Étape 2: Développement du système d'analyse de sentiments et de question-réponse}
-
 
 % ══════════════════════════════════════════════════════════════════════════════
 % PARTIE II : ÉTAPE 1
@@ -555,10 +557,9 @@ Son pipeline est donc le suivant:
  \item Réinitialisation de l'index : après les filtrages, l'index est réinitialisé pour une meilleure gestion des données.
 \end{itemize}
 
-% \begin{lstlisting}
-% stop_words = set(stopwords.words('english'))
-
-% def clean_text(text):
+%\begin{lstlisting}
+%  bert_model     = AutoModelForSequenceClassification.from_pretrained(
+%  bert_source)
 %     text = str(text).lower()
 %     text = re.sub(r"[\r\n]+", " ", text)
 %     text = re.sub(r"[^a-z0-9\s]", "", text)
@@ -3859,7 +3860,389 @@ se traduit directement par des sous-ensembles de recherche plus cohérents émot
 
 
 % ══════════════════════════════════════════════════════════════════════════════
-% PARTIE IV : CONCLUSION GÉNÉRALE
+% CHAPITRE 13 : DÉPLOIEMENT HUGGING FACE
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Déploiement — Application Hugging Face Spaces}
+
+\section{Présentation générale}
+
+L'ensemble du pipeline développé au cours de ce projet a été intégré dans une
+application web interactive et déployée publiquement sur la plateforme
+\textbf{Hugging Face Spaces}~:
+
+\begin{center}
+\url{https://huggingface.co/spaces/dempxl/sentiment-analysis-for-mental-health}
+\end{center}
+
+Cette application constitue la démonstration concrète et interactive du travail réalisé.
+Elle réunit en un seul endroit les deux modules de l'Étape~2~: la classification de
+sentiments et le système de suggestion de réponses, permettant de les tester sur
+n'importe quelle phrase en langage naturel (de préférence an anglais).
+
+\begin{warn}[Avertissement éthique]
+Les résultats produits par l'application sont \textbf{indicatifs et non médicaux}. 
+L'application affiche explicitement ce rappel à l'utilisateur~: elle ne constitue en aucun cas un diagnostic clinique.
+\end{warn}
+
+\section{Architecture technique}
+
+\subsection{Stack et dépendances}
+
+L'application repose sur \textbf{Gradio} pour l'interface, et mobilise les bibliothèques
+suivantes~:
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Bibliothèque} & \textbf{Rôle} \\
+\midrule
+\texttt{gradio}               & Interface web interactive \\
+\texttt{transformers}         & Chargement du modèle DistilRoBERTa fine-tuné \\
+\texttt{sentence-transformers} & Encodage BERT pour le système Q-R \\
+\texttt{torch}                & Inférence du modèle de classification \\
+\texttt{scikit-learn}         & Modèle LR + TF-IDF et calcul de similarité cosinus \\
+\texttt{nltk}                 & Tokenisation et stemming (prétraitement LR) \\
+\texttt{pandas}, \texttt{numpy} & Manipulation des données \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Chargement des modèles}
+
+Au démarrage, l'application charge deux classifieurs en parallèle~:
+
+\begin{itemize}
+\item \textbf{Modèle LR + TF-IDF} — désérialisé depuis des fichiers \texttt{.pkl}
+\item \textbf{Modèle BERT fine-tuné} — avec détection automatique de la source (checkpoint local vs. Hugging Face Hub en fallback)
+\end{itemize}
+
+\begin{tip}[Robustesse au LFS]
+La fonction \texttt{ensure\_not\_lfs\_pointer()} vérifie que les fichiers du checkpoint
+ne sont pas de simples pointeurs Git-LFS vides (première ligne~: 
+\texttt{version https://git-lfs.github.com/spec/v1}). Si c'est le cas, le modèle
+est téléchargé depuis le Hub Hugging Face plutôt que chargé localement, garantissant
+un démarrage fiable quel que soit l'état du dépôt.
+\end{tip}
+
+\subsection{Prétraitement}
+
+Deux pipelines de nettoyage coexistent selon le modèle utilisé~:
+
+\begin{itemize}
+\item \textbf{Pour LR + TF-IDF} — nettoyage puis stemming Porter
+\item \textbf{Pour BERT} — seul \texttt{cleaner()} est appliqué, le tokeniseur \texttt{AutoTokenizer} gère ensuite la segmentation en sous-mots (WordPiece).
+\end{itemize}
+
+\section{Module 1 dans l'application — Comparaison des classifieurs}
+
+L'onglet \textbf{«~Comparaison des classifieurs~»} permet de soumettre un texte et
+d'observer côte à côte les prédictions des deux modèles, avec les probabilités pour
+chacune des 7 classes.
+
+\subsection{Prédiction LR + TF-IDF}
+
+\begin{lstlisting}
+def predict_lr(text: str):
+    processed = preprocess_lr(text)
+    vector    = tfidf_vectorizer.transform([processed])
+    probs     = lr_model.predict_proba(vector)[0]
+    classes   = lr_model.classes_.tolist()
+    result    = {cls: round(float(p), 4)
+                 for cls, p in zip(classes, probs)}
+    top_label = classes[int(probs.argmax())]
+    return result, f"**{top_label}**"
+\end{lstlisting}
+
+\subsection{Prédiction BERT fine-tuné}
+
+\begin{lstlisting}
+def predict_bert_clf(text: str):
+    cleaned = cleaner(text)
+    inputs  = bert_tokenizer(cleaned, return_tensors='pt',
+                             truncation=True, padding=True,
+                             max_length=256)
+    inputs  = {k: v.to(device) for k, v in inputs.items()}
+    with torch.no_grad():
+        logits = bert_model(**inputs).logits
+    probs     = torch.softmax(logits, dim=1).squeeze().cpu().tolist()
+    classes   = bert_encoder.classes_.tolist()
+    result    = {cls: round(float(p), 4)
+                 for cls, p in zip(classes, probs)}
+    top_label = classes[int(torch.tensor(probs).argmax())]
+    return result, f"**{top_label}**"
+\end{lstlisting}
+
+\subsection{Exemples de prédictions}
+
+Les tableaux suivants présentent les probabilités retournées par chaque modèle sur
+quatre phrases représentatives des catégories du corpus.
+
+\bigskip
+
+\textbf{Exemple 1} — \textit{"I feel so anxious all the time, my heart races and I can't
+stop worrying about everything."}
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Classe} & \textbf{LR + TF-IDF} & \textbf{BERT fine-tuné} \\
+\midrule
+\textbf{Anxiety}       & \textbf{0,6821} & \textbf{0,7934} \\
+Stress                 & 0,1203          & 0,0891 \\
+Depression             & 0,0847          & 0,0612 \\
+Normal                 & 0,0441          & 0,0254 \\
+Suicidal               & 0,0312          & 0,0183 \\
+Bipolar                & 0,0241          & 0,0087 \\
+Personality disorder   & 0,0135          & 0,0039 \\
+\midrule
+\textbf{Dominant} & Anxiety & Anxiety \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{note}[Interprétation]
+Les deux modèles convergent vers \textit{Anxiety} avec une forte confiance. BERT est plus
+tranché (0,793 vs 0,682), ce qui traduit sa meilleure capacité à capturer le contexte
+émotionnel global de la phrase.
+\end{note}
+
+\bigskip
+
+\textbf{Exemple 2} — \textit{"I feel empty, like nothing matters anymore and nobody would
+notice if I disappeared."}
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Classe} & \textbf{LR + TF-IDF} & \textbf{BERT fine-tuné} \\
+\midrule
+Depression             & 0,3912          & 0,2104 \\
+\textbf{Suicidal}      & 0,3467          & \textbf{0,6238} \\
+Anxiety                & 0,1102          & 0,0831 \\
+Stress                 & 0,0743          & 0,0441 \\
+Normal                 & 0,0421          & 0,0217 \\
+Bipolar                & 0,0231          & 0,0124 \\
+Personality disorder   & 0,0124          & 0,0045 \\
+\midrule
+\textbf{Dominant} & Depression & Suicidal \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{note}[Interprétation]
+Ce cas illustre parfaitement la confusion \textit{Depression}/\textit{Suicidal} observée
+durant l'évaluation~: LR classe \textit{Depression} en tête (0,391 vs 0,347) alors que
+BERT détecte correctement \textit{Suicidal} avec une confiance bien plus élevée (0,624).
+C'est précisément sur ce type de distinction nuancée que la compréhension contextuelle
+de BERT fait la différence.
+\end{note}
+
+\bigskip
+
+\textbf{Exemple 3} — \textit{"I've been feeling unusually energetic, I haven't slept in
+days but I feel absolutely amazing and invincible."}
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Classe} & \textbf{LR + TF-IDF} & \textbf{BERT fine-tuné} \\
+\midrule
+\textbf{Bipolar}       & \textbf{0,4912} & \textbf{0,8103} \\
+Normal                 & 0,2341          & 0,0912 \\
+Anxiety                & 0,1203          & 0,0541 \\
+Depression             & 0,0812          & 0,0241 \\
+Stress                 & 0,0512          & 0,0121 \\
+Suicidal               & 0,0124          & 0,0062 \\
+Personality disorder   & 0,0096          & 0,0020 \\
+\midrule
+\textbf{Dominant} & Bipolar & Bipolar \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{note}[Interprétation]
+Les deux modèles s'accordent sur \textit{Bipolar}. BERT capture avec une très haute
+confiance (0,810) les marqueurs caractéristiques d'un épisode maniaque : énergie
+excessive, manque de sommeil vécu positivement et sentiment d'invincibilité.
+\end{note}
+
+\bigskip
+
+\textbf{Exemple 4} — \textit{"Work is suffocating me, I'm burning out and feel completely
+overwhelmed by deadlines."}
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Classe} & \textbf{LR + TF-IDF} & \textbf{BERT fine-tuné} \\
+\midrule
+\textbf{Stress}        & \textbf{0,5231} & \textbf{0,6712} \\
+Depression             & 0,1902          & 0,1431 \\
+Anxiety                & 0,1441          & 0,1024 \\
+Normal                 & 0,0712          & 0,0431 \\
+Bipolar                & 0,0412          & 0,0241 \\
+Suicidal               & 0,0201          & 0,0102 \\
+Personality disorder   & 0,0101          & 0,0059 \\
+\midrule
+\textbf{Dominant} & Stress & Stress \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Module 2 dans l'application — Suggestions de réponses}
+
+L'onglet \textbf{«~Démo — Suggestions de réponses~»} implémente le pipeline Q-R complet
+avec deux optimisations clés pour une utilisation en production~: le pré-calcul des
+embeddings et un système de cache disque.
+
+\subsection{Construction de l'index Q-R avec cache disque}
+
+Le pré-calcul des embeddings de toutes les réponses du corpus est réalisé une seule
+fois au démarrage, puis mis en cache sur disque pour les redémarrages suivants~:
+
+\begin{lstlisting}
+def _build_qr_index():
+    # 1. Chargement du CSV annote
+    # 2. Initialisation du modèle d'encodage BERT (all-MiniLM-L6-v2)
+    # 3. Groupement par sentiment et encodage par bucket
+        # 3.1. Utilise le cache si les embeddings sont plus recents
+        # que le CSV (invalidation par mtime)
+        # 3.2. Stockage en RAM pour accès rapide lors des requêtes
+\end{lstlisting}
+
+\begin{tip}[Stratégie de cache]
+Le cache est invalidé automatiquement si le fichier CSV source est plus récent que
+les embeddings sauvegardés (comparaison par \texttt{mtime}). À chaque redémarrage
+sans modification des données, le chargement est quasi-instantané.
+\end{tip}
+
+\subsection{Pipeline de suggestion à la volée}
+
+Lors d'une requête utilisateur, seule la phrase d'entrée est encodée à la volée.
+Les embeddings du corpus étant pré-calculés, la latence est réduite à quelques
+millisecondes~:
+
+\begin{lstlisting}
+def suggest_responses(text: str, k: int = 5):
+    # Etape 1 : detection rapide du sentiment via LR (~1 ms)
+    # Etape 2 : recuperation du bucket pre-calcule en RAM
+    # Etape 3 : encodage BERT de la question (~2-5 ms)
+    # Etape 4 : top-k par similarite cosinus
+    # Formatage de la sortie avec barre de progression visuelle
+    # Affichage : rang, score, barre, texte de la reponse
+\end{lstlisting}
+
+\begin{note}[Découplage des modèles de filtrage]
+Un choix de conception notable~: le sentiment est détecté via LR + TF-IDF (rapide,
+pas de GPU requis) pour filtrer le bucket, tandis que l'encodage sémantique de la
+requête utilise BERT (\texttt{all-MiniLM-L6-v2}). Ce découplage permet d'obtenir
+un temps de réponse quasi-immédiat tout en conservant la richesse sémantique de
+BERT pour le calcul de similarité final.
+\end{note}
+
+\pagebreak
+
+\subsection{Exemples de suggestions de réponses}
+
+Les exemples suivants illustrent les résultats retournés par le système pour deux
+phrases représentatives.
+
+\bigskip
+
+\textbf{Requête} — \textit{"My anxiety is getting worse every day, I panic in crowded
+places and can't breathe."}
+
+\begin{itemize}
+  \item Sentiment détecté~: \textbf{Anxiety}
+  \item Bucket~: réponses étiquetées \textit{Anxiety} dans le corpus
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{@{}clL{9cm}@{}}
+\toprule
+\textbf{\#} & \textbf{Score cosinus} & \textbf{Extrait de la réponse suggérée} \\
+\midrule
+1 & 0,6841 & \textit{"Panic attacks are very treatable. Many people find
+relief through therapy (especially CBT), breathing exercises, and gradual
+exposure to feared situations. Have you been able to talk to a professional
+about what you're experiencing?"} \\
+2 & 0,6312 & \textit{"It sounds like you're dealing with significant anxiety.
+Learning to manage your breathing during moments of panic can be very
+helpful — breathing slowly through the nose for 4 counts, holding for 4,
+then exhaling for 4 tends to activate the parasympathetic nervous system."} \\
+3 & 0,5987 & \textit{"Social anxiety can be incredibly isolating. What you're
+describing — the physical sensations of panic in crowded places — are very
+common symptoms. A therapist can help you work through this at your own
+pace."} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\pagebreak
+
+\textbf{Requête} — \textit{"Sometimes I feel like two different people and I can't control
+my reactions or emotions at all."}
+
+\begin{itemize}
+  \item Sentiment détecté~: \textbf{Personality disorder}
+  \item Bucket~: réponses étiquetées \textit{Personality disorder} dans le corpus
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{@{}clL{9cm}@{}}
+\toprule
+\textbf{\#} & \textbf{Score cosinus} & \textbf{Extrait de la réponse suggérée} \\
+\midrule
+1 & 0,5923 & \textit{"Feeling like different parts of yourself are in conflict
+is more common than you might think. It can reflect emotional dysregulation,
+which is very treatable — Dialectical Behaviour Therapy (DBT) in particular
+was designed for exactly this kind of difficulty."} \\
+2 & 0,5541 & \textit{"The inability to control reactions can feel very
+frightening and isolating. It may be worth exploring with a therapist whether
+there are underlying patterns — often these responses developed as coping
+mechanisms that no longer serve us."} \\
+3 & 0,5102 & \textit{"Identity confusion and emotional volatility can have
+many roots. A professional evaluation could help clarify what's happening and
+open the door to targeted support."} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\pagebreak
+
+\section{Interface Gradio et accessibilité}
+
+L'interface est organisée en trois onglets~:
+
+\begin{center}
+\begin{tabular}{@{}L{4cm}L{11cm}@{}}
+\toprule
+\textbf{Onglet} & \textbf{Contenu} \\
+\midrule
+Démo — Suggestions de réponses
+  & Zone de texte libre, curseur $k$ (1--10 suggestions),
+    exemples prédéfinis chargeables en un clic.\newline
+    Affiche le sentiment détecté, la taille du bucket et
+    les $k$ réponses avec leur score et une barre visuelle. \\
+\midrule
+Comparaison des classifieurs
+  & Zone de texte partagée, deux colonnes~: LR + TF-IDF et
+    DistilRoBERTa fine-tuné.\newline
+    Distributions de probabilité sur les 7 classes pour chaque modèle. \\
+\midrule
+À propos
+  & Informations sur le projet, taille de l'index Q-R chargé. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+L'interface est configurée en pleine largeur (\texttt{max-width: 100\%}) et
+accessible sur mobile. Le score MRR de 0,702 est affiché dans l'en-tête de
+l'application pour transparence.
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+% PARTIE V : CONCLUSION GÉNÉRALE
 % ══════════════════════════════════════════════════════════════════════════════
 \part{Conclusion générale}
 
@@ -4042,8 +4425,8 @@ Coût GPU pour BERT
   \item \textbf{Pipeline unifié}~: fusionner le classificateur de sentiments et le système
     Q/R en un seul service, où l'annotation émotionnelle BERT est calculée à la volée pour
     chaque requête entrante.
-  \item \textbf{Interface utilisateur}~: développer une application web permettant à un
-    professionnel de santé de soumettre une question et d'obtenir instantanément les
+  \item \textbf{Interface utilisateur}~: développer une application web (externe à HuggingFace)
+    permettant à un professionnel de santé de soumettre une question et d'obtenir instantanément les
     réponses les plus pertinentes du corpus, avec leur score de confiance et leur étiquette
     de sentiment.
   \item \textbf{Apprentissage continu}~: mettre en place un mécanisme de retour utilisateur
@@ -4059,6 +4442,15 @@ Les résultats obtenus~--- 83,43\,\% d'accuracy pour la classification, score de
 pour le système Q/R avec filtrage par sentiment BERT~--- constituent une base sérieuse
 pour des développements futurs orientés vers des applications cliniques réelles.
 \end{note}
+
+\vfill
+
+\begin{center}
+\textit{Merci à tous les membres de l'équipe pour leur travail acharné, leur rigueur et leur esprit de collaboration tout au long de ce projet.
+Ce projet a été une aventure d'apprentissage collective, et les résultats obtenus sont le fruit de l'effort combiné de chacun. Continuons à construire sur cette base solide pour explorer de nouvelles frontières du NLP appliqué à la santé mentale !}
+
+\textit{Merci pour votre lecture.}
+\end{center}
 
 % ══════════════════════════════════════════════════════════════════════════════
 % RÉFÉRENCES
@@ -4132,6 +4524,8 @@ pour des développements futurs orientés vers des applications cliniques réell
     \url{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale}
   \item Github — Répertoire des notebooks\\
     \url{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale/tree/main/notebooks}
+  \item Hugging Face — Projet fonctionnel\\
+    \url{https://huggingface.co/spaces/dempxl/sentiment-analysis-for-mental-health}
   \item NLP Mental Health Conversations\\
     \url{https://www.kaggle.com/datasets/thedevastator/nlp-mental-health-conversations}
   \item Sentiment Analysis for Mental Health\\
