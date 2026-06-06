@@ -24,36 +24,56 @@ Ce projet vise à analyser un corpus de conversations entre patients et thérape
 ## 📁 Structure du dépôt
 
 ```
-├── bilan_mi_parcours/          # Rapport de mi-parcours
-│   ├── bilan-mi-parcours.pdf   
-│   └── bilan-mi-parcours.tex 
-├── data/
-│   └── train.csv               # Jeu de données Kaggle (conversations patient-thérapeute)
-├── img/                        # Images utilisées dans le projet
-│   └── ...
-├── notebooks/                  # Notebooks de l'équipe
-│   ├── CRUZDiogo/
-│   ├── EMIN/
-│   ├── LAURE/
-│   ├── LOGAN/
-│   ├── LUCAS/
-│   ├── TRESOR/
-│   ├── ULYSSE/
-│   ├── VICTOR/
-│   ├── YVAN/
-│   └── IDIR/
-├── comptes_rendus/                 # Compte rendu pour chaque étapes   
-│   ├── etape1/                     # Compte rendu pour l'étape 1
-│   │   ├── compte_rendu_etape1.md  
-│   │   ├── compte_rendu_etape1.pdf
-│   │   └── compte_rendu_etape1.tex
-│   └── etape2/                     # Compte rendu pour l'étape 2 
-│       ├── compte_rendu_etape2.md  
-│       ├── compte_rendu_etape2.pdf
-│       └── compte_rendu_etape2.tex
-├── .gitignore
-├── requirements.txt                # Bibliothèques python nécessaires 
-└── README.md
+├── data
+│   ├── combined_data.csv
+│   ├── test.csv
+│   ├── train.csv
+│   ├── train_unique_e2p2.csv
+│   └── train_with_sentiments.csv
+├── docs
+│   ├── BE___Cahier_des_charges.pdf
+│   ├── bilan_mi_parcours
+│   │   ├── bilan-mi-parcours.pdf
+│   │   └── bilan-mi-parcours.tex
+│   ├── compte_rendu_final
+│   │   ├── compte_rendu_final.pdf
+│   │   └── compte_rendu_final.tex
+│   ├── comptes_rendus
+│   │   ├── etape1
+│   │   │   ├── compte_rendu_etape1.md
+│   │   │   ├── compte_rendu_etape1.pdf
+│   │   │   └── compte_rendu_etape1.tex
+│   │   └── etape2
+│   │       ├── groupe1
+│   │       │   ├── compte_rendu_etape2_BERT.pdf
+│   │       │   ├── compte_rendu_etape2_BERT.tex
+│   │       │   ├── compte_rendu_etape2.pdf
+│   │       │   ├── compte_rendu_etape2.tex
+│   │       │   └── compte_rendu_groupe_1.md
+│   │       └── groupe2
+│   │           ├── compte_rendu_etape2.pdf
+│   │           └── compte_rendu_groupe2.md
+│   ├── img
+│   │   └── ...
+│   └── structure_resume_etape2
+│       ├── structure_etape2.pdf
+│       └── structure_etape2.tex
+├── img
+│   ├── IRIT_logo.png
+│   └── universite-de-toulouse-logo.png
+├── notebooks
+│   ├── CRUZDiogo
+│   ├── EMIN
+│   ├── idir
+│   ├── LAURE
+│   ├── LOGAN
+│   ├── LUCAS
+│   ├── Trésor
+│   ├── ULYSSE
+│   ├── Victor
+│   └── Yvan
+├── README.md
+└── requirements.txt
 
 ```
 
@@ -75,6 +95,8 @@ pip install -r requirements.txt
 ---
 
 ## 🚀 Utilisation
+
+**Une démonstration du projet est disponible** sur [HugginFace](https://huggingface.co/spaces/dempxl/sentiment-analysis-for-mental-health)  
 
 Ce projet n'a pas pour but d'être exécuté dans sa totalité, celui-ci propose divers dossiers dans lesquels se situent les notebook Jupyter de l'équipe que vous pouvez exécuter à part.
 
@@ -117,7 +139,6 @@ Le jeu de donnée utilisé pour l'étape 2 est publié sur [Kaggle](https://www.
 les catégories des sentiments où les annotations sont fournies manuellement par les thérapeutes.
 
 
-
 > ⚠️ Les fichiers `train.csv` et `combined_data.csv` sont commun à toute l'équipe et se situe dans le dossier `data/`.
 
 ---
@@ -126,11 +147,11 @@ les catégories des sentiments où les annotations sont fournies manuellement pa
 
 | Livrable | Date prévue | Statut |
 |----------|-------------|--------|
-| Cahier des charges | 15 mars 2026 | ✅ Rendu |
-| Bilan de mi-parcours | 20 avril 2026 | ✅ Rendu |
-| Livrable technique mensuel | Mensuel | 🔄 En cours |
-| Compte rendu des étapes | Chaque fin <br> d'étapes | 🔄 En cours |
-| Rapport final + documentation technique | 1 juin 2026 | ⏳ À venir |
+| Cahier des charges | 15 mars 2026 | [x] Rendu |
+| Bilan de mi-parcours | 20 avril 2026 | [x] Rendu |
+| Livrable technique mensuel | Mensuel | [x] Terminé |
+| Compte rendu des étapes | Chaque fin <br> d'étapes | [x] Terminé |
+| Rapport final + documentation technique | 1 juin 2026 | [ ] En cours |
 
 ---
 
