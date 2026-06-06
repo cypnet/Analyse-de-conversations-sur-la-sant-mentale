@@ -264,10 +264,10 @@ L'organisation a évolué en deux phases :
 \section{Définition des rôles}
 La direction du projet dans sa globalité est assurée par \textbf{Logan LARROUX}, 
 qui supervise les deux groupes et garantit la cohérence des livrables.
-Après constatation de l'ampleur des tâches à réaliser lors de l'étape 1, une bien meilleur organisation a été mise en place pour l'étape 2, avec des chefs de groupe dédiés à chaque axe d'analyse.
+Après constatation de l'ampleur des tâches à réaliser lors de l'étape 1, une bien meilleure organisation a été mise en place pour l'étape 2, avec des chefs de groupe dédiés à chaque axe d'analyse.
 
 \subsection{Organisation étape 1: Exploration du jeu de données}
-Lors de l'étape 1 chaque membre de l'équipe s'est vue assigné les mêmes tâches, afin d'en comparer et de contraster les résultats.
+Lors de l'étape 1 chaque membre de l'équipe s'est vue assigner les mêmes tâches, afin d'en comparer et de contraster les résultats.
 
 \textbf{Liste des membres: }
 \begin{itemize}
@@ -285,7 +285,7 @@ Lors de l'étape 1 chaque membre de l'équipe s'est vue assigné les mêmes tâc
 
 \subsection{Organisation étape 2: Développement du système d'analyse de sentiments et de question-réponse}
 Comme dit précédemment, l'étape 2 a été divisée en deux groupes distincts, avec des rôles clairement définis pour chaque membre.
-En plus de cette séparation dans ses deux groupes, nous avons de nouveau séparé les tâches en sous-tâches, afin de mieux répartir le travail et d'assurer une meilleure coordination entre les membres.
+En plus de cette séparation dans ces deux groupes, nous avons de nouveau séparé les tâches en sous-tâches, afin de mieux répartir le travail et d'assurer une meilleure coordination entre les membres.
 
 \subsubsection{Groupe 1: Analyse des sentiments des conversations}
 \textbf{Chef de groupe: Cruz Fernandes Diogo}
@@ -468,7 +468,7 @@ Les \textit{stopwords} (mots vides) sont des mots sans réelle signification sé
 \texttt{token.is\_punct}.
 
 Des mots trop génériques mais non reconnus comme stopwords ont également été filtrés
-manuellement, voici deux exemple de listes d'extra\_stopwords utilisées par Logan et Lucas:
+manuellement, voici deux exemples de listes d'extra\_stopwords utilisées par Logan et Lucas:
 
 \begin{lstlisting}
 # Exemple - Logan
@@ -519,8 +519,8 @@ df["Context_clean"] = [
 
 \section{Nettoyage — Approches comparées}
 
-Puisque ce pipeline n'a pas était imposé, chaque membre a pu appliquer son propre pré-traitement, avec des niveaux de filtrage différents.
-Prennons l'exemple de deux approches contrastées, celle d'Emin et celle de Diogo.
+Puisque ce pipeline n'a pas été imposé, chaque membre a pu appliquer son propre pré-traitement, avec des niveaux de filtrage différents.
+Prenons l'exemple de deux approches contrastées, celle d'Emin et celle de Diogo.
 
 \subsection{Approche minimaliste (Emin)}
 
@@ -536,7 +536,7 @@ df = df.reset_index(drop=True)
 \end{lstlisting}
 
 \subsection{Approche étendue (Diogo)}
-Un version beaucoup plus étendu est celle de Diogo, qui inclut un nettoyage plus poussé du texte, 
+Une version beaucoup plus étendue est celle de Diogo, qui inclut un nettoyage plus poussé du texte, 
 ainsi qu'un filtrage pour ne garder que les conversations en anglais.\\
 Cette approche réduit le nombre de patients et de thérapeutes uniques, 
 mais améliore la qualité des données en éliminant les réponses non pertinentes ou 
@@ -578,8 +578,8 @@ Son pipeline est donc le suivant:
 % \end{lstlisting}
 
 \begin{warn}[Lemmatisation et tokenisation]
-L'application de la lemmatisation (et de la tokenisation) pour l'analyse du texte a été un débat au seins de l'équipe.
-La grande majorité de l'équipe a décider de ne pas l'appliquer lors de l'analyse statistique et lexicale du corpus, 
+L'application de la lemmatisation (et de la tokenisation) pour l'analyse du texte a été un débat au sein de l'équipe.
+La grande majorité de l'équipe a décidé de ne pas l'appliquer lors de l'analyse statistique et lexicale du corpus, 
 afin de conserver les formes originales des mots.
 \end{warn}
 
@@ -819,7 +819,7 @@ en commençant par une méthode manuelle basée sur un lexique personnalisé, pu
 
 \begin{note}[Remarque importante]
 \textbf{Chaque membre de l'équipe a appliqué sa propre version de ces méthodes}, ce qui nous a permis d'avoir une diversité d'approches et de résultats à comparer.
-Par question de clareté, nous allons présenter les résultats de chaque méthode de manière synthétique, en présentant les résultats les plus pertinents et en discutant de leurs avantages et limites respectifs.\\
+Par question de clarté, nous allons présenter les résultats de chaque méthode de manière synthétique, en présentant les résultats les plus pertinents et en discutant de leurs avantages et limites respectifs.\\
 (\textit{voir les notebooks\footnotemark{} individuels pour les détails de chaque implémentation}).
 \end{note}
 \footnotetext{\href{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale/tree/main/notebooks}{Liens github des notebooks}}
@@ -856,7 +856,7 @@ Le but de cette première section était de nous introduire le principe de dicti
 ainsi que de nous familiariser avec les thématiques récurrentes dans les conversations de santé mentale.
 
 \begin{note}[Remarque]
-  Ce filtrage manuelle étant bien entendu subjectif, il ne sera pas appliqué dans les méthodes de topic modeling, qui sont plus robustes à ce type de bruit lexical.
+  Ce filtrage manuel étant bien entendu subjectif, il ne sera pas appliqué dans les méthodes de topic modeling, qui sont plus robustes à ce type de bruit lexical.
 \end{note}
 
 Nous allons présenter deux exemples de lexiques, l'un minimaliste (Trésor) et l'autre plus étendu (Diogo). 
@@ -911,9 +911,9 @@ Classification multi-label naturelle & Insensible au contexte d'usage d'un mot \
 \bigskip
 
 Toute l'équipe est en accord avec trois thématiques principales: anxiété, dépression et relations.
-Or cela ne signifie pas que ses thématiques sont les plus fréquentes,
-bien au contraire! D'autres thèmes bien plus spécifique auquels on ne pensserais pas peuvent faire leur apparition. 
-D'où l'intérêt de méthodes plus robustes et moins sujetives que le lexique manuel. 
+Or cela ne signifie pas que ces thématiques sont les plus fréquentes,
+bien au contraire! D'autres thèmes bien plus spécifiques auxquels on ne penserait pas peuvent faire leur apparition. 
+D'où l'intérêt de méthodes plus robustes et moins subjetives que le lexique manuel. 
 
 \pagebreak
 
@@ -947,9 +947,9 @@ discrimine mieux les termes et les scores sont plus significatifs.
 
 \subsubsection{Vectorisation TF-IDF}
 On ne peut malheureusement pas utiliser TF-IDF directement sur les textes bruts, il faut d'abord les vectoriser.
-Vectoriser un texte signifie le transformer en une représentation numérique, pour que par la suite les algorithme puisse les traiter.\\
+Vectoriser un texte signifie le transformer en une représentation numérique, pour que par la suite les algorithmes puissent les traiter.\\
 Pour cela, nous allons utiliser la fonction \texttt{TfidfVectorizer} de la bibliothèque \textbf{scikit-learn}.
-Cette fonction à de grand avantages, elle permet de:
+Cette fonction a de grands avantages, elle permet de:
 \begin{itemize}
   \item lister tout les mots uniques
   \item définir le score TF
@@ -968,7 +968,7 @@ Cette fonction à de grand avantages, elle permet de:
 
 \subsubsection{Clustering K-Means}
 Après avoir vectorisé les textes en utilisant TF-IDF, nous obtenons une matrice de taille $N \times M$ (où $N$ est le nombre de documents et $M$ le nombre de mots uniques).
-Gràce à cette matrice, nous allons pouvoir maintenant regroupper les mots similaires en \textbf{clusters},
+Gràce à cette matrice, nous allons pouvoir maintenant regrouper les mots similaires en \textbf{clusters},
 or nous devons dans un premier temps définir le nombre de clusters $K$ à utiliser.
 Un des risques est de choisir un $K$ trop petit ou trop grand, 
 ce qui peut conduire à des clusters peu significatifs ou à un sur-apprentissage.
@@ -1200,7 +1200,7 @@ BERT (\textit{Bidirectional Encoder Representations from Transformers}) est un m
 Contrairement à Word2Vec, qui génère des embeddings statiques pour chaque mot, BERT produit des embeddings contextuels : le vecteur d'un mot dépend donc de la phrase dans laquelle il apparaît.
 
 \begin{note}[Remarque]
-Le modèle BERT, ayant sa partie dédié dans la troisièmre partie, sera expliqué bien plus en détails à ce moment là.
+Le modèle BERT, ayant sa partie dédiée dans la troisième partie, sera expliqué bien plus en détails à ce moment là.
 \end{note}
 
 \subsubsection*{Résultats avec $K = 8$}
@@ -1288,7 +1288,7 @@ La dernière méthode que nous allons présenter, basée sur \textbf{LDA}, offre
 
 \section{Méthode 4 : LDA (Latent Dirichlet Allocation)}
 
-\subsection{Qu'est ce que le LDA ?}
+\subsection{Qu'est-ce que le LDA ?}
 
 Le \textbf{LDA} (\textit{Latent Dirichlet Allocation}) est un modèle génératif probabiliste
 permettant de découvrir des sujets latents dans un corpus. C'est une approche bayésienne qui
@@ -1311,7 +1311,7 @@ LDA produit deux sorties :
 \bigskip
 
 Dans cette méthode, nous allons utiliser la bibliothèque \textbf{gensim} pour implémenter LDA, en utilisant les représentations de documents au format bag-of-words (corpus) et le dictionnaire de mots (id2word).
-De plus, selon les membres, nous avons définit un nombre de thèmes $N\_TOPICS$ et un nombre de passes $PASSES$ pour l'entraînement du modèle.
+De plus, selon les membres, nous avons défini un nombre de thèmes $N\_TOPICS$ et un nombre de passes $PASSES$ pour l'entraînement du modèle.
 \begin{figure}[ht]
   \begin{lstlisting}
     N_TOPICS = 6
@@ -1416,7 +1416,7 @@ Fondement probabiliste rigoureux         & Ne capture pas le contexte long \\
 
 \bigskip
 
-Les résultats obtenues avec LDA sont généralement plus interprétables que ceux obtenus avec les méthodes basées sur les embeddings, car ils fournissent une distribution de mots pour chaque thème. 
+Les résultats obtenus avec LDA sont généralement plus interprétables que ceux obtenus avec les méthodes basées sur les embeddings, car ils fournissent une distribution de mots pour chaque thème. 
 Cependant, le choix du nombre de topics ($N\_TOPICS$) est crucial et peut grandement influencer la qualité des résultats. De plus, \textbf{LDA ne capture pas les relations à long terme entre les mots}, ce qui peut limiter sa capacité à identifier des thèmes plus complexes.
 
 \smallskip
@@ -1469,7 +1469,7 @@ LDA
 \textbf{Que peut-on en conclure?} Il n'existe pas de méthode universelle pour l'analyse de texte, et \textbf{le choix dépend fortement des objectifs spécifiques, 
 de la nature du corpus et des ressources disponibles}. Dans notre cas spécifique, la combinaison de plusieurs méthodes (ex. LDA pour l'analyse thématique + Sentence Transformer pour le clustering) 
 pourrait offrir une approche plus complète et nuancée. 
-Cepandant, cela nécessite une expertise plus approfondie et une validation rigoureuse pour éviter les biais et les interprétations erronées.
+Cependant, cela nécessite une expertise plus approfondie et une validation rigoureuse pour éviter les biais et les interprétations erronées.
 
 \chapter{Bilan de l'étape 1}
 
@@ -1501,7 +1501,7 @@ Normalisation des sorties
 \end{tabularx}
 \end{center}
 
-Ses résultats ont conduit à une révue complète de l'organisation pour la prochaine étape, avec une standardisation des résultats et une meilleure documentation pour faciliter la collaboration.
+Ces résultats ont conduit à une revue complète de l'organisation pour la prochaine étape, avec une standardisation des résultats et une meilleure documentation pour faciliter la collaboration.
 
 \pagebreak
 
@@ -2514,7 +2514,7 @@ santé mentale, en s'appuyant sur le même corpus d'entraînement
 Ce qui change, c'est \textbf{la profondeur de la représentation~:} là où TF-IDF ne comptait que des
 mots, BERT modélise le langage dans toute sa complexité contextuelle.
 
-\textbf{Trois variantes de BERT} sont implémentées, dont l'une d'entre elles grandement privilégié par l'équipe. 
+\textbf{Trois variantes de BERT} sont implémentées, dont l'une d'entre elles grandement privilégiée par l'équipe. 
 Elles sont ensuite comparées entre elles et avec les résultats du notebook principal~:
 
 \begin{center}
@@ -2530,9 +2530,9 @@ Elles sont ensuite comparées entre elles et avec les résultats du notebook pri
 \end{center}
 
 \begin{note}[Remarque]
-Chaque membre a décidé de ça propre volonté la méthode qu'il préférais implémenter. 
+Chaque membre a décidé de sa propre volonté la méthode qu'il préférait implémenter. 
 Cette partie, étant considéré comme un bonus, était présente pour permettre aux membres de l'équipe de découvrir et explorer la méthode qu'il préférait.
-Ce choix a donc était fait en amond afin de définir les tâches à réaliser pour chaque membre de l'équipe.
+Ce choix a donc été fait en amont afin de définir les tâches à réaliser pour chaque membre de l'équipe.
 \end{note}
 
 \pagebreak
@@ -2606,7 +2606,7 @@ y_test_enc  = encoder.transform(y_test)
 # num_labels = 7
 \end{lstlisting}
 
-Maintenant que nous avons mis en place les bases communes, nous pouvons détailler les implémentations de chaque modèle et les résultats obtenues.
+Maintenant que nous avons mis en place les bases communes, nous pouvons détailler les implémentations de chaque modèle et les résultats obtenus.
 
 \pagebreak
 
@@ -2714,9 +2714,9 @@ renseignés à l'issue de l'implémentation.
 
 \pagebreak
 
-\subsection{Résultats obtenues — Diogo}
+\subsection{Résultats obtenus — Diogo}
 
-Diogo s'étant occupé de cette méthode seul, les résultats obtenues sont les suivants:\\
+Diogo s'étant occupé de cette méthode seul, les résultats obtenus sont les suivants:\\
 
 \begin{center}
 \begin{tabular}{@{}lc@{}}
@@ -2941,10 +2941,10 @@ identiquement au Modèle~A.
 
 \pagebreak
 
-\subsection{Résultats obtenues — Diogo, Ulysse, Victor et Emin}
+\subsection{Résultats obtenus — Diogo, Ulysse, Victor et Emin}
 
 Étant la méthode la plus apprécié par l'équipe, Diogo, Ulysse, Victor et Emin se sont occupé de 
-celle-ci, les résultats obtenues sont les suivants:\\
+celle-ci, les résultats obtenus sont les suivants:\\
 
 \begin{center}
   \textbf{Fine Tuning} pour chaque epoch et \textbf{Résultat} sur l'ensemble test~:\\
@@ -3260,9 +3260,9 @@ compatibilité.
 
 \pagebreak
 
-\subsection{Résultats obtenues — Logan}
+\subsection{Résultats obtenus — Logan}
 
-Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a été réalisée par Logan seul, les résultats obtenues sont les suivants:\\
+Contrairement à la précédente, celle-ci est un peu plus complexe et donc a été réalisée par Logan seul, les résultats obtenus sont les suivants:\\
 
 \begin{center}
   \textbf{Fine Tuning} pour chaque epoch et \textbf{Résultat} sur l'ensemble test~:\\
@@ -3380,7 +3380,7 @@ et que le gain du pré-entraînement spécialisé est limité dans ce cas.
 Le compromis coût/performance penche en faveur du Modèle B pour une utilisation en production,
 car il offre une excellente performance pour un coût d'entraînement raisonnable, tandis que le Modèle C, bien que légèrement meilleur,
 nécessite un pré-entraînement plus coûteux et n'apporte qu'un gain marginal.
-Malgrès une grande amélioration des classes difficiles (Personality disorder, Stress, Suicidal) avec les modèles BERT,
+Malgré une grande amélioration des classes difficiles (Personality disorder, Stress, Suicidal) avec les modèles BERT,
 ces classes restent les plus problématiques. 
 
 \subsubsection{4. Classes difficiles}
