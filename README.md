@@ -96,7 +96,7 @@ pip install -r requirements.txt
 
 ## 🚀 Utilisation
 
-**Une démonstration du projet est disponible** sur [HugginFace](https://huggingface.co/spaces/dempxl/sentiment-analysis-for-mental-health)  
+**Une démonstration du projet est disponible** sur [HugginFace 🤗](https://huggingface.co/spaces/dempxl/sentiment-analysis-for-mental-health)  
 
 Ce projet n'a pas pour but d'être exécuté dans sa totalité, celui-ci propose divers dossiers dans lesquels se situent les notebook Jupyter de l'équipe que vous pouvez exécuter à part.
 
