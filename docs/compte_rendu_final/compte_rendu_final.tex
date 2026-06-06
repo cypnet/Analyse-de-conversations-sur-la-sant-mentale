@@ -814,7 +814,7 @@ Pour cela, nous allons appliquer différentes méthodes de \textbf{topic modelin
 
 \pagebreak
 
-\chapter{Topic Modeling}
+\chapter{Topic Modeling}\label{chap:topic_modeling}
 
 \section{Préambule}
 Le \textbf{topic modeling} est une technique d'extraction de thèmes latents à partir d'un corpus de textes.
@@ -1876,7 +1876,7 @@ Mesure la similarité entre les vrais labels et les clusters trouvés, en corrig
 % ==============================================================================
 
 % ------------------------------------------------------------------------------
-\subsection{Méthode supervisée --- Naive Bayes et Logistic Regression}
+\subsection{Méthode supervisée --- Naive Bayes, Logistic Regression et LinearSVC}
 % ------------------------------------------------------------------------------
 
 \subsubsection*{Qu'est-ce que Naive Bayes ?}
@@ -2028,7 +2028,7 @@ TF-IDF est meilleur sur les deux classes les plus représentées (\textit{Normal
 \subsubsection{Logan --- Naive Bayes + Logistic Regression}
 % ------------------------------------------------------------------------------
 
-Logan a produit le notebook de base structurant le travail commun. Sa contribution individuelle principale est l'implémentation d'une \textbf{Régression Logistique} (LR + TF-IDF optimisé), identifiée comme «~version extra-performante~».
+Logan a produit le notebook de base structurant le travail commun. Sa contribution individuelle principale est l'implémentation d'une \textbf{Régression Logistique} (LR + TF-IDF optimisé).
 
 \textbf{Paramétrage TF-IDF amélioré~:}
 \begin{lstlisting}
@@ -2118,9 +2118,9 @@ Après l'implémentation de Naive Bayes et Logistic Regression, Diogo a exploré
   \item Meilleur C TF-IDF : \textbf{1.0} (accuracy : 0.7386)
 \end{itemize}
 
-\begin{remarque}
+\begin{warn}[Attention]
 Avec seulement 3 valeurs testées, le temps de traitement atteint déjà \textbf{8 minutes}. Une stratégie d'optimisation \textit{coarse-to-fine} est envisageable~: une \textit{coarse search} sur une large plage (ex.~: 0.001, 0.01, 0.1, 1, 10, 100) pour repérer la bonne zone, puis une \textit{fine search} plus précise autour des meilleures valeurs trouvées.
-\end{remarque}
+\end{warn}
 
 \textbf{Classification report (LinearSVC + BoW)~:}
 
@@ -2246,7 +2246,7 @@ NB reste nettement distancé sur toutes les classes minoritaires. Cet écart est
 
 L'algorithme K-Means regroupe les textes en calculant la \textbf{proximité mathématique} entre les vecteurs. Il place des centres (centroïdes) de manière aléatoire, puis les déplace itérativement jusqu'à ce que chaque texte soit rattaché au groupe le plus proche, minimisant ainsi l'inertie totale.
 
-Le sous-groupe non-supervisé a comparé deux approches de vectorisation~: \textbf{TF-IDF + SVD} et \textbf{Word2Vec}.
+Le sous-groupe non-supervisé a comparé deux approches de vectorisation~: \textbf{Word2Vec} et \textbf{TF-IDF + SVD}.
 
 % ------------------------------------------------------------------------------
 \subsubsection{Victor --- Implémentation Word2Vec}
@@ -2326,16 +2326,13 @@ Pureté min cluster      & 0.30 (\textit{Personality disorder}) & 0.30 (\textit{
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{matriceConfusion_Kmeans_W2V_TF_IDF_Victor.png}
-  \caption{Matrice de confusion --- K-Means final (TF-IDF vs Word2Vec)}
+  \caption{Matrice de confusion --- K-Means final (TF-IDF)}
 \end{figure}
 
 \pagebreak
 \begin{note}[Remarque]
 Contra-intuitivement, TF-IDF (46\,\%) surpasse Word2Vec (20\,\%). Les catégories cliniques du dataset (\textit{Depression}, \textit{Anxiety}, etc.) se reconnaissent avant tout par un \textbf{vocabulaire symptomatique spécifique}, ce que TF-IDF met précisément en avant. Word2Vec, qui regroupe les mots par contexte sémantique large, tend à fusionner \textit{Depression} et \textit{Suicidal} dans les mêmes clusters --- le mapping glouton force alors ces gros clusters sur des labels minoritaires, effondrant l'accuracy globale.
 \end{note}
-
-\textbf{Modèle retenu pour le non-supervisé~:} K-Means + TF-IDF.\\
-\textbf{Fichier produit~:} \texttt{train\_with\_sentiments\_kmeans.csv}.
 
 \pagebreak
 
@@ -2347,21 +2344,21 @@ Contra-intuitivement, TF-IDF (46\,\%) surpasse Word2Vec (20\,\%). Les catégorie
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{@{}lC{5cm}C{5cm}@{}}
 \toprule
-\textbf{Critère} & \textbf{NB TF-IDF } & \textbf{K-Means TF-IDF} \\
+\textbf{Critère} & \textbf{LR TF-IDF } & \textbf{K-Means TF-IDF} \\
                  & \textbf{(supervisé)} & \textbf{(non-supervisé)} \\
 \midrule
-\textbf{Accuracy test}          & \textbf{0.6875} & 0.4636 \\
-Macro avg F1                    & 0.62            & ---    \\
-Weighted avg F1                 & 0.69            & ---    \\
+\textbf{Accuracy test}          & \textbf{0.7532} & 0.4636 \\
+Macro avg F1                    & 0.72            & ---    \\
+Weighted avg F1                 & 0.75            & ---    \\
 Voit les labels                 &                 &    \\
  à l'entraînement ?             & Oui             & Non    \\
-Hyperparamètre clé              & alpha = 0.05    & $k = 7$ \\
+Hyperparamètre clé              & alpha = 0.07    & $k = 7$ \\
 Fichier annoté                  & \texttt{train\_with\_\newline sentiments.csv} & \texttt{train\_with\_\newline sentiments\_kmeans.csv} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-L'écart de \textbf{+22 points d'accuracy} en faveur du supervisé est cohérent et attendu~: le supervisé a accès aux vrais labels pendant l'entraînement, le non-supervisé pas. Les deux méthodes utilisent la même représentation TF-IDF, donc l'écart reflète purement la différence supervisé/non-supervisé.
+L'écart de \textbf{+29 points d'accuracy} en faveur du supervisé est cohérent et attendu~: le supervisé a accès aux vrais labels pendant l'entraînement, le non-supervisé pas. Les deux méthodes utilisent la même représentation TF-IDF, donc l'écart reflète purement la différence supervisé/non-supervisé.
 
 \begin{warn}[Remarque]
 Les mêmes classes sont difficiles pour les deux approches (\textit{Personality disorder}, \textit{Stress}, confusion \textit{Depression}/\textit{Suicidal}). Cela pointe vers une \textbf{limite des données elles-mêmes} (classes sous-représentées, vocabulaire qui se chevauche) plutôt qu'un problème algorithmique.
@@ -2895,10 +2892,11 @@ et améliore la généralisation.} appliqué au vecteur \texttt{[CLS]}~;
 valeur recommandée par l'équipe Google pour le fine-tuning BERT.
 
 \begin{tip}[Pourquoi AdamW et pas Adam~?]
-AdamW est utilisé à la place d'Adam classique, car il corrige la gestion du \textit{weight decay}\footnotetext{\textit{[\ldots] 'Loshchilov and Hutter 2017 discovered that L2 regularization is not effective in Adam, and proposed AdamW' [\ldots]}
+AdamW est utilisé à la place d'Adam classique, car il corrige la gestion du \textit{weight decay}\footnote{\textit{[\ldots] 'Loshchilov and Hutter 2017 discovered that L2 regularization is not effective in Adam, and proposed AdamW' [\ldots]}
 (\href{https://docs.graphcore.ai/projects/bert-training/en/latest/bert.html}{Loshchilov \& Hutter, 2019})}.
 Son usage pour le fine-tuning BERT s'est imposé via les scripts officiels de Hugging Face, 
-les hyperparamètres recommandés étant issus de l'\href{https://mccormickml.com/2019/07/22/BERT-fine-tuning/}{Appendix A.3} du papier BERT.
+les hyperparamètres recommandés étant issus de la section 3 du papier \href{https://arxiv.org/pdf/1810.04805}{"BERT: Pre-training of Deep Bidirectional Transformers for
+Language Understanding"}.
 \end{tip}
 
 \textbf{Scheduler~:} un \texttt{get\_linear\_schedule\_with\_warmup} fait décroître le
@@ -3060,7 +3058,7 @@ avec des choix d'entraînement sensiblement améliorés~:
   \item Entraîné plus longtemps avec de plus gros batchs.
 \end{itemize}
 En pratique, RoBERTa surpasse BERT-base sur quasi toutes les tâches de classification
-et est aujourd'hui la base la plus utilisée pour l'analyse de sentiments.
+et est aujourd'hui une base très solide dans l'analyse de sentiments.
 
 \vfill
 
@@ -3263,8 +3261,6 @@ compatibilité.
 \end{center}
 \end{figure}
 
-\pagebreak
-
 \subsection{Résultats obtenues — Logan}
 
 Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a été réalisée par Logan seul, les résultats obtenues sont les suivants:\\
@@ -3295,7 +3291,7 @@ Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a
 \end{tabular}
 \end{center}
 
-\vspace{0.5cm}
+\pagebreak
 
 \begin{center}
 \textbf{Classification Report}~:\\
@@ -3315,14 +3311,12 @@ Personality disorder   &    0.69   &   0.73   &   0.71\\
 \end{tabular}
 \end{center}
 
-\pagebreak
-
 \begin{center}
 \textbf{Matrice de confusion}~:\\
 \bigskip
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\textwidth]{matriceConfusion_BERT_PT_FT_LOGAN.png}
+  \includegraphics[width=0.65\textwidth]{matriceConfusion_BERT_PT_FT_LOGAN.png}
   \caption{Matrice de confusion --- BERT pré-entrainé avec fine-tuning (Logan)}
 \end{figure}
 \end{center}
@@ -3392,6 +3386,12 @@ ces classes restent les plus problématiques.
 On remarque que \textit{Depression} et \textit{Suicidal} restent souvent confondus, 
 ce qui suggère que même les modèles les plus avancés ont du mal à capturer les nuances entre ces catégories émotionnellement proches.
 
+\subsubsection{5. Conclusion et choix de modèle}
+En conclusion, le modèle \textbf{BERT spécialisé avec fine-tuning (Modèle C) offre la meilleure performance}, même si le gain par rapport au Modèle B est marginal.
+Pour la suite du projet, nous allons donc utiliser le modèle C pour générer les annotations de sentiment sur le dataset principal \texttt{train.csv}, 
+qui seront ensuite réutilisées dans le système de question-réponse du Module~2 pour filtrer les résultats par sentiment.
+
+\textbf{Fichier généré:} \texttt{train\_with\_sentiments.csv}.
 
 
 %======================================================================
@@ -3430,10 +3430,8 @@ Similarité question-réponse    & Cosine similarity & \\
 \end{center}
 
 \begin{note}[Lien avec le Module 1]
-Les annotations automatiques de sentiments produites par le Groupe~1 sont réutilisées ici pour \textbf{filtrer l'espace de recherche}. Suite à la comparaison des modèles du Module~1, le système utilise désormais la colonne \texttt{predicted\_sentiment\_bert} — issue du meilleur modèle BERT avec fine-tuning (accuracy 0,8302) — plutôt que les annotations TF-IDF initialement utilisées. À une question donnée, le système restreint sa recherche aux échanges partageant la même étiquette de sentiment BERT, assurant une cohérence thématique et émotionnelle de meilleure qualité.
+Les annotations automatiques de sentiments produites par le Groupe~1 sont réutilisées ici pour \textbf{filtrer l'espace de recherche}. Suite à la comparaison des modèles du Module~1, le système utilise désormais la colonne \texttt{predicted\_sentiment\_bert} — issue du meilleur modèle BERT avec fine-tuning (accuracy 0,8343) — plutôt que les annotations TF-IDF initialement utilisées. À une question donnée, le système restreint sa recherche aux échanges partageant la même étiquette de sentiment BERT, assurant une cohérence thématique et émotionnelle de meilleure qualité.
 \end{note}
-
-\newpage
 
 \subsection{Jeux de données}
 
@@ -3470,7 +3468,7 @@ Voici un exemple de paire utilisée pour le test~:
 \begin{itemize}
   \item \textbf{Context}~: \textit{"He was in love with someone years ago, and he still thinks about her time to time. He said, and I quote, ``That relationship is definitely over. I love you, but that girl will always be in my mind.'' It just didn't feel like he appreciated all the things I've done to make him happy."}
   \item \textbf{Response}~: \textit{"Trust your intuition on your conclusion about this guy. He may very well love you, only with the ex so prominent in his mind, it is possible your feeling of not being appreciated now, would multiply if ever the two of you needed to address a delicate topic."}
-  \item \textbf{Sentiment (BERT)}~: \textit{Suicidal}
+  \item \textbf{Sentiment (BERT)}~: \textit{Normal}
 \end{itemize}
 
 \section{Détails de l'implémentation}
@@ -3513,7 +3511,7 @@ Cette structure permet une récupération en temps constant $\mathcal{O}(1)$ des
 La vectorisation constitue une étape essentielle dans les systèmes de traitement automatique du langage naturel. Elle permet de transformer des données textuelles en représentations numériques exploitables par des algorithmes de calcul de similarité.
 
 Dans ce travail, plusieurs approches de vectorisation sont utilisées afin de représenter les questions et réponses dans un espace vectoriel commun.
-Nous les avons déjà introduites dans le chapitre \ref{chap:topic_modeling}, donc nous allons juste les réintroduire brièvement ici en précisant
+Nous les avons déjà introduites dans le chapitre~\ref{chap:topic_modeling}, donc nous allons juste les réintroduire brièvement ici en précisant
 les membres du groupe qui les ont implémentées~:
 
 \begin{itemize}
@@ -3523,6 +3521,27 @@ les membres du groupe qui les ont implémentées~:
 \end{itemize}
 
 \newpage
+
+\subsection{Méthode d'évaluation}
+
+Afin d'évaluer les performances du système, nous avons réalisé des tests sur un ensemble de données de test composé de 10 paires (question, réponse) extraites du corpus.
+
+Dans notre implémentation, nous avons utilisé la similarité cosinus afin de mesurer la proximité entre la réponse prédite et la réponse attendue. Le score obtenu varie entre 0 et 1, où une valeur proche de 1 indique une forte similarité sémantique.
+
+Afin d'obtenir une mesure globale de performance, nous avons calculé la moyenne des scores de similarité obtenus sur l'ensemble du jeu de test, en nous inspirant du principe du MRR (\textit{Mean Reciprocal Rank})~:
+
+\[
+\text{Score} = \frac{1}{N} \sum_{i=1}^{N} \text{cosine\_similarity}(R^{\text{pred}}_i,\; R^{\text{true}}_i)
+\]
+
+Bien que cette méthode s’inspire du principe du MRR (Mean Reciprocal Rank), elle repose ici directement
+sur les scores de similarité et non sur un classement explicite des réponses.
+
+Dans ce contexte, un score proche de 1 indique une bonne performance du modèle, 
+car cela signifie que la similarité entre les réponses est élevée.
+
+\pagebreak
+
 \subsection{Stratégies de recherche de réponses}
 
 Le système de question-réponse a été implémenté selon deux approches : une première basée sur la similarité entre questions, et une seconde reposant sur la comparaison directe entre la question et l'ensemble des réponses du corpus.
@@ -3542,22 +3561,29 @@ Dans notre système, deux versions ont été développées. La première repose 
   node distance=8mm,
   >=Latex,
   box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
-              align=center, text width=3.2cm, minimum height=1.2cm,
+              align=center, text width=2.2cm, minimum height=1.2cm,
               inner sep=6pt, font=\small},
   arrow/.style={-Latex, thick, draw=blue!70!black},
 ]
+% Ligne du haut : côté question utilisateur
 \node[box] (qu) {Question utilisateur};
-\node[box, right=4cm of qu] (qc) {Questions corpus};
-\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
-\node[box, below=of qc] (vc) {Vectorisation\\corpus};
-\node[box, below=2.5cm of qu, xshift=4cm] (s) {Similarité cosinus};
-\node[box, below=of s] (t) {Tri des scores};
-\node[box, below=of t] (k) {Sélection des $k$ plus proches questions};
-\node[box, below=of k] (r) {Retour des réponses};
+\node[box, right=1.5cm of qu] (vu) {Vectorisation\\question};
+
+% Ligne du bas : côté corpus
+\node[box, below=1.8cm of qu] (qc) {Questions corpus};
+\node[box, right=1.5cm of qc] (vc) {Vectorisation\\corpus};
+
+% Suite commune (centrée verticalement entre les deux lignes)
+\node[box, right=1cm of vu, yshift=-1.5cm] (s) {Similarité cosinus};
+\node[box, right=1cm of s] (t) {Tri des scores};
+\node[box, right=1cm of t] (k) {Sélection des $k$ plus proches};
+\node[box, right=1cm of k] (r) {Retour des réponses};
+
+% Flèches
 \draw[arrow] (qu) -- (vu);
 \draw[arrow] (qc) -- (vc);
-\draw[arrow] (vu) |- (s);
-\draw[arrow] (vc) |- (s);
+\draw[arrow] (vu) -| (s);
+\draw[arrow] (vc) -| (s);
 \draw[arrow] (s) -- (t);
 \draw[arrow] (t) -- (k);
 \draw[arrow] (k) -- (r);
@@ -3565,6 +3591,7 @@ Dans notre système, deux versions ont été développées. La première repose 
 \end{center}
 \caption{Schéma de la méthode de similarité question-question (version 1 : recherche sur l'ensemble du corpus).}
 \end{figure}
+
 
 \begin{figure}[H]
 \begin{center}
@@ -3574,27 +3601,39 @@ Dans notre système, deux versions ont été développées. La première repose 
   node distance=8mm,
   >=Latex,
   box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
-              align=center, text width=3.2cm, minimum height=1.2cm,
+              align=center, text width=2.2cm, minimum height=1.2cm,
               inner sep=6pt, font=\small},
   arrow/.style={-Latex, thick, draw=blue!70!black},
 ]
+
+% Ligne du haut : côté question utilisateur
 \node[box] (qu) {Question utilisateur};
-\node[box, right=6cm of qu] (qc) {Questions corpus};
-\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
-\node[box, right=of vu] (ext) {Sentiment BERT};
-\node[box, below=of qc, text width=4cm] (flt) {Filtrer selon sentiment BERT\\de la question};
-\node[box, below=of flt] (vc) {Vectorisation\\corpus filtré};
-\node[box, below=6cm of qu, xshift=4cm] (s) {Similarité cosinus};
-\node[box, below=of s] (t) {Tri des scores};
-\node[box, below=of t] (k) {Sélection des $k$ plus proches questions};
-\node[box, below=of k] (r) {Retour des réponses};
+\node[box, right=1.5cm of qu] (vu) {Vectorisation\\question};
+\node[box, below=1cm of vu, xshift=-1.8cm, draw=green!50!black, fill=green!5] (ext) {Sentiment BERT};
+
+% Ligne du bas : côté corpus
+\node[box, below=3.2cm of qu] (qc) {Questions corpus};
+\node[box, right=1.2cm of qc] (flt) {Filtrage par sentiment BERT};
+\node[box, right=1.2cm of flt] (vc) {Vectorisation\\corpus filtré};
+
+% Suite commune
+\node[box, right=1cm of vu, yshift=-1.95cm] (s) {Similarité cosinus};
+\node[box, right=1.2cm of s] (t) {Tri des scores};
+\node[box, right=1.2cm of t] (k) {Sélection des $k$ plus proches};
+\node[box, right=1.2cm of k] (r) {Retour des réponses};
+
+% Flèches côté question
 \draw[arrow] (qu) -- (vu);
-\draw[arrow] (qu) -- ++(2cm,0) -| (ext);
+\draw[arrow, draw=green!50!black] (qu) |- (ext);
+\draw[arrow, draw=green!50!black] (ext) -| (flt);
+
+% Flèches côté corpus
 \draw[arrow] (qc) -- (flt);
 \draw[arrow] (flt) -- (vc);
-\draw[arrow] (ext) -- (flt);
-\draw[arrow] (vu) |- (s);
-\draw[arrow] (vc) |- (s);
+\draw[arrow] (vc) -- (s);
+
+% Convergence et suite
+\draw[arrow] (vu) -| (s);
 \draw[arrow] (s) -- (t);
 \draw[arrow] (t) -- (k);
 \draw[arrow] (k) -- (r);
@@ -3619,6 +3658,30 @@ def questionQuestion(question, k=5):
   # 4. Vectorisation de la question d'entrée
   # 5. Calcul de la similarité cosinus et sélection des top-k
 \end{lstlisting}
+
+\begin{center}
+\textbf{Résultats obtenus:}
+\end{center}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  Version & Score \\
+  \midrule
+  Sans filtrage & 0,3141 \\
+  Avec filtrage  & \textbf{0,4101} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Scores de similarité question-question avec TF-IDF, avant et après filtrage par sentiment.}
+\end{table}
+
+\begin{note}[Interprétation des résultats]
+L'amélioration du score de similarité après filtrage par sentiment BERT est significative, passant de 0,3141 à 0,4101.
+Cela confirme que restreindre la recherche aux questions partageant le même sentiment BERT améliore la pertinence des réponses retrouvées, en assurant une cohérence émotionnelle entre la question d'entrée et les questions du corpus.
+\end{note}
+
+\pagebreak
 
 \textbf{Méthode Word2Vec}
 
@@ -3645,6 +3708,30 @@ def questionQuestion_w2v(question, k=5):
  
 \end{lstlisting}
 
+\begin{center}
+\textbf{Résultats obtenus:}
+\end{center}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  Version & Score \\
+  \midrule
+  Sans filtrage & 0,4242 \\
+  Avec filtrage  & \textbf{0,6220} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Scores de similarité question-question avec Word2Vec, avant et après filtrage par sentiment.}
+\end{table}
+
+\begin{note}[Interprétation des résultats]
+L'approche Word2Vec améliore significativement les scores de similarité par rapport à TF-IDF, avec un gain de plus de 10 points après filtrage par sentiment (0,6220 contre 0,4101). 
+Cela s'explique par la capacité de Word2Vec à capturer les relations sémantiques entre les mots, permettant ainsi une meilleure représentation des questions et une similarité plus pertinente.
+\end{note}
+
+\pagebreak
+
 \textbf{Méthode BERT (\texttt{all-MiniLM-L6-v2})}
 
 Le modèle \texttt{all-MiniLM-L6-v2} génère des \textit{embeddings} contextuels pour chaque question, capturant le sens global de la phrase de manière bien plus riche que TF-IDF ou Word2Vec.
@@ -3662,7 +3749,34 @@ def questionQuestion_bert(question, k=5):
   # 7. renvoie les réponses correspondantes avec leurs scores de similarité
 \end{lstlisting}
 
-\newpage
+\begin{center}
+\textbf{Résultats obtenus:}
+\end{center}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  Version & Score \\
+  \midrule
+  Sans filtrage & 0,4627 \\
+  Avec filtrage  & \textbf{0,6700} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Scores de similarité question-question avec BERT, avant et après filtrage par sentiment.}
+\end{table}
+
+\begin{note}[Interprétation des résultats]
+L'utilisation de BERT améliore encore les scores de similarité, avec un gain de près de 5 points par rapport à Word2Vec après filtrage (0,6700 contre 0,6220). 
+Cela s'explique par la capacité de BERT à générer des représentations contextuelles plus riches, prenant en compte les nuances de sens et les relations complexes entre les mots dans une phrase, 
+ce qui se traduit par une meilleure identification des questions similaires.
+\end{note}
+
+\vspace{0.5cm}
+Maintenant que nous avons présenté la première approche basée sur la similarité entre questions, nous allons détailler la seconde approche qui compare directement la question de l'utilisateur avec les réponses du corpus.
+
+\pagebreak
+
 \subsubsection{2. Similarité entre question et réponses}
 
 Cette approche consiste à retrouver directement les réponses les plus pertinentes en se basant sur la similarité entre la question de l'utilisateur et l'ensemble des réponses présentes dans le corpus. L'idée principale est qu'une réponse pertinente doit être sémantiquement proche de la question posée.
@@ -3677,27 +3791,35 @@ Comme pour la stratégie précédente, deux versions coexistent : une recherche 
   node distance=8mm,
   >=Latex,
   box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
-              align=center, text width=3.2cm, minimum height=1.2cm,
+              align=center, text width=2.2cm, minimum height=1.2cm,
               inner sep=6pt, font=\small},
   arrow/.style={-Latex, thick, draw=blue!70!black},
 ]
+% Ligne du haut : côté question utilisateur
 \node[box] (qu) {Question utilisateur};
-\node[box, right=4cm of qu] (qc) {Réponses corpus};
-\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
-\node[box, below=of qc] (vc) {Vectorisation\\réponses};
-\node[box, below=2.5cm of qu, xshift=4cm] (s) {Similarité cosinus};
-\node[box, below=of s] (t) {Tri des scores};
-\node[box, below=of t] (k) {Retour des $k$ plus proches réponses};
+\node[box, right=1.5cm of qu] (vu) {Vectorisation\\question};
+
+% Ligne du bas : côté corpus
+\node[box, below=1.8cm of qu] (qc) {Réponses corpus};
+\node[box, right=1.5cm of qc] (vc) {Vectorisation\\réponses};
+
+% Suite commune
+\node[box, right=1cm of vu, yshift=-1.5cm] (s) {Similarité cosinus};
+\node[box, right=1cm of s] (t) {Tri des scores};
+\node[box, right=1cm of t] (k) {Retour des $k$ plus proches réponses};
+
+% Flèches
 \draw[arrow] (qu) -- (vu);
 \draw[arrow] (qc) -- (vc);
-\draw[arrow] (vu) |- (s);
-\draw[arrow] (vc) |- (s);
+\draw[arrow] (vu) -| (s);
+\draw[arrow] (vc) -| (s);
 \draw[arrow] (s) -- (t);
 \draw[arrow] (t) -- (k);
 \end{tikzpicture}
 \end{center}
 \caption{Schéma de la méthode de similarité question-réponse (version 1 : recherche sur l'ensemble du corpus).}
 \end{figure}
+
 
 \begin{figure}[H]
 \begin{center}
@@ -3707,32 +3829,46 @@ Comme pour la stratégie précédente, deux versions coexistent : une recherche 
   node distance=8mm,
   >=Latex,
   box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
-              align=center, text width=3.2cm, minimum height=1.2cm,
+              align=center, text width=2.2cm, minimum height=1.2cm,
               inner sep=6pt, font=\small},
   arrow/.style={-Latex, thick, draw=blue!70!black},
 ]
+
+% Ligne du haut : côté question utilisateur
 \node[box] (qu) {Question utilisateur};
-\node[box, right=6cm of qu] (qc) {Réponses corpus};
-\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
-\node[box, right=of vu] (ext) {Sentiment BERT};
-\node[box, below=of qc, text width=4cm] (flt) {Filtrer selon sentiment BERT\\de la question};
-\node[box, below=of flt] (vc) {Vectorisation\\réponses filtrées};
-\node[box, below=6cm of qu, xshift=4cm] (s) {Similarité cosinus};
-\node[box, below=of s] (t) {Tri des scores};
-\node[box, below=of t] (k) {Retour des $k$ plus proches réponses};
+\node[box, right=1.5cm of qu] (vu) {Vectorisation\\question};
+\node[box, below=1cm of vu, xshift=-1.8cm, draw=green!50!black, fill=green!5] (ext) {Sentiment BERT};
+
+% Ligne du bas : côté corpus
+\node[box, below=3.2cm of qu] (qc) {Réponses corpus};
+\node[box, right=1.2cm of qc] (flt) {Filtrage par sentiment BERT};
+\node[box, right=1.2cm of flt] (vc) {Vectorisation\\réponses filtrées};
+
+% Suite commune
+\node[box, right=1cm of vu, yshift=-1.95cm] (s) {Similarité cosinus};
+\node[box, right=1.2cm of s] (t) {Tri des scores};
+\node[box, right=1.2cm of t] (k) {Retour des $k$ plus proches réponses};
+
+% Flèches côté question
 \draw[arrow] (qu) -- (vu);
-\draw[arrow] (qu) -- ++(2cm,0) -| (ext);
+\draw[arrow, draw=green!50!black] (qu) |- (ext);
+\draw[arrow, draw=green!50!black] (ext) -| (flt);
+
+% Flèches côté corpus
 \draw[arrow] (qc) -- (flt);
 \draw[arrow] (flt) -- (vc);
-\draw[arrow] (ext) -- (flt);
-\draw[arrow] (vu) |- (s);
-\draw[arrow] (vc) |- (s);
+\draw[arrow] (vc) -- (s);
+
+% Convergence et suite
+\draw[arrow] (vu) -| (s);
 \draw[arrow] (s) -- (t);
 \draw[arrow] (t) -- (k);
 \end{tikzpicture}
 \end{center}
 \caption{Schéma de la méthode de similarité question-réponse (version 2 : filtrage par sentiment BERT).}
 \end{figure}
+
+\pagebreak
 
 \textbf{Méthode TF-IDF}
 
@@ -3745,10 +3881,29 @@ def questionQuestion2(question, k=5):
   # 3. Calcul de la similarité cosinus et sélection des top-k
 \end{lstlisting}
 
+\begin{center}
+\textbf{Résultats obtenus:}
+\end{center}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  Version & Score \\
+  \midrule
+  Sans filtrage & 0,3200 \\
+  Avec filtrage  & \textbf{0,4101} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Scores de similarité question-réponse avec TF-IDF, avant et après filtrage par sentiment.}
+\end{table}
+
 \begin{note}[Interprétation]
 Les scores de similarité sont nettement plus faibles qu'en Q-Q (max 0.21 vs 1.0 pour Q-Q TF-IDF).
 En comparant une question à des \textbf{réponses}, les vocabulaires divergent naturellement~: une question formule un problème, une réponse propose des solutions. TF-IDF, limité au chevauchement lexical, peine à combler cet écart.
 \end{note}
+
+\vspace{0.5cm}
 
 \textbf{Méthode Word2Vec}
 
@@ -3765,6 +3920,25 @@ def questionQuestion2_w2v(question, k=5):
   # 2. Vectorisation Word2Vec des réponses filtrées
   # 3. Calcul de la similarité cosinus et sélection des top-k
 \end{lstlisting}
+
+\pagebreak
+
+\begin{center}
+\textbf{Résultats obtenus:}
+\end{center}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  Version & Score \\
+  \midrule
+  Sans filtrage & 0,5300 \\
+  Avec filtrage  & \textbf{0,6640} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Scores de similarité question-réponse avec Word2Vec, avant et après filtrage par sentiment.}
+\end{table}
 
 \begin{note}[Interprétation]
 Paradoxalement, les scores approchent 1.0, ce qui est trompeur~: la moyenne des vecteurs
@@ -3795,6 +3969,23 @@ def questionQuestion2_bert(question, k=5):
   # 3. Calcul de la similarité cosinus et sélection des top-k
 \end{lstlisting}
 
+\begin{center}
+\textbf{Résultats obtenus:}
+\end{center}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{@{}lc@{}}
+  \toprule
+  Version & Score \\
+  \midrule
+  Sans filtrage & 0,5627 \\
+  Avec filtrage  & \textbf{0,7020} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Scores de similarité question-réponse avec BERT, avant et après filtrage par sentiment.}
+\end{table}
+
 \begin{note}[Interprétation]
 BERT produit des scores réalistes (0.42--0.44) et des réponses thématiquement cohérentes avec
 la détresse décrite~: les deux premières réponses évoquent la gestion d'une personne en
@@ -3804,23 +3995,9 @@ une similarité sémantique réelle. C'est cette représentation contextuelle qu
 stratégie Q-R d'atteindre son meilleur score de \textbf{0.702} avec filtrage par sentiment.
 \end{note}
 
-\subsection{Évaluation des résultats}
+\pagebreak
 
-Afin d'évaluer les performances du système, nous avons réalisé des tests sur un ensemble de données de test composé de 10 paires (question, réponse) extraites du corpus.
-
-Dans notre implémentation, nous avons utilisé la similarité cosinus afin de mesurer la proximité entre la réponse prédite et la réponse attendue. Le score obtenu varie entre 0 et 1, où une valeur proche de 1 indique une forte similarité sémantique.
-
-Afin d'obtenir une mesure globale de performance, nous avons calculé la moyenne des scores de similarité obtenus sur l'ensemble du jeu de test, en nous inspirant du principe du MRR (\textit{Mean Reciprocal Rank})~:
-
-\[
-\text{Score} = \frac{1}{N} \sum_{i=1}^{N} \text{cosine\_similarity}(R^{\text{pred}}_i,\; R^{\text{true}}_i)
-\]
-
-Bien que cette méthode s’inspire du principe du MRR (Mean Reciprocal Rank), elle repose ici directement
-sur les scores de similarité et non sur un classement explicite des réponses.
-
-Dans ce contexte, un score proche de 1 indique une bonne performance du modèle, 
-car cela signifie que la similarité entre les réponses est élevée.
+\subsection{Comparaison des méthodes}
 
 Pour la première version (sans filtrage par sentiment), on a obtenu les résultats suivants~:
 
@@ -3858,6 +4035,7 @@ La qualité supérieure des annotations BERT, par rapport aux annotations TF-IDF
 se traduit directement par des sous-ensembles de recherche plus cohérents émotionnellement.
 \end{note}
 
+\pagebreak
 
 % ══════════════════════════════════════════════════════════════════════════════
 % CHAPITRE 13 : DÉPLOIEMENT HUGGING FACE
@@ -3943,33 +4121,30 @@ chacune des 7 classes.
 
 \begin{lstlisting}
 def predict_lr(text: str):
-    processed = preprocess_lr(text)
-    vector    = tfidf_vectorizer.transform([processed])
-    probs     = lr_model.predict_proba(vector)[0]
-    classes   = lr_model.classes_.tolist()
-    result    = {cls: round(float(p), 4)
-                 for cls, p in zip(classes, probs)}
-    top_label = classes[int(probs.argmax())]
-    return result, f"**{top_label}**"
+# 1. Nettoyage + stemming
+# 2. Vectorisation TF-IDF
+# 3. Prédiction des probabilités
+# 4. Récupération de l'ordre des classes
+# 5. Construction du dictionnaire classe:probabilité
+# 6. Classe avec la probabilité maximale
+# 7. Retour du dictionnaire et de la classe dominante formatée en gras
 \end{lstlisting}
 
 \subsection{Prédiction BERT fine-tuné}
 
 \begin{lstlisting}
 def predict_bert_clf(text: str):
-    cleaned = cleaner(text)
-    inputs  = bert_tokenizer(cleaned, return_tensors='pt',
-                             truncation=True, padding=True,
-                             max_length=256)
-    inputs  = {k: v.to(device) for k, v in inputs.items()}
-    with torch.no_grad():
-        logits = bert_model(**inputs).logits
-    probs     = torch.softmax(logits, dim=1).squeeze().cpu().tolist()
-    classes   = bert_encoder.classes_.tolist()
-    result    = {cls: round(float(p), 4)
-                 for cls, p in zip(classes, probs)}
-    top_label = classes[int(torch.tensor(probs).argmax())]
-    return result, f"**{top_label}**"
+# 1. Nettoyage de base (sans stemming)
+# 2. Tokenization
+# 3. Passage sur le même device que le modèle
+# 4. Inférence sans calcul de gradients
+# 5. Récupération des logits bruts
+# 6. Softmax pour obtenir les probabilités
+# 7. Récupération de l'ordre des classes
+# 8. Construction du dictionnaire classe:probabilité
+# 9. Identification de la classe dominante
+# 10. Classe avec la probabilité maximale
+# 11. Retour du dictionnaire et de la classe dominante formatée en gras
 \end{lstlisting}
 
 \subsection{Exemples de prédictions}
@@ -4006,7 +4181,7 @@ tranché (0,793 vs 0,682), ce qui traduit sa meilleure capacité à capturer le 
 émotionnel global de la phrase.
 \end{note}
 
-\bigskip
+\pagebreak
 
 \textbf{Exemple 2} — \textit{"I feel empty, like nothing matters anymore and nobody would
 notice if I disappeared."}
@@ -4236,8 +4411,7 @@ Comparaison des classifieurs
 \end{tabular}
 \end{center}
 
-L'interface est configurée en pleine largeur (\texttt{max-width: 100\%}) et
-accessible sur mobile. Le score MRR de 0,702 est affiché dans l'en-tête de
+Le score MRR de 0,702 est affiché dans l'en-tête de
 l'application pour transparence.
 
 
@@ -4330,7 +4504,7 @@ adaptation à la tâche. Deuxièmement, \textbf{le gain du modèle spécialisé 
 fine-tuné (Modèle~B) est marginal ($+0{,}4$ pt)}~: le fine-tuning sur notre dataset représente
 l'essentiel de l'adaptation. Troisièmement, \textbf{la confusion \textit{Depression}/\textit{Suicidal}
 persiste quel que soit le modèle}, ce qui pointe vers une limite des données plutôt qu'un
-problème algorithmique. C'est pour cela que le Modèle~B (BERT avec fine-tuning) a été retenu
+problème algorithmique. C'est pour cela que le Modèle~C (BERT spécialisé avec fine-tuning) a été retenu
 comme source des annotations pour le Module~2.
 
 \subsection{Le filtrage par sentiment BERT est le principal levier du système Q/R}
