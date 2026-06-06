@@ -53,6 +53,7 @@
 \usepackage{pdflscape}
 \graphicspath{{img/}{../img/}{../../img/}{../../../img/}{../../../../img/}}
 
+
 % ── Schémas ───────────────────────────────────────────────────────────────────
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, shapes.geometric, fit, calc}
@@ -264,10 +265,10 @@ L'organisation a évolué en deux phases :
 \section{Définition des rôles}
 La direction du projet dans sa globalité est assurée par \textbf{Logan LARROUX}, 
 qui supervise les deux groupes et garantit la cohérence des livrables.
-Après constatation de l'ampleur des tâches à réaliser lors de l'étape 1, une bien meilleure organisation a été mise en place pour l'étape 2, avec des chefs de groupe dédiés à chaque axe d'analyse.
+Après constatation de l'ampleur des tâches à réaliser lors de l'étape 1, une bien meilleur organisation a été mise en place pour l'étape 2, avec des chefs de groupe dédiés à chaque axe d'analyse.
 
 \subsection{Organisation étape 1: Exploration du jeu de données}
-Lors de l'étape 1 chaque membre de l'équipe s'est vue assigner les mêmes tâches, afin d'en comparer et de contraster les résultats.
+Lors de l'étape 1 chaque membre de l'équipe s'est vue assigné les mêmes tâches, afin d'en comparer et de contraster les résultats.
 
 \textbf{Liste des membres: }
 \begin{itemize}
@@ -285,7 +286,7 @@ Lors de l'étape 1 chaque membre de l'équipe s'est vue assigner les mêmes tâc
 
 \subsection{Organisation étape 2: Développement du système d'analyse de sentiments et de question-réponse}
 Comme dit précédemment, l'étape 2 a été divisée en deux groupes distincts, avec des rôles clairement définis pour chaque membre.
-En plus de cette séparation dans ces deux groupes, nous avons de nouveau séparé les tâches en sous-tâches, afin de mieux répartir le travail et d'assurer une meilleure coordination entre les membres.
+En plus de cette séparation dans ses deux groupes, nous avons de nouveau séparé les tâches en sous-tâches, afin de mieux répartir le travail et d'assurer une meilleure coordination entre les membres.
 
 \subsubsection{Groupe 1: Analyse des sentiments des conversations}
 \textbf{Chef de groupe: Cruz Fernandes Diogo}
@@ -325,6 +326,9 @@ Les étapes de développement de chaque groupe seront détaillées plus loin dan
 \end{note}
 
 \pagebreak
+
+\subsection{Étape 2: Développement du système d'analyse de sentiments et de question-réponse}
+
 
 % ══════════════════════════════════════════════════════════════════════════════
 % PARTIE II : ÉTAPE 1
@@ -468,7 +472,7 @@ Les \textit{stopwords} (mots vides) sont des mots sans réelle signification sé
 \texttt{token.is\_punct}.
 
 Des mots trop génériques mais non reconnus comme stopwords ont également été filtrés
-manuellement, voici deux exemples de listes d'extra\_stopwords utilisées par Logan et Lucas:
+manuellement, voici deux exemple de listes d'extra\_stopwords utilisées par Logan et Lucas:
 
 \begin{lstlisting}
 # Exemple - Logan
@@ -519,8 +523,8 @@ df["Context_clean"] = [
 
 \section{Nettoyage — Approches comparées}
 
-Puisque ce pipeline n'a pas été imposé, chaque membre a pu appliquer son propre pré-traitement, avec des niveaux de filtrage différents.
-Prenons l'exemple de deux approches contrastées, celle d'Emin et celle de Diogo.
+Puisque ce pipeline n'a pas était imposé, chaque membre a pu appliquer son propre pré-traitement, avec des niveaux de filtrage différents.
+Prennons l'exemple de deux approches contrastées, celle d'Emin et celle de Diogo.
 
 \subsection{Approche minimaliste (Emin)}
 
@@ -536,7 +540,7 @@ df = df.reset_index(drop=True)
 \end{lstlisting}
 
 \subsection{Approche étendue (Diogo)}
-Une version beaucoup plus étendue est celle de Diogo, qui inclut un nettoyage plus poussé du texte, 
+Un version beaucoup plus étendu est celle de Diogo, qui inclut un nettoyage plus poussé du texte, 
 ainsi qu'un filtrage pour ne garder que les conversations en anglais.\\
 Cette approche réduit le nombre de patients et de thérapeutes uniques, 
 mais améliore la qualité des données en éliminant les réponses non pertinentes ou 
@@ -578,8 +582,8 @@ Son pipeline est donc le suivant:
 % \end{lstlisting}
 
 \begin{warn}[Lemmatisation et tokenisation]
-L'application de la lemmatisation (et de la tokenisation) pour l'analyse du texte a été un débat au sein de l'équipe.
-La grande majorité de l'équipe a décidé de ne pas l'appliquer lors de l'analyse statistique et lexicale du corpus, 
+L'application de la lemmatisation (et de la tokenisation) pour l'analyse du texte a été un débat au seins de l'équipe.
+La grande majorité de l'équipe a décider de ne pas l'appliquer lors de l'analyse statistique et lexicale du corpus, 
 afin de conserver les formes originales des mots.
 \end{warn}
 
@@ -809,7 +813,7 @@ Pour cela, nous allons appliquer différentes méthodes de \textbf{topic modelin
 
 \pagebreak
 
-\chapter{Topic Modeling}\label{chap:topic_modeling}
+\chapter{Topic Modeling}
 
 \section{Préambule}
 Le \textbf{topic modeling} est une technique d'extraction de thèmes latents à partir d'un corpus de textes.
@@ -819,7 +823,7 @@ en commençant par une méthode manuelle basée sur un lexique personnalisé, pu
 
 \begin{note}[Remarque importante]
 \textbf{Chaque membre de l'équipe a appliqué sa propre version de ces méthodes}, ce qui nous a permis d'avoir une diversité d'approches et de résultats à comparer.
-Par question de clarté, nous allons présenter les résultats de chaque méthode de manière synthétique, en présentant les résultats les plus pertinents et en discutant de leurs avantages et limites respectifs.\\
+Par question de clareté, nous allons présenter les résultats de chaque méthode de manière synthétique, en présentant les résultats les plus pertinents et en discutant de leurs avantages et limites respectifs.\\
 (\textit{voir les notebooks\footnotemark{} individuels pour les détails de chaque implémentation}).
 \end{note}
 \footnotetext{\href{https://github.com/cypnet/Analyse-de-conversations-sur-la-sant-mentale/tree/main/notebooks}{Liens github des notebooks}}
@@ -856,7 +860,7 @@ Le but de cette première section était de nous introduire le principe de dicti
 ainsi que de nous familiariser avec les thématiques récurrentes dans les conversations de santé mentale.
 
 \begin{note}[Remarque]
-  Ce filtrage manuel étant bien entendu subjectif, il ne sera pas appliqué dans les méthodes de topic modeling, qui sont plus robustes à ce type de bruit lexical.
+  Ce filtrage manuelle étant bien entendu subjectif, il ne sera pas appliqué dans les méthodes de topic modeling, qui sont plus robustes à ce type de bruit lexical.
 \end{note}
 
 Nous allons présenter deux exemples de lexiques, l'un minimaliste (Trésor) et l'autre plus étendu (Diogo). 
@@ -911,9 +915,9 @@ Classification multi-label naturelle & Insensible au contexte d'usage d'un mot \
 \bigskip
 
 Toute l'équipe est en accord avec trois thématiques principales: anxiété, dépression et relations.
-Or cela ne signifie pas que ces thématiques sont les plus fréquentes,
-bien au contraire! D'autres thèmes bien plus spécifiques auxquels on ne penserait pas peuvent faire leur apparition. 
-D'où l'intérêt de méthodes plus robustes et moins subjetives que le lexique manuel. 
+Or cela ne signifie pas que ses thématiques sont les plus fréquentes,
+bien au contraire! D'autres thèmes bien plus spécifique auquels on ne pensserais pas peuvent faire leur apparition. 
+D'où l'intérêt de méthodes plus robustes et moins sujetives que le lexique manuel. 
 
 \pagebreak
 
@@ -947,9 +951,9 @@ discrimine mieux les termes et les scores sont plus significatifs.
 
 \subsubsection{Vectorisation TF-IDF}
 On ne peut malheureusement pas utiliser TF-IDF directement sur les textes bruts, il faut d'abord les vectoriser.
-Vectoriser un texte signifie le transformer en une représentation numérique, pour que par la suite les algorithmes puissent les traiter.\\
+Vectoriser un texte signifie le transformer en une représentation numérique, pour que par la suite les algorithme puisse les traiter.\\
 Pour cela, nous allons utiliser la fonction \texttt{TfidfVectorizer} de la bibliothèque \textbf{scikit-learn}.
-Cette fonction a de grands avantages, elle permet de:
+Cette fonction à de grand avantages, elle permet de:
 \begin{itemize}
   \item lister tout les mots uniques
   \item définir le score TF
@@ -968,7 +972,7 @@ Cette fonction a de grands avantages, elle permet de:
 
 \subsubsection{Clustering K-Means}
 Après avoir vectorisé les textes en utilisant TF-IDF, nous obtenons une matrice de taille $N \times M$ (où $N$ est le nombre de documents et $M$ le nombre de mots uniques).
-Gràce à cette matrice, nous allons pouvoir maintenant regrouper les mots similaires en \textbf{clusters},
+Gràce à cette matrice, nous allons pouvoir maintenant regroupper les mots similaires en \textbf{clusters},
 or nous devons dans un premier temps définir le nombre de clusters $K$ à utiliser.
 Un des risques est de choisir un $K$ trop petit ou trop grand, 
 ce qui peut conduire à des clusters peu significatifs ou à un sur-apprentissage.
@@ -1200,7 +1204,7 @@ BERT (\textit{Bidirectional Encoder Representations from Transformers}) est un m
 Contrairement à Word2Vec, qui génère des embeddings statiques pour chaque mot, BERT produit des embeddings contextuels : le vecteur d'un mot dépend donc de la phrase dans laquelle il apparaît.
 
 \begin{note}[Remarque]
-Le modèle BERT, ayant sa partie dédiée dans la troisième partie, sera expliqué bien plus en détails à ce moment là.
+Le modèle BERT, ayant sa partie dédié dans la troisièmre partie, sera expliqué bien plus en détails à ce moment là.
 \end{note}
 
 \subsubsection*{Résultats avec $K = 8$}
@@ -1288,7 +1292,7 @@ La dernière méthode que nous allons présenter, basée sur \textbf{LDA}, offre
 
 \section{Méthode 4 : LDA (Latent Dirichlet Allocation)}
 
-\subsection{Qu'est-ce que le LDA ?}
+\subsection{Qu'est ce que le LDA ?}
 
 Le \textbf{LDA} (\textit{Latent Dirichlet Allocation}) est un modèle génératif probabiliste
 permettant de découvrir des sujets latents dans un corpus. C'est une approche bayésienne qui
@@ -1311,7 +1315,7 @@ LDA produit deux sorties :
 \bigskip
 
 Dans cette méthode, nous allons utiliser la bibliothèque \textbf{gensim} pour implémenter LDA, en utilisant les représentations de documents au format bag-of-words (corpus) et le dictionnaire de mots (id2word).
-De plus, selon les membres, nous avons défini un nombre de thèmes $N\_TOPICS$ et un nombre de passes $PASSES$ pour l'entraînement du modèle.
+De plus, selon les membres, nous avons définit un nombre de thèmes $N\_TOPICS$ et un nombre de passes $PASSES$ pour l'entraînement du modèle.
 \begin{figure}[ht]
   \begin{lstlisting}
     N_TOPICS = 6
@@ -1416,7 +1420,7 @@ Fondement probabiliste rigoureux         & Ne capture pas le contexte long \\
 
 \bigskip
 
-Les résultats obtenus avec LDA sont généralement plus interprétables que ceux obtenus avec les méthodes basées sur les embeddings, car ils fournissent une distribution de mots pour chaque thème. 
+Les résultats obtenues avec LDA sont généralement plus interprétables que ceux obtenus avec les méthodes basées sur les embeddings, car ils fournissent une distribution de mots pour chaque thème. 
 Cependant, le choix du nombre de topics ($N\_TOPICS$) est crucial et peut grandement influencer la qualité des résultats. De plus, \textbf{LDA ne capture pas les relations à long terme entre les mots}, ce qui peut limiter sa capacité à identifier des thèmes plus complexes.
 
 \smallskip
@@ -1469,7 +1473,7 @@ LDA
 \textbf{Que peut-on en conclure?} Il n'existe pas de méthode universelle pour l'analyse de texte, et \textbf{le choix dépend fortement des objectifs spécifiques, 
 de la nature du corpus et des ressources disponibles}. Dans notre cas spécifique, la combinaison de plusieurs méthodes (ex. LDA pour l'analyse thématique + Sentence Transformer pour le clustering) 
 pourrait offrir une approche plus complète et nuancée. 
-Cependant, cela nécessite une expertise plus approfondie et une validation rigoureuse pour éviter les biais et les interprétations erronées.
+Cepandant, cela nécessite une expertise plus approfondie et une validation rigoureuse pour éviter les biais et les interprétations erronées.
 
 \chapter{Bilan de l'étape 1}
 
@@ -1501,7 +1505,7 @@ Normalisation des sorties
 \end{tabularx}
 \end{center}
 
-Ces résultats ont conduit à une revue complète de l'organisation pour la prochaine étape, avec une standardisation des résultats et une meilleure documentation pour faciliter la collaboration.
+Ses résultats ont conduit à une révue complète de l'organisation pour la prochaine étape, avec une standardisation des résultats et une meilleure documentation pour faciliter la collaboration.
 
 \pagebreak
 
@@ -2514,7 +2518,7 @@ santé mentale, en s'appuyant sur le même corpus d'entraînement
 Ce qui change, c'est \textbf{la profondeur de la représentation~:} là où TF-IDF ne comptait que des
 mots, BERT modélise le langage dans toute sa complexité contextuelle.
 
-\textbf{Trois variantes de BERT} sont implémentées, dont l'une d'entre elles grandement privilégiée par l'équipe. 
+\textbf{Trois variantes de BERT} sont implémentées, dont l'une d'entre elles grandement privilégié par l'équipe. 
 Elles sont ensuite comparées entre elles et avec les résultats du notebook principal~:
 
 \begin{center}
@@ -2530,9 +2534,9 @@ Elles sont ensuite comparées entre elles et avec les résultats du notebook pri
 \end{center}
 
 \begin{note}[Remarque]
-Chaque membre a décidé de sa propre volonté la méthode qu'il préférait implémenter. 
+Chaque membre a décidé de ça propre volonté la méthode qu'il préférais implémenter. 
 Cette partie, étant considéré comme un bonus, était présente pour permettre aux membres de l'équipe de découvrir et explorer la méthode qu'il préférait.
-Ce choix a donc été fait en amont afin de définir les tâches à réaliser pour chaque membre de l'équipe.
+Ce choix a donc était fait en amond afin de définir les tâches à réaliser pour chaque membre de l'équipe.
 \end{note}
 
 \pagebreak
@@ -2606,7 +2610,7 @@ y_test_enc  = encoder.transform(y_test)
 # num_labels = 7
 \end{lstlisting}
 
-Maintenant que nous avons mis en place les bases communes, nous pouvons détailler les implémentations de chaque modèle et les résultats obtenus.
+Maintenant que nous avons mis en place les bases communes, nous pouvons détailler les implémentations de chaque modèle et les résultats obtenues.
 
 \pagebreak
 
@@ -2714,9 +2718,9 @@ renseignés à l'issue de l'implémentation.
 
 \pagebreak
 
-\subsection{Résultats obtenus — Diogo}
+\subsection{Résultats obtenues — Diogo}
 
-Diogo s'étant occupé de cette méthode seul, les résultats obtenus sont les suivants:\\
+Diogo s'étant occupé de cette méthode seul, les résultats obtenues sont les suivants:\\
 
 \begin{center}
 \begin{tabular}{@{}lc@{}}
@@ -2941,10 +2945,10 @@ identiquement au Modèle~A.
 
 \pagebreak
 
-\subsection{Résultats obtenus — Diogo, Ulysse, Victor et Emin}
+\subsection{Résultats obtenues — Diogo, Ulysse, Victor et Emin}
 
 Étant la méthode la plus apprécié par l'équipe, Diogo, Ulysse, Victor et Emin se sont occupé de 
-celle-ci, les résultats obtenus sont les suivants:\\
+celle-ci, les résultats obtenues sont les suivants:\\
 
 \begin{center}
   \textbf{Fine Tuning} pour chaque epoch et \textbf{Résultat} sur l'ensemble test~:\\
@@ -3260,9 +3264,9 @@ compatibilité.
 
 \pagebreak
 
-\subsection{Résultats obtenus — Logan}
+\subsection{Résultats obtenues — Logan}
 
-Contrairement à la précédente, celle-ci est un peu plus complexe et donc a été réalisée par Logan seul, les résultats obtenus sont les suivants:\\
+Contrairement à celle précédente, celle-ci est un peu plus complexe et donc a été réalisée par Logan seul, les résultats obtenues sont les suivants:\\
 
 \begin{center}
   \textbf{Fine Tuning} pour chaque epoch et \textbf{Résultat} sur l'ensemble test~:\\
@@ -3380,12 +3384,13 @@ et que le gain du pré-entraînement spécialisé est limité dans ce cas.
 Le compromis coût/performance penche en faveur du Modèle B pour une utilisation en production,
 car il offre une excellente performance pour un coût d'entraînement raisonnable, tandis que le Modèle C, bien que légèrement meilleur,
 nécessite un pré-entraînement plus coûteux et n'apporte qu'un gain marginal.
-Malgré une grande amélioration des classes difficiles (Personality disorder, Stress, Suicidal) avec les modèles BERT,
+Malgrès une grande amélioration des classes difficiles (Personality disorder, Stress, Suicidal) avec les modèles BERT,
 ces classes restent les plus problématiques. 
 
 \subsubsection{4. Classes difficiles}
 On remarque que \textit{Depression} et \textit{Suicidal} restent souvent confondus, 
 ce qui suggère que même les modèles les plus avancés ont du mal à capturer les nuances entre ces catégories émotionnellement proches.
+
 
 
 %======================================================================
@@ -3394,7 +3399,7 @@ ce qui suggère que même les modèles les plus avancés ont du mal à capturer 
 \section{Contexte et organisation}
 
 Dans cette partie du projet, nous avons developpé un système de questions réponses
-basé sur des techniques de traitement automatique du langage naturel (NLP). L’objectif principal est de concevoir un modèle capable de retrouver automatiquement les réponses les plus pertinentes à partir d’une question donnée.
+basé sur des techniques de traitement automatique du langage naturel (NLP). L'objectif principal est de concevoir un modèle capable de retrouver automatiquement les réponses les plus pertinentes à partir d'une question donnée.
 
 \textbf{Spécifications techniques :}
 \begin{itemize}
@@ -3403,9 +3408,9 @@ basé sur des techniques de traitement automatique du langage naturel (NLP). L�
     \item \textbf{Paramètre configurable} : $k = 5$ (nombre de réponses retournées)
 \end{itemize}
 
-Le groupe a été réparti en 3 sous-groupes travaillant en parallèle sur le même jeu de données. Chaque sous-groupe était chargé d’implémenter une partie spécifique du système de question-réponse, notamment l’indexation inverse ainsi que les approches de similarité question-question et question-réponse.
+Le groupe a été réparti en 3 sous-groupes travaillant en parallèle sur le même jeu de données. Chaque sous-groupe était chargé d'implémenter une partie spécifique du système de question-réponse, notamment l'indexation inverse ainsi que les approches de similarité question-question et question-réponse.
 
-Le travail a été réparti entre les membres du groupe. Le tableau suivant présente l’organisation des tâches :
+Le travail a été réparti entre les membres du groupe. Le tableau suivant présente l'organisation des tâches :
 
 \begin{center}
 \begin{tabular}{lll}
@@ -3417,14 +3422,14 @@ Association mots-questions/réponses & Counter                               & L
 Similarité question-question    & Cosine similarity & \\
              & (TF-IDF+Word2Vec+Bert) & Yvan, Trésor \\
 \midrule
-Similarité question-question    & Cosine similarity & \\
+Similarité question-réponse    & Cosine similarity & \\
              & (TF-IDF+Word2Vec+Bert) & Idir, Laure \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \begin{note}[Lien avec le Module 1]
-Les annotations automatiques de sentiments produites par le Groupe 1 sont réutilisées ici pour \textbf{filtrer l'espace de recherche} : à une question donnée, le système restreint sa recherche aux échanges partageant la même étiquette de sentiment, assurant une cohérence thématique et émotionnelle.
+Les annotations automatiques de sentiments produites par le Groupe~1 sont réutilisées ici pour \textbf{filtrer l'espace de recherche}. Suite à la comparaison des modèles du Module~1, le système utilise désormais la colonne \texttt{predicted\_sentiment\_bert} — issue du meilleur modèle BERT avec fine-tuning (accuracy 0,8302) — plutôt que les annotations TF-IDF initialement utilisées. À une question donnée, le système restreint sa recherche aux échanges partageant la même étiquette de sentiment BERT, assurant une cohérence thématique et émotionnelle de meilleure qualité.
 \end{note}
 
 \newpage
@@ -3454,34 +3459,35 @@ Ce pipeline comprend les étapes suivantes~:
 
 Grâce à ce nettoyage, nous avons donc un résultat plus homogène et pertinent pour les étapes d'indexation et de vectorisation, améliorant ainsi la qualité des recherches par similarité.
 
-Avant l’implémentation des fonctions principales, nous avons fixé le jeu de données utilisé
-(train\_unique\_e2p2.csv) en supprimant les doublons de paires (question, réponse). Nous
+Avant l'implémentation des fonctions principales, nous avons fixé le jeu de données utilisé
+(\texttt{train\_unique\_e2p2.csv}) en supprimant les doublons de paires (question, réponse). Nous
 avons également constitué un ensemble de test en sélectionnant aléatoirement dix paires
-issues du jeu de données (test\_unique\_e2p2.csv). Enfin, un module commun de prétraitement a été développé afin de nettoyer les données (mise en minuscule, suppression de la
+issues du jeu de données (\texttt{test.csv}). Enfin, un module commun de prétraitement a été développé afin de nettoyer les données (mise en minuscule, suppression de la
 ponctuation et des stopwords), garantissant ainsi une comparaison cohérente des résultats.
 
 Voici un exemple de paire utilisée pour le test~:
 \begin{itemize}
-  \item \textbf{Context}~: "He was in love with someone years ago, and he still thinks about her time to time. He said, and I quote, ""That relationship is definitely over. I love you, but that girl will always be in my mind."" It just didn't feel like he appreciated all the things I've done to make him happy."
-  \item \textbf{Response}~: "Trust your intuition on your conclusion about this guy.He may very well love you, only with the ex so prominent in his mind, it is possible your feeling of not being appreciated now, would multiply if ever the two of you needed to address a delicate topic.Since he is emotionally attached to the former gf, it is very likely he wouldn't be able to fully love you as much as you'd like and are already sensing."
-  \item \textbf{Context nettoyée}~: "he was in love with someone years ago and he still thinks about her time to time he said and i quote that relationship is definitely over i love you but that girl will always be in my mind it just didn t feel like he appreciated all the things i ve done to make him happy"
-  \item \textbf{Sentiment}~: \textit{Suicidal}
+  \item \textbf{Context}~: \textit{"He was in love with someone years ago, and he still thinks about her time to time. He said, and I quote, ``That relationship is definitely over. I love you, but that girl will always be in my mind.'' It just didn't feel like he appreciated all the things I've done to make him happy."}
+  \item \textbf{Response}~: \textit{"Trust your intuition on your conclusion about this guy. He may very well love you, only with the ex so prominent in his mind, it is possible your feeling of not being appreciated now, would multiply if ever the two of you needed to address a delicate topic."}
+  \item \textbf{Sentiment (BERT)}~: \textit{Suicidal}
 \end{itemize}
 
 \section{Détails de l'implémentation}
-Cette section présente les différentes étapes techniques de l’implémentation du système de question-réponse. Elle décrit les choix méthodologiques ainsi que les approches utilisées pour la construction de l’indexation et la mise en place des différentes méthodes de recherche de réponses. Les étapes sont ensuite détaillées dans les sous-sections suivantes.
+
+Cette section présente les différentes étapes techniques de l'implémentation du système de question-réponse. Elle décrit les choix méthodologiques ainsi que les approches utilisées pour la construction de l'indexation et la mise en place des différentes méthodes de recherche de réponses.
 
 \subsection{Indexation inversée (Lucas)}
-L’indexation inversée est une structure de données permettant d’associer chaque mot du corpus aux différentes questions et réponses dans lesquelles il apparaît.
+
+L'indexation inversée est une structure de données permettant d'associer chaque mot du corpus aux différentes questions et réponses dans lesquelles il apparaît.
 
 Sur le plan technique, le processus commence par le prétraitement de chaque question et
 réponse. Chaque texte est normalisé en minuscules, puis la ponctuation est supprimée et
-les mots vides (stopwords) sont retirés. Les textes sont ensuite tokenisés afin d’obtenir une
+les mots vides (stopwords) sont retirés. Les textes sont ensuite tokenisés afin d'obtenir une
 liste de mots exploitables.
 
 Ensuite, pour chaque paire (question, réponse), les tokens issus des deux éléments sont combinés
 afin de former un ensemble unique de mots représentatifs $t$ de la discussion. Ensuite, un
-dictionnaire Python est utilisé pour construire l’index inversé. Les clés de ce dictionnaire
+dictionnaire Python est utilisé pour construire l'index inversé. Les clés de ce dictionnaire
 correspondent aux mots du corpus, tandis que les valeurs sont des listes contenant les
 textes associés.
 
@@ -3494,71 +3500,38 @@ Formellement, la structure obtenue peut être représentée comme suit :
 \mathcal{I}(t) = \{(q_i, r_i) \in \mathcal{C} \mid t \in \text{tokens}(q_i) \cup \text{tokens}(r_i)\}
 \end{equation}
 
-où $\mathcal{C}$ désigne l'ensemble des conversations du corpus.
-
-De façon plus "française", la structure obtenue est de la forme~:
+où $\mathcal{C}$ désigne l'ensemble des conversations du corpus, ou de façon plus synthétique~:
 \[
 \text{mot} \;\longrightarrow\; \{(\text{question}_1, \text{réponse}_1),\; (\text{question}_2, \text{réponse}_2),\; \ldots\}
 \]
 
-Cette structure permet une récupération en temps constant $\mathcal{O}(1)$ des conversations candidates pour un terme donné, 
-optimisant ainsi grandement la phase de filtrage initial.
+Cette structure permet une récupération en temps constant $\mathcal{O}(1)$ des conversations candidates pour un terme donné, optimisant ainsi la phase de filtrage initial.
 
-% Le code ci-dessous montre les détails de l'implémentation de cette fonction
-% \begin{lstlisting}
-% train_data["Context_clean"] = train_data["Context"].apply(text_process)
-% train_data["Response_clean"] = train_data["Response"].apply(text_process)
-% # Structure du dictionnaire : mot -> liste des discussions contenant ce type de mot
-% index_inverse = {}
-% SEUIL = 1
-% for idx, row in train_data.iterrows():
-%     question = row["Context"]
-%     response = row["Response"]
-%     #combine les mots de la question et de la réponse
-%     mots = row["Context_clean"] + row["Response_clean"]
-%     # Compter le nombre d'apparitions de chaque mot
-%     from collections import Counter
-%     compteur = Counter(mots)
-%     for mot,count in compteur.items():
-%         if count >= SEUIL:
-%         #Si le mot n'existe pas encore dans le dictionnaire, on l'initialise
-%             if mot not in index_inverse:
-%                 index_inverse[mot] = []
-%             #On ajoute la discussion associée à ce mot dans la liste
-%             index_inverse[mot].append({
-%                 "id": idx,
-%                 "question": question,
-%                 "response": response
-%             })
-% \end{lstlisting}
+\subsubsection{Détails de vectorisation}
 
-\subsubsection{3. Détails de vectorisation}
 La vectorisation constitue une étape essentielle dans les systèmes de traitement automatique du langage naturel. Elle permet de transformer des données textuelles en représentations numériques exploitables par des algorithmes de calcul de similarité.
 
-Dans ce travail, plusieurs approches de vectorisation sont utilisées afin de représenter les questions et réponses dans un espace vectoriel commun. 
+Dans ce travail, plusieurs approches de vectorisation sont utilisées afin de représenter les questions et réponses dans un espace vectoriel commun.
 Nous les avons déjà introduites dans le chapitre \ref{chap:topic_modeling}, donc nous allons juste les réintroduire brièvement ici en précisant
-les membres du groupe qui les ont implémentées: 
+les membres du groupe qui les ont implémentées~:
 
 \begin{itemize}
-    \item \textbf{TF-IDF : } (Idir, Yvan) C'est une méthode statistique de représentation des textes qui attribue un poids aux mots en fonction de leur fréquence dans un document et de leur rareté dans le corpus. Elle permet de mettre en avant les termes les plus discriminants.
-    \item \textbf{Word2Vec : } (Laure, Trésor) C'est une méthode de représentation vectorielle dans laquelle chaque mot est transformé en vecteur numérique dans un espace continu. La représentation d’une phrase est ensuite obtenue en calculant la moyenne des vecteurs des mots qui la composent, ce qui permet de capturer une similarité sémantique entre les textes.
-    \item \textbf{BERT (all-MiniLM-L6-v2) : } (Idir, Yvan) BERT est un modèle de langage basé sur les Transformers qui génère des représentations contextuelles des phrases, en tenant compte du sens des mots selon leur contexte global.
+    \item \textbf{TF-IDF} (Idir, Yvan)~: méthode statistique qui attribue un poids aux mots en fonction de leur fréquence dans un document et de leur rareté dans le corpus. Elle met en avant les termes les plus discriminants.
+    \item \textbf{Word2Vec} (Laure, Trésor)~: chaque mot est transformé en vecteur numérique dans un espace continu. La représentation d'une phrase est obtenue en calculant la moyenne des vecteurs des mots qui la composent, capturant une similarité sémantique entre les textes.
+    \item \textbf{BERT (\texttt{all-MiniLM-L6-v2})} (Idir, Yvan)~: modèle de langage basé sur les Transformers qui génère des représentations contextuelles des phrases, en tenant compte du sens des mots selon leur contexte global.
 \end{itemize}
 
 \newpage
 \subsection{Stratégies de recherche de réponses}
-Le système de question-réponse a été implémenté selon deux approches : une première basée sur la similarité entre questions, et une seconde reposant sur la comparaison directe entre la question et l’ensemble des réponses du corpus.
+
+Le système de question-réponse a été implémenté selon deux approches : une première basée sur la similarité entre questions, et une seconde reposant sur la comparaison directe entre la question et l'ensemble des réponses du corpus.
+
 \subsubsection{1. Similarité entre questions}
-\textit{Hypothèse} : Deux questions sémantiquement proches admettent des réponses similaires. \\
+
+\textit{Hypothèse} : Deux questions sémantiquement proches admettent des réponses similaires.\\
 \textit{Méthode} : Pour une question d'entrée $q_{\text{input}}$, les $k$ questions $\{q_1, \ldots, q_k\}$ du corpus maximisant la similarité $\text{sim}(q_{\text{input}}, q_i)$ sont identifiées. Les réponses $\{r_1, \ldots, r_k\}$ correspondantes sont retournées.
 
-Cette approche consiste à retrouver des réponses pertinentes à partir de la similarité entre la question de l’utilisateur et les questions présentes dans le corpus. L’hypothèse principale est que des questions sémantiquement proches doivent partager des réponses similaires.
-
-Dans notre système, deux versions ont été développées. La première repose sur une recherche de similarité appliquée à l’ensemble du corpus, tandis que la seconde limite cette recherche aux questions appartenant au même thème que la question en entrée.
-
-Dans la première version, chaque question est vectorisée afin d’être représentée dans un espace vectoriel commun. La question de l’utilisateur ainsi que l’ensemble des questions du corpus sont projetées dans ce même espace.
-
-Une mesure de similarité cosinus est ensuite appliquée entre la question utilisateur et l’ensemble des questions du corpus. Les scores obtenus sont triés afin de sélectionner les k questions les plus proches (k = 5). Enfin, les réponses associées à ces questions sont récupérées et retournées comme résultats du système. On résume la méthode de traitement dans schéma suivant :
+Dans notre système, deux versions ont été développées. La première repose sur une recherche de similarité appliquée à l'ensemble du corpus, tandis que la seconde limite cette recherche aux questions appartenant au même sentiment BERT que la question en entrée.
 
 \begin{figure}[H]
 \begin{center}
@@ -3570,14 +3543,8 @@ Une mesure de similarité cosinus est ensuite appliquée entre la question utili
   box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
               align=center, text width=3.2cm, minimum height=1.2cm,
               inner sep=6pt, font=\small},
-  boxhf/.style={box, fill=green!8, draw=green!60!black},
-  boxnew/.style={box, fill=orange!8, draw=orange!60!black},
   arrow/.style={-Latex, thick, draw=blue!70!black},
-  arrowred/.style={-Latex, thick, draw=red!60!black},
-  label/.style={font=\footnotesize, color=blue!70!black, align=center},
-  group/.style={draw=green!60!black, rounded corners, dashed, inner sep=12pt, thick},
 ]
-
 \node[box] (qu) {Question utilisateur};
 \node[box, right=4cm of qu] (qc) {Questions corpus};
 \node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
@@ -3586,7 +3553,6 @@ Une mesure de similarité cosinus est ensuite appliquée entre la question utili
 \node[box, below=of s] (t) {Tri des scores};
 \node[box, below=of t] (k) {Sélection des $k$ plus proches questions};
 \node[box, below=of k] (r) {Retour des réponses};
-
 \draw[arrow] (qu) -- (vu);
 \draw[arrow] (qc) -- (vc);
 \draw[arrow] (vu) |- (s);
@@ -3594,13 +3560,10 @@ Une mesure de similarité cosinus est ensuite appliquée entre la question utili
 \draw[arrow] (s) -- (t);
 \draw[arrow] (t) -- (k);
 \draw[arrow] (k) -- (r);
-
 \end{tikzpicture}
 \end{center}
-\caption{Schéma de la méthode de similarité question-question (version 1 : recherche sur l’ensemble du corpus).}
+\caption{Schéma de la méthode de similarité question-question (version 1 : recherche sur l'ensemble du corpus).}
 \end{figure}
-
-Dans la seconde version, la même méthode de vectorisation et de calcul de similarité est conservée, mais appliquée uniquement à un sous-ensemble du corpus composé des questions partageant le même thème que la question en entrée. Cette restriction permet de réduire l’espace de recherche et de favoriser des résultats plus cohérents sémantiquement en évitant de comparer la question à des thématiques non pertinentes. On résume la méthode de traitement dans schéma suivant :
 
 \begin{figure}[H]
 \begin{center}
@@ -3612,25 +3575,18 @@ Dans la seconde version, la même méthode de vectorisation et de calcul de simi
   box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
               align=center, text width=3.2cm, minimum height=1.2cm,
               inner sep=6pt, font=\small},
-  boxhf/.style={box, fill=green!8, draw=green!60!black},
-  boxnew/.style={box, fill=orange!8, draw=orange!60!black},
   arrow/.style={-Latex, thick, draw=blue!70!black},
-  arrowred/.style={-Latex, thick, draw=red!60!black},
-  label/.style={font=\footnotesize, color=blue!70!black, align=center},
-  group/.style={draw=green!60!black, rounded corners, dashed, inner sep=12pt, thick},
 ]
-
 \node[box] (qu) {Question utilisateur};
 \node[box, right=6cm of qu] (qc) {Questions corpus};
 \node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
-\node[box, right=of vu] (ext) {Extraction de thème};
-\node[box, below=of qc, text width=4cm] (flt) {Filtrer selon thème\\ de la question entrée};
-\node[box, below=of flt] (vc) {Vectorisation\\corpus};
+\node[box, right=of vu] (ext) {Sentiment BERT};
+\node[box, below=of qc, text width=4cm] (flt) {Filtrer selon sentiment BERT\\de la question};
+\node[box, below=of flt] (vc) {Vectorisation\\corpus filtré};
 \node[box, below=6cm of qu, xshift=4cm] (s) {Similarité cosinus};
 \node[box, below=of s] (t) {Tri des scores};
 \node[box, below=of t] (k) {Sélection des $k$ plus proches questions};
 \node[box, below=of k] (r) {Retour des réponses};
-
 \draw[arrow] (qu) -- (vu);
 \draw[arrow] (qu) -- ++(2cm,0) -| (ext);
 \draw[arrow] (qc) -- (flt);
@@ -3641,85 +3597,43 @@ Dans la seconde version, la même méthode de vectorisation et de calcul de simi
 \draw[arrow] (s) -- (t);
 \draw[arrow] (t) -- (k);
 \draw[arrow] (k) -- (r);
-
 \end{tikzpicture}
 \end{center}
-\caption{Schéma de la méthode de similarité question-question (version 2 : recherche limitée au même thème).}
+\caption{Schéma de la méthode de similarité question-question (version 2 : filtrage par sentiment BERT).}
 \end{figure}
 
 \newpage
 
-\subsubsection{Méthode 1 — TF-IDF}
+\textbf{Méthode TF-IDF}
 
-Chaque question est représentée par un vecteur TF-IDF. La similarité cosinus est calculée entre la question utilisateur et toutes les questions du corpus appartenant au même sentiment.
+Chaque question est représentée par un vecteur TF-IDF. La similarité cosinus est calculée entre la question utilisateur et toutes les questions du corpus appartenant au même sentiment BERT.
 
-Voici l'algorithme (simplifié pour la lisibilité) de la fonction \texttt{questionQuestion} implémentant cette méthode~:
 \begin{lstlisting}
 vectorizer = TfidfVectorizer(analyzer=text_process)
 
 def questionQuestion(question, k=5):
-  # 1. Récupération du sentiment de la question d'entrée
-  # 2. Vectorisation TF-IDF des questions du corpus filtré par sentiment
-  # 3. Vectorisation de la question d'entrée
-  # 4. Calcul de la similarité cosinus
-  # 5. Identification des ID des top-k questions les plus similaires
-  # 6. Renvoie les réponses correspondantes avec leurs scores de similarité
+  # 1. Récupération du sentiment BERT de la question d'entrée
+  # 2. Filtrage du corpus par sentiment BERT
+  # 3. Vectorisation TF-IDF des questions filtrées
+  # 4. Vectorisation de la question d'entrée
+  # 5. Calcul de la similarité cosinus et sélection des top-k
 \end{lstlisting}
 
-\newpage
+\textbf{Méthode Word2Vec}
 
-\textbf{Exemple de phrases similaires selon TF-IDF}~:
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-\toprule
-\textbf{Entrée} & \textbf{Sortie} \\
-\midrule
-\textbf{Question} & \textit{I terminated my counseling relationship with a social worker several years ago. I am now realizing that I would like to begin counseling again.[\dots]I called him on the weekend and made it clear that I want him to call me back.  Can he just ignore me?}\\
-\midrule
-\textbf{Réponse actuelle} & \textit{Yes, your former social worker should return your phone call.It is the professional ethic to do so and plain human decency to do so.[\dots]The self-doubts you mention may be worth examining.They do not, however excuse the social worker mishandling himself.}\\
-\bottomrule
-\bottomrule
-\end{tabular}
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-  \textbf{Similarité cosinus} & \textbf{Réponses similaires}\\
-  \toprule
-  \textbf{1.0} & \textit{You've already taken the first step. You want to not hate yourself. Self-acceptance is hard! [\dots] Your counselor can also help you to recognize pieces that may be more difficult to see from your eyes as they have an outside view. And with self-acceptance, confidence and boundaries that protect you. Wishing you the absolute best with this!}\\
-  \midrule
-  \textbf{0.1542} & \textit{I imagine you are trying to figure out a way to be "fair" to your adult kids.  The key word is "adult".  If your daughter can afford to join the family for a vacation that's great, she's welcome to come.  [\dots] Your girl is in her 20s and it's her turn to provide for herself.  You did your parenting - now go enjoy your vacation with whoever can, and wants to, join you!}\\
-  \bottomrule
-\end{tabular}
-\caption{Exemples de phrases similaires selon TF-IDF}
-\end{table}
-
-\begin{note}[Interprétation]
-Cette méthode ne tient pas compte du contexte des questions, ce qui peut entraîner des résultats moins précis dans certains cas.
-\end{note}
-
-\pagebreak
-
-\subsubsection{Méthode 2 — Word2Vec}
-
-Chaque question est représentée par la \textbf{moyenne} des vecteurs de ses mots, 
-tels qu'appris par un modèle Word2Vec entraîné sur le corpus (\texttt{vector\_size=100}, 
-\texttt{window=5}, \texttt{min\_count=1}).
-
-Contrairement à TF-IDF, on utilise une fonction de vectorisation personnalisée \\\texttt{vectoriser\_phrase} qui nettoie et tokenise la question,
-récupère les vecteurs de mots présents dans le modèle Word2Vec, puis calcule la moyenne de ces vecteurs pour obtenir une représentation globale de la question.\\
-\textbf{Pourquoi?} Parce que Word2Vec ne fournit pas directement une représentation de phrase, contrairement à TF-IDF qui vectorise directement les documents. 
-
-Voici l'algorithme (simplifié pour la lisibilité) de la fonction \texttt{questionQuestion\_w2v} implémentant cette méthode~:
+Chaque question est représentée par la \textbf{moyenne} des vecteurs de ses mots, tels qu'appris par un modèle Word2Vec entraîné sur le corpus (\texttt{vector\_size=100}, \texttt{window=5}, \texttt{min\_count=1}).
 
 \begin{lstlisting}
 model_w2v = Word2Vec(sentences=phrases_train, vector_size=100,
                      window=5, min_count=1, workers=4)
 
 def vectoriser_phrase(phrase):
-  # 1. nettoyage et tokenisation
-  # 2. récupération des vecteurs de mots présents dans le modèle
-  # 3. moyenne des vecteurs ou vecteur nul si aucun mot connu
+  mots = text_process(phrase)
+  vecteurs = [model_w2v.wv[m] for m in mots if m in model_w2v.wv]
+  return np.mean(vecteurs, axis=0) if vecteurs \
+         else np.zeros(model_w2v.vector_size)
 
-def questionQuestion_w2v(question,k=5):
+def questionQuestion_w2v(question, k=5):
   # 1. récupération du sentiment de la question d'entrée
   # 2. filtrage du corpus par sentiment
   # 3. vectorisation des questions du corpus filtré
@@ -3727,54 +3641,12 @@ def questionQuestion_w2v(question,k=5):
   # 5. calcul de la similarité cosinus
   # 6. indices des top-k questions les plus similaires
   # 7. renvoie les réponses correspondantes avec leurs scores de similarité
-
+ 
 \end{lstlisting}
 
-La recherche est ensuite filtrée sur le sentiment prédit et la similarité cosinus 
-est calculée sur la matrice de vecteurs correspondante.
+\textbf{Méthode BERT (\texttt{all-MiniLM-L6-v2})}
 
-\pagebreak
-
-\textbf{Exemple de phrases similaires selon Word2Vec}~:
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-\toprule
-\textbf{Entrée} & \textbf{Sortie} \\
-\midrule
-\textbf{Question} & \textit{He was in love with someone years ago, and he still thinks about her time to time. He said, and I quote, "That relationship is definitely over. I love you, but that girl will always be in my mind." It just didn't feel like he appreciated all the things I've done to make him happy.}\\
-\midrule
-\textbf{Réponse actuelle} & \textit{Trust your intuition on your conclusion about this guy.He may very well love you, only with the ex so prominent in his mind, it is possible your feeling of not being appreciated now, would multiply if ever the two of you needed to address a delicate topic.Since he is emotionally attached to the former gf, it is very likely he wouldn't be able to fully love you as much as you'd like and are already sensing.}\\
-\bottomrule
-\bottomrule
-\end{tabular}
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-  \textbf{Similarité cosinus} & \textbf{Réponses similaires}\\
-  \toprule
-  \textbf{1.0} & \textit{Hello, and thank you for your question. First, I want to tell you how sorry I am for the experience you had with your parents. That is a grief and trauma that is certainly hard to imagine. [\dots] You still have a lot you are dealing with yourself. [\dots] I hope this is helpful, and some of my colleagues may have ideas, also.}\\
-  \midrule
-  \textbf{1.0} & \textit{It seems like you may be experiencing depression symptoms, they could be the triggered by unexpected life changes, or building up throughout time.[\dots] It will also be a good time to explore your spirituality and your purpose in life, that may help you to feel better with yourself and then happier around others.[\dots]}\\
-\end{tabular}
-\caption{Exemples de phrases similaires selon Word2Vec}
-\end{table}
-
-\begin{note}[Interprétation]
-Le résultat est plus pertinent que TF-IDF mais n'est pas pour autant meilleur, 
-en effet, la moyenne des vecteurs de mots (stratégie utilisée pour les phrases) 
-lisse l'information et perd l'ordre et la structure syntaxique.
-De plus, la comparaison question-réponse reste sous-optimale car le vocabulaire d'une question 
-diffère naturellement de celui d'une réponse.
-On se retrouve alors avec des termes parlant de relation \textbf{amoureuse} 
-et des réponses parlant de relation \textbf{familiale}.
-\end{note}
-
-\newpage
-
-\subsubsection{Méthode 3 — BERT (all-MiniLM-L6-v2)}
-
-Le modèle \texttt{all-MiniLM-L6-v2} de la bibliothèque 
-\texttt{sentence-transformers} génère des \textit{embeddings} contextuels pour chaque question. 
-Ces représentations capturent le sens global de la phrase de manière bien plus riche que TF-IDF ou Word2Vec.
+Le modèle \texttt{all-MiniLM-L6-v2} génère des \textit{embeddings} contextuels pour chaque question, capturant le sens global de la phrase de manière bien plus riche que TF-IDF ou Word2Vec.
 
 \begin{lstlisting}
 model_bert = SentenceTransformer('all-MiniLM-L6-v2')
@@ -3789,90 +3661,12 @@ def questionQuestion_bert(question, k=5):
   # 7. renvoie les réponses correspondantes avec leurs scores de similarité
 \end{lstlisting}
 
-\pagebreak
-
-\textbf{Exemple de phrases similaires selon BERT}~:
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-\toprule
-\textbf{Entrée} & \textbf{Sortie} \\
-\midrule
-\textbf{Question} & \textit{He was in love with someone years ago, and he still thinks about her time to time. He said, and I quote, "That relationship is definitely over. I love you, but that girl will always be in my mind." It just didn't feel like he appreciated all the things I've done to make him happy.}\\
-\midrule
-\textbf{Réponse actuelle} & \textit{Trust your intuition on your conclusion about this guy.He may very well love you, only with the ex so prominent in his mind, it is possible your feeling of not being appreciated now, would multiply if ever the two of you needed to address a delicate topic.Since he is emotionally attached to the former gf, it is very likely he wouldn't be able to fully love you as much as you'd like and are already sensing.}\\
-\bottomrule
-\bottomrule
-\end{tabular}
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-  \textbf{Similarité cosinus} & \textbf{Réponses similaires}\\
-  \toprule
-  \textbf{0.4646} & \textit{How do you help yourself to believe you require more than what he offers to you?What do you get from this relationship which feels satisfying?To answer this question may in the longterm be the best way to help your bf.}\\
-  \midrule
-  \textbf{0.4565} & \textit{The fact that you're reaching out says that there is something in you that wants this to be different, and that drive might be something worth tapping into. "Why do I keep trying?" is a question that might give you some insight into what it is in you that keeps you going. [\dots]I'd recommend looking into this option, because you're asking a lot of really deep questions and might benefit from having those conversations with someone who can help you find your own answers.}\\
-\bottomrule
-\end{tabular}
-\caption{Exemples de phrases similaires selon BERT}
-\end{table}
-
-\begin{note}[Interprétation]
-BERT capture mieux les nuances sémantiques que les méthodes précédentes,
-mais il est plus coûteux en termes de calcul et de temps d'exécution.
-De plus, la similarité question-question reste limitée par le fait que les questions et les réponses 
-utilisent souvent des vocabulaires différents, ce qui peut réduire la pertinence des résultats obtenus.
-Sur certaines réponses, celui-ci a bien trouvé une thématique lié à la relation amoureuse et s'est aussi penché sur la 
-thématique de dépression.
-\end{note}
-
 \newpage
 \subsubsection{2. Similarité entre question et réponses}
-Cette approche consiste à retrouver directement les réponses les plus pertinentes en se basant sur la similarité entre la question de l’utilisateur et l’ensemble des réponses présentes dans le corpus. L’idée principale est qu’une réponse pertinente doit être sémantiquement proche de la question posée.
 
-Dans notre système, deux versions ont été développées. La première repose sur une recherche de similarité appliquée à l’ensemble des réponses du corpus, tandis que la seconde limite cette recherche aux réponses appartenant au même thème que la question en entrée.
+Cette approche consiste à retrouver directement les réponses les plus pertinentes en se basant sur la similarité entre la question de l'utilisateur et l'ensemble des réponses présentes dans le corpus. L'idée principale est qu'une réponse pertinente doit être sémantiquement proche de la question posée.
 
-Dans la première version, chaque réponse est vectorisée afin d’être représentée dans un espace vectoriel commun. La question de l’utilisateur ainsi que l’ensemble des réponses du corpus sont projetées dans ce même espace.
-
-Une mesure de similarité cosinus est ensuite calculée entre la question de l’utilisateur et toutes les réponses du corpus. Les scores obtenus sont triés afin de sélectionner les k réponses les plus proches (k = 5), lesquelles sont ensuite retournées comme résultats du système. On résume la méthode de traitement dans schéma suivant :
-
-\begin{figure}[H]
-\begin{center}
-\begin{tikzpicture}[
- scale=0.75,
-  transform shape,
-  node distance=8mm,
-  >=Latex,
-  box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
-              align=center, text width=3.2cm, minimum height=1.2cm,
-              inner sep=6pt, font=\small},
-  boxhf/.style={box, fill=green!8, draw=green!60!black},
-  boxnew/.style={box, fill=orange!8, draw=orange!60!black},
-  arrow/.style={-Latex, thick, draw=blue!70!black},
-  arrowred/.style={-Latex, thick, draw=red!60!black},
-  label/.style={font=\footnotesize, color=blue!70!black, align=center},
-  group/.style={draw=green!60!black, rounded corners, dashed, inner sep=12pt, thick},
-]
-
-\node[box] (qu) {Question utilisateur};
-\node[box, right=4cm of qu] (qc) {Réponses corpus};
-\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
-\node[box, below=of qc] (vc) {Vectorisation\\corpus};
-\node[box, below=2.5cm of qu, xshift=4cm] (s) {Similarité cosinus};
-\node[box, below=of s] (t) {Tri des scores};
-\node[box, below=of t] (k) {Retour des $k$ plus proches réponses};
-
-\draw[arrow] (qu) -- (vu);
-\draw[arrow] (qc) -- (vc);
-\draw[arrow] (vu) |- (s);
-\draw[arrow] (vc) |- (s);
-\draw[arrow] (s) -- (t);
-\draw[arrow] (t) -- (k);
-
-\end{tikzpicture}
-\end{center}
-\caption{Schéma de la méthode de similarité question-réponse (version 1 : recherche sur l’ensemble du corpus).}
-\end{figure}
-
-Dans la seconde version, la même méthode de vectorisation et de calcul de similarité est conservée, mais appliquée uniquement à un sous-ensemble du corpus composé des réponses partageant le même thème que la question en entrée. Cette restriction permet de réduire l’espace de recherche et de favoriser des résultats plus cohérents sémantiquement en évitant de comparer la question à des thématiques non pertinentes. On résume la méthode de traitement dans schéma suivant :
+Comme pour la stratégie précédente, deux versions coexistent : une recherche sur l'ensemble du corpus, et une recherche limitée aux réponses partageant le même sentiment BERT que la question.
 
 \begin{figure}[H]
 \begin{center}
@@ -3884,24 +3678,47 @@ Dans la seconde version, la même méthode de vectorisation et de calcul de simi
   box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
               align=center, text width=3.2cm, minimum height=1.2cm,
               inner sep=6pt, font=\small},
-  boxhf/.style={box, fill=green!8, draw=green!60!black},
-  boxnew/.style={box, fill=orange!8, draw=orange!60!black},
   arrow/.style={-Latex, thick, draw=blue!70!black},
-  arrowred/.style={-Latex, thick, draw=red!60!black},
-  label/.style={font=\footnotesize, color=blue!70!black, align=center},
-  group/.style={draw=green!60!black, rounded corners, dashed, inner sep=12pt, thick},
 ]
+\node[box] (qu) {Question utilisateur};
+\node[box, right=4cm of qu] (qc) {Réponses corpus};
+\node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
+\node[box, below=of qc] (vc) {Vectorisation\\réponses};
+\node[box, below=2.5cm of qu, xshift=4cm] (s) {Similarité cosinus};
+\node[box, below=of s] (t) {Tri des scores};
+\node[box, below=of t] (k) {Retour des $k$ plus proches réponses};
+\draw[arrow] (qu) -- (vu);
+\draw[arrow] (qc) -- (vc);
+\draw[arrow] (vu) |- (s);
+\draw[arrow] (vc) |- (s);
+\draw[arrow] (s) -- (t);
+\draw[arrow] (t) -- (k);
+\end{tikzpicture}
+\end{center}
+\caption{Schéma de la méthode de similarité question-réponse (version 1 : recherche sur l'ensemble du corpus).}
+\end{figure}
 
+\begin{figure}[H]
+\begin{center}
+\begin{tikzpicture}[
+  scale=0.75,
+  transform shape,
+  node distance=8mm,
+  >=Latex,
+  box/.style={rounded corners, draw=blue!70!black, thick, fill=blue!5,
+              align=center, text width=3.2cm, minimum height=1.2cm,
+              inner sep=6pt, font=\small},
+  arrow/.style={-Latex, thick, draw=blue!70!black},
+]
 \node[box] (qu) {Question utilisateur};
 \node[box, right=6cm of qu] (qc) {Réponses corpus};
 \node[box, below=of qu] (vu) {Vectorisation\\question utilisateur};
-\node[box, right=of vu] (ext) {Extraction de thème};
-\node[box, below=of qc, text width=4cm] (flt) {Filtrer selon thème\\ de la question entrée};
-\node[box, below=of flt] (vc) {Vectorisation\\corpus};
+\node[box, right=of vu] (ext) {Sentiment BERT};
+\node[box, below=of qc, text width=4cm] (flt) {Filtrer selon sentiment BERT\\de la question};
+\node[box, below=of flt] (vc) {Vectorisation\\réponses filtrées};
 \node[box, below=6cm of qu, xshift=4cm] (s) {Similarité cosinus};
 \node[box, below=of s] (t) {Tri des scores};
 \node[box, below=of t] (k) {Retour des $k$ plus proches réponses};
-
 \draw[arrow] (qu) -- (vu);
 \draw[arrow] (qu) -- ++(2cm,0) -| (ext);
 \draw[arrow] (qc) -- (flt);
@@ -3911,84 +3728,42 @@ Dans la seconde version, la même méthode de vectorisation et de calcul de simi
 \draw[arrow] (vc) |- (s);
 \draw[arrow] (s) -- (t);
 \draw[arrow] (t) -- (k);
-
 \end{tikzpicture}
 \end{center}
-\caption{Schéma de la méthode de similarité question-réponse (version 2 : recherche limitée au même thème).}
+\caption{Schéma de la méthode de similarité question-réponse (version 2 : filtrage par sentiment BERT).}
 \end{figure}
 
-\pagebreak
+\textbf{Méthode TF-IDF}
 
-\subsubsection{Méthode 1 — TF-IDF}
+Chaque réponse du corpus est représentée par un vecteur TF-IDF. La similarité cosinus est calculée entre la question utilisateur et toutes les \textbf{réponses} appartenant au même sentiment BERT.
 
-Chaque réponse du corpus est représentée par un vecteur TF-IDF. La similarité cosinus est
-calculée entre la question utilisateur et toutes les \textbf{réponses} du corpus appartenant
-au même sentiment.
-
-\textbf{Exemple de réponses similaires selon TF-IDF}~:
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-\toprule
-\textbf{Entrée} & \textbf{Sortie} \\
-\midrule
-\textbf{Question} & \textit{I haven't been feeling like myself lately. I've been upset for no reason and feeling anxious. I'm feeling burnt out. What can help me feel better?}\\
-\midrule
-\textbf{Réponse actuelle} & \textit{Does it help to put a name to the experience you are having? [\dots] Perhaps you are feeling burnt out! That is a big deal [\dots]}\\
-\bottomrule
-\bottomrule
-\end{tabular}
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-  \textbf{Similarité cosinus} & \textbf{Réponses similaires}\\
-  \toprule
-  \textbf{0.2149} & \textit{Seasonal Affective Disorder (S.A.D.) is a term that reflects how many people are affected by the changing seasons [\dots] There are some ways you can definitely help yourself going forward: 1. Attend therapy [\dots] 2. Push yourself to interact more with your social groups [\dots]}\\
-  \midrule
-  \textbf{0.1326} & \textit{Your question is a fascinating one! As humans we have the ability to reflect on situations in our lives. Even if nothing currently goes on in a particular moment, it's possible you're reflecting on a serious or upsetting matter [\dots]}\\
-  \bottomrule
-\end{tabular}
-\caption{Exemples de réponses similaires selon TF-IDF (stratégie Q-R)}
-\end{table}
+\begin{lstlisting}
+def questionQuestion2(question, k=5):
+  # 1. Récupération du sentiment BERT et filtrage du corpus
+  # 2. Vectorisation TF-IDF des réponses filtrées
+  # 3. Calcul de la similarité cosinus et sélection des top-k
+\end{lstlisting}
 
 \begin{note}[Interprétation]
 Les scores de similarité sont nettement plus faibles qu'en Q-Q (max 0.21 vs 1.0 pour Q-Q TF-IDF).
 En comparant une question à des \textbf{réponses}, les vocabulaires divergent naturellement~: une question formule un problème, une réponse propose des solutions. TF-IDF, limité au chevauchement lexical, peine à combler cet écart.
 \end{note}
 
-\pagebreak
+\textbf{Méthode Word2Vec}
 
-\subsubsection{Méthode 2 — Word2Vec}
+Chaque réponse est représentée par la moyenne des vecteurs de ses mots, issus d'un modèle Word2Vec 
+entraîné cette fois sur les \textbf{réponses} du corpus (\texttt{vector\_size=100}, \texttt{window=5},
+ \texttt{min\_count=2}).
 
-Chaque réponse est représentée par la \textbf{moyenne} des vecteurs de ses mots, issus d'un
-modèle Word2Vec entraîné cette fois sur les \textbf{réponses} du corpus
-(\texttt{vector\_size=100}, \texttt{window=5}, \texttt{min\_count=2}).
+\begin{lstlisting}
+model_w2v2 = Word2Vec(sentences=phrases_responses, vector_size=100,
+                      window=5, min_count=2)
 
-La différence clé avec la stratégie Q-Q est l'entraînement du modèle~: là où la stratégie
-Question-Question entraîne Word2Vec sur les questions, ici le modèle apprend les relations
-sémantiques propres au vocabulaire des réponses thérapeutiques.
-
-\textbf{Exemple de réponses similaires selon Word2Vec}~:
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-\toprule
-\textbf{Entrée} & \textbf{Sortie} \\
-\midrule
-\textbf{Question} & \textit{After he got home from the hospital he was angry, then for a time wonderful. Now he is depressed and hopeless again.}\\
-\midrule
-\textbf{Réponse actuelle} & \textit{This is actually more common than we often realize, and actually understandable, as he has gone through a trauma, an unresolved existential crisis [\dots]}\\
-\bottomrule
-\bottomrule
-\end{tabular}
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-  \textbf{Similarité cosinus} & \textbf{Réponses similaires}\\
-  \toprule
-  \textbf{0.9999} & \textit{One way to understand panic attacks is as a sign of feeling insecure or lacking confidence in a certain area [\dots] A simpler life of fewer activities allows more time to know and understand your own inner feelings [\dots]}\\
-  \midrule
-  \textbf{0.9999} & \textit{When we feel overwhelmed by life situations, it is important to understand where the feeling is coming from [\dots] focus on being kind to yourself and improving your self-esteem [\dots]}\\
-  \bottomrule
-\end{tabular}
-\caption{Exemples de réponses similaires selon Word2Vec (stratégie Q-R)}
-\end{table}
+def questionQuestion2_w2v(question, k=5):
+  # 1. Récupération du sentiment BERT et filtrage du corpus
+  # 2. Vectorisation Word2Vec des réponses filtrées
+  # 3. Calcul de la similarité cosinus et sélection des top-k
+\end{lstlisting}
 
 \begin{note}[Interprétation]
 Paradoxalement, les scores approchent 1.0, ce qui est trompeur~: la moyenne des vecteurs
@@ -4001,36 +3776,23 @@ moyenne pour la comparaison question-réponse.
 
 \pagebreak
 
-\subsubsection{Méthode 3 — BERT (all-MiniLM-L6-v2)}
+\textbf{Méthode BERT (\texttt{all-MiniLM-L6-v2})}
+
+Le modèle \texttt{all-MiniLM-L6-v2} génère des \textit{embeddings} contextuels, 
+appliqués ici aux \textbf{réponses} du corpus. La question utilisateur est encodée dans le même espace,
+ permettant une comparaison sémantique directe.
 
 Comme pour la stratégie Q-Q, le modèle \texttt{all-MiniLM-L6-v2} génère des
 \textit{embeddings} contextuels, mais appliqués ici aux \textbf{réponses} du corpus.
 La question utilisateur est encodée dans le même espace, permettant une comparaison
 sémantique directe entre une question et le corpus de réponses.
 
-\textbf{Exemple de réponses similaires selon BERT}~:
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-\toprule
-\textbf{Entrée} & \textbf{Sortie} \\
-\midrule
-\textbf{Question} & \textit{After he got home from the hospital he was angry, then for a time wonderful. Now he is depressed and hopeless again.}\\
-\midrule
-\textbf{Réponse actuelle} & \textit{This is actually more common than we often realize [\dots] He was taken care of by others and now is again left alone with his own internal [\dots] horrific inner struggle [\dots]}\\
-\bottomrule
-\bottomrule
-\end{tabular}
-\begin{tabular}{@{}L{2cm}|L{13cm}@{}}
-  \textbf{Similarité cosinus} & \textbf{Réponses similaires}\\
-  \toprule
-  \textbf{0.4410} & \textit{Your question says a lot about what YOU want rather than what she wants [\dots] Tough love and clear boundaries are needed, especially with addictions [\dots] Support her, but don't try to change her or make her do anything [\dots]}\\
-  \midrule
-  \textbf{0.4250} & \textit{While one can be sad from time to time, feeling sad ``all the time'' could be a sign of depression [\dots] To help you to uncover your reasons for your sadness or depression, it may be helpful to contact a therapist [\dots]}\\
-  \bottomrule
-\end{tabular}
-\caption{Exemples de réponses similaires selon BERT (stratégie Q-R)}
-\end{table}
+\begin{lstlisting}
+def questionQuestion2_bert(question, k=5):
+  # 1. Récupération du sentiment BERT et filtrage du corpus
+  # 2. Encodage BERT des réponses filtrées et de la question
+  # 3. Calcul de la similarité cosinus et sélection des top-k
+\end{lstlisting}
 
 \begin{note}[Interprétation]
 BERT produit des scores réalistes (0.42--0.44) et des réponses thématiquement cohérentes avec
@@ -4041,53 +3803,60 @@ une similarité sémantique réelle. C'est cette représentation contextuelle qu
 stratégie Q-R d'atteindre son meilleur score de \textbf{0.702} avec filtrage par sentiment.
 \end{note}
 
-\subsection{ Evaluation des résultats}
-Afin d’évaluer les performances du système de question-réponse, nous avons réalisé des tests sur un ensemble de données de test composé de 100 paires (question, réponse) extraites du corpus.
+\subsection{Évaluation des résultats}
 
-L’objectif de cette évaluation est de mesurer la capacité des différents modèles à retrouver les réponses pertinentes en fonction d’une question donnée.
+Afin d'évaluer les performances du système, nous avons réalisé des tests sur un ensemble de données de test composé de 10 paires (question, réponse) extraites du corpus.
 
 Dans notre implémentation, nous avons utilisé la similarité cosinus afin de mesurer la proximité entre la réponse prédite et la réponse attendue. Le score obtenu varie entre 0 et 1, où une valeur proche de 1 indique une forte similarité sémantique.
 
-Afin d’obtenir une mesure globale de performance, nous avons calculé la moyenne des scores de similarité obtenus sur l’ensemble du jeu de test. Cette approche permet de pénaliser davantage les réponses peu similaires à la réponse attendue.
+Afin d'obtenir une mesure globale de performance, nous avons calculé la moyenne des scores de similarité obtenus sur l'ensemble du jeu de test, en nous inspirant du principe du MRR (\textit{Mean Reciprocal Rank})~:
 
 \[
-\text{Score} = \frac{1}{N} \sum_{i=1}^{N} \text{cosine\_similarity}(R^{\text{pred}}_i, R^{\text{true}}_i)
+\text{Score} = \frac{1}{N} \sum_{i=1}^{N} \text{cosine\_similarity}(R^{\text{pred}}_i,\; R^{\text{true}}_i)
 \]
 
-Bien que cette méthode s’inspire du principe du MRR (Mean Reciprocal Rank), elle repose ici directement sur les scores de similarité et non sur un classement explicite des réponses.
+Bien que cette méthode s’inspire du principe du MRR (Mean Reciprocal Rank), elle repose ici directement
+sur les scores de similarité et non sur un classement explicite des réponses.
 
-Dans ce contexte, un score proche de 1 indique une bonne performance du modèle, car cela signifie que la similarité entre les réponses est élevée.
+Dans ce contexte, un score proche de 1 indique une bonne performance du modèle, 
+car cela signifie que la similarité entre les réponses est élevée.
 
-Pour la première version de cette méthode, on a obtenu les résultats suivant :
-\begin{center}
-\begin{tabular}{llll}
-\toprule
-\textbf{Méthode} & \textbf{TF-IDF} & \textbf{Word2Vec} & \textbf{BERT} \\
-\midrule
-Similarité question-question & 0.3141& 0.4242&0.4627 \\
-\midrule
-Similarité question-réponse & 0.32& 0.53& 0.5627\\ 
-\bottomrule
-\end{tabular}
-\end{center}
-\bigskip
-
-Pour la seconde version de cette méthode, on a trouvé les résultats suivant:
+Pour la première version (sans filtrage par sentiment), on a obtenu les résultats suivants~:
 
 \begin{center}
-\begin{tabular}{llll}
-\toprule
-\textbf{Méthode} & \textbf{TF-IDF} & \textbf{Word2Vec} & \textbf{BERT} \\
-\midrule
-Similarité question-question & 0.4101&  0.622&0.67 \\
-\midrule
-Similarité question-réponse & 0.4101&  0.664& 0.702\\ 
-\bottomrule
+\begin{tabular}{@{}L{5.5cm}C{2.5cm}C{2.5cm}C{2.5cm}@{}}
+  \toprule
+  Stratégie & TF-IDF & Word2Vec & BERT \\
+  \midrule
+  Similarité question-question & 0,3141 & 0,4242 & 0,4627 \\
+  Similarité question-réponse  & 0,3200 & 0,5300 & 0,5627 \\
+  \bottomrule
 \end{tabular}
 \end{center}
-\bigskip
 
-Les résultats obtenus montrent que les méthodes basées sur BERT et Word2Vec offrent de meilleures performances que TF-IDF, ce dernier étant limité à une similarité lexicale et ne prenant pas en compte le sens global des phrases.
+Pour la seconde version (avec filtrage par sentiment BERT), on a obtenu les résultats suivants~:
+
+\begin{center}
+\begin{tabular}{@{}L{5.5cm}C{2.5cm}C{2.5cm}C{2.5cm}@{}}
+  \toprule
+  Stratégie & TF-IDF & Word2Vec & BERT \\
+  \midrule
+  Similarité question-question & 0,4101 & 0,6220 & 0,6700 \\
+  Similarité question-réponse  & 0,4101 & 0,6640 & \textbf{0,7020} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+Les résultats montrent que les méthodes basées sur BERT et Word2Vec offrent de meilleures performances que TF-IDF, ce dernier étant limité à une similarité lexicale et ne prenant pas en compte le sens global des phrases.
+
+\begin{note}[Apport du filtrage par sentiment BERT]
+Le passage au filtrage via \texttt{predicted\_sentiment\_bert} (meilleur modèle du Module~1, accuracy 0,8302) 
+apporte un gain systématique sur toutes les combinaisons. La stratégie optimale reste 
+\textbf{BERT + similarité question-réponse + filtrage BERT}, avec un score de \textbf{0,702}. 
+La qualité supérieure des annotations BERT, par rapport aux annotations TF-IDF initialement utilisées, 
+se traduit directement par des sous-ensembles de recherche plus cohérents émotionnellement.
+\end{note}
+
 
 % ══════════════════════════════════════════════════════════════════════════════
 % PARTIE IV : CONCLUSION GÉNÉRALE
@@ -4122,8 +3891,6 @@ l'Étape~2, avec un pipeline commun standardisé.
 données bruitées sera toujours battu par un modèle plus simple sur des données propres.
 \end{note}
 
-\pagebreak
-
 \subsection{Chaque méthode de topic modeling apporte une lecture complémentaire}
 
 Les quatre méthodes de topic modeling convergent vers les mêmes grands thèmes --- relations
@@ -4133,10 +3900,6 @@ aveugle au contexte~; Word2Vec capture mieux la sémantique mais produit des clu
 déséquilibrés~; les Sentence Transformers (BERT) offrent la meilleure qualité de clustering
 grâce aux représentations contextuelles~; LDA, enfin, est le plus interprétable grâce à
 son assignation probabiliste des thèmes.
-
-\vspace{0.5cm}
-Aucune méthode ne domine sur tous les critères simultanément. Le tableau ci-dessous
-synthétise ces arbitrages~:
 
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
@@ -4158,72 +3921,62 @@ Coût computationnel       & Nul       & Faible    & Modéré    & Élevé      
 \end{tabularx}
 \end{center}
 
-\pagebreak
-
 \subsection{BERT représente un saut qualitatif significatif pour la classification}
 
-L'Étape~2 a clairement établi la hiérarchie des approches pour la classification de
-sentiments~:
+L'Étape~2 a clairement établi la hiérarchie des approches pour la classification de sentiments~:
 
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{@{}L{4cm}cc@{}}
+\begin{tabular}{@{}L{5.5cm}cc@{}}
 \toprule
 \textbf{Famille} & \textbf{Meilleure accuracy} & \textbf{Gain vs famille précédente} \\
 \midrule
-Non supervisé (K-Means)          & 46,36\,\%  & ---               \\
-Supervisé classique (NB, LR, SVC) & 75,86\,\%  & $+29{,}5$ pts     \\
-BERT sans fine-tuning            & 72,31\,\%  & $-3{,}6$ pts vs classique \\
-BERT avec fine-tuning            & 83,02\,\%  & $+7{,}2$ pts      \\
-BERT spécialisé + fine-tuning    & 83,43\,\%  & $+0{,}4$ pts      \\
+Non supervisé (K-Means)           & 46,36\,\%  & --- \\
+Supervisé classique (NB, LR, SVC) & 75,86\,\%  & $+29{,}5$ pts \\
+BERT sans fine-tuning             & 72,31\,\%  & $-3{,}6$ pts vs classique \\
+BERT avec fine-tuning             & 83,02\,\%  & $+7{,}2$ pts \\
+BERT spécialisé + fine-tuning     & 83,43\,\%  & $+0{,}4$ pts \\
 \bottomrule
 \end{tabular}
 \end{center}
-\vspace{0.5cm}
 
-Plusieurs enseignements ressortent. Premièrement, \textbf{le fine-tuning est indispensable}: un BERT
+Plusieurs enseignements ressortent. Premièrement, \textbf{le fine-tuning est indispensable}~: un BERT
 dont les poids sont gelés (72,3\,\%) est moins performant qu'une simple régression logistique
 (75,3\,\%), ce qui confirme que les représentations génériques de BERT ne suffisent pas sans
 adaptation à la tâche. Deuxièmement, \textbf{le gain du modèle spécialisé (Modèle~C) sur BERT-base
-fine-tuné (Modèle~B) est marginal ($+0{,}4$ pt)}: le fine-tuning sur notre dataset
-représente l'essentiel de l'adaptation, quel que soit le point de départ. Troisièmement, \textbf{la
-confusion \textit{Depression}/\textit{Suicidal} persiste quel que soit le modèle}, ce qui
-pointe vers une limite des données elles-mêmes plutôt qu'un problème algorithmique.
+fine-tuné (Modèle~B) est marginal ($+0{,}4$ pt)}~: le fine-tuning sur notre dataset représente
+l'essentiel de l'adaptation. Troisièmement, \textbf{la confusion \textit{Depression}/\textit{Suicidal}
+persiste quel que soit le modèle}, ce qui pointe vers une limite des données plutôt qu'un
+problème algorithmique. C'est pour cela que le Modèle~B (BERT avec fine-tuning) a été retenu
+comme source des annotations pour le Module~2.
 
-\pagebreak
-
-\subsection{Le filtrage par sentiment est le principal levier du système Q/R}
+\subsection{Le filtrage par sentiment BERT est le principal levier du système Q/R}
 
 L'évaluation du système de question-réponse fait apparaître deux axes d'amélioration
-indépendants~: le choix de la représentation vectorielle, et la restriction de l'espace de
-recherche par filtrage émotionnel.
+indépendants~: le choix de la représentation vectorielle et la restriction de l'espace de
+recherche par filtrage émotionnel. Le remplacement des annotations TF-IDF par les
+annotations BERT (\texttt{predicted\_sentiment\_bert}) a permis d'obtenir des sous-ensembles
+de recherche plus cohérents, amplifiant les bénéfices du filtrage.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
- & \multicolumn{2}{c}{\textbf{Sans filtrage}} & \multicolumn{2}{c}{\textbf{Avec filtrage}} \\
+ & \multicolumn{2}{c}{\textbf{Sans filtrage}} & \multicolumn{2}{c}{\textbf{Avec filtrage BERT}} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
 \textbf{Représentation} & Q-Q & Q-R & Q-Q & Q-R \\
 \midrule
-TF-IDF   & 0.314 & 0.320 & 0.410 & 0.410 \\
-Word2Vec & 0.424 & 0.530 & 0.622 & 0.664 \\
-BERT     & 0.463 & 0.563 & 0.670 & \textbf{0.702} \\
+TF-IDF   & 0,314 & 0,320 & 0,410 & 0,410 \\
+Word2Vec & 0,424 & 0,530 & 0,622 & 0,664 \\
+BERT     & 0,463 & 0,563 & 0,670 & \textbf{0,702} \\
 \midrule
-Gain filtrage (BERT) & \multicolumn{2}{c}{---} & $+0.207$ & $+0.139$ \\
+Gain filtrage (BERT) & \multicolumn{2}{c}{---} & $+0{,}207$ & $+0{,}139$ \\
 \bottomrule
 \end{tabular}
 \end{center}
-\vspace{0.5cm}
 
-Deux conclusions s'imposent. D'une part, \textbf{la stratégie Q-R surpasse systématiquement la
-stratégie Q-Q}: comparer la question directement aux réponses est plus efficace que passer
-par une question intermédiaire. D'autre part, \textbf{le filtrage par sentiment apporte un gain
-systématique et plus important} que le passage de TF-IDF à BERT ($+0{,}21$ pour Q-Q BERT
-vs $+0{,}10$ entre TF-IDF et BERT sans filtrage). Ce résultat met en lumière la valeur
-ajoutée du Module~1~: les annotations émotionnelles produites par le classificateur de
-sentiments ne servent pas seulement à caractériser les échanges, elles améliorent
-concrètement la pertinence des réponses retournées.
+La stratégie Q-R surpasse systématiquement la stratégie Q-Q, et le filtrage par sentiment BERT
+apporte un gain plus important que le passage de TF-IDF à BERT sans filtrage.
 
 \section{Limites identifiées}
 
@@ -4259,9 +4012,6 @@ Coût GPU pour BERT
 
 \section{Améliorations à court terme}
 
-Les pistes les plus directement exploitables concernent la robustesse des pipelines
-existants~:
-
 \begin{itemize}
   \item \textbf{Standardisation du prétraitement}~: adopter un pipeline unique documenté
     pour toute l'équipe, avec des sorties normalisées, afin de garantir la comparabilité
@@ -4275,8 +4025,6 @@ existants~:
 
 \section{Améliorations à moyen terme}
 
-Des évolutions plus substantielles permettraient d'améliorer les performances~:
-
 \begin{itemize}
   \item \textbf{Augmentation des données}~: utiliser des techniques de \textit{data
     augmentation} (paraphrase, back-translation) pour équilibrer les classes minoritaires
@@ -4288,25 +4036,19 @@ Des évolutions plus substantielles permettraient d'améliorer les performances~
     pertinence clinique réelle.
 \end{itemize}
 
-\pagebreak
-
 \section{Vision à long terme}
-
-Le système développé dans ce projet constitue un prototype prometteur dont l'architecture
-— un classificateur d'émotions couplé à un moteur de recherche sémantique — est
-directement extensible~:
 
 \begin{itemize}
   \item \textbf{Pipeline unifié}~: fusionner le classificateur de sentiments et le système
-    Q/R en un seul service, où l'annotation émotionnelle est calculée à la volée pour
+    Q/R en un seul service, où l'annotation émotionnelle BERT est calculée à la volée pour
     chaque requête entrante.
   \item \textbf{Interface utilisateur}~: développer une application web permettant à un
     professionnel de santé de soumettre une question et d'obtenir instantanément les
     réponses les plus pertinentes du corpus, avec leur score de confiance et leur étiquette
     de sentiment.
   \item \textbf{Apprentissage continu}~: mettre en place un mécanisme de retour utilisateur
-    (thumbs up / thumbs down) pour réentraîner périodiquement les modèles sur les nouvelles
-    interactions et améliorer progressivement la pertinence des réponses.
+    pour réentraîner périodiquement les modèles sur les nouvelles interactions et améliorer
+    progressivement la pertinence des réponses.
 \end{itemize}
 
 \begin{note}[Mot de la fin]
@@ -4314,8 +4056,8 @@ Ce projet a démontré qu'il est possible, à partir d'un corpus de taille modes
 ressources académiques basiques, de construire un système d'analyse et de recherche
 sémantique sur des conversations de santé mentale atteignant des performances solides.
 Les résultats obtenus~--- 83,43\,\% d'accuracy pour la classification, score de 0,702
-pour le système Q/R avec filtrage~--- constituent une base sérieuse pour des développements
-futurs orientés vers des applications cliniques réelles.
+pour le système Q/R avec filtrage par sentiment BERT~--- constituent une base sérieuse
+pour des développements futurs orientés vers des applications cliniques réelles.
 \end{note}
 
 % ══════════════════════════════════════════════════════════════════════════════
@@ -4328,49 +4070,30 @@ futurs orientés vers des applications cliniques réelles.
 \begin{itemize}
   \item Wikipedia — Natural Language Processing.\\
     \url{https://en.wikipedia.org/wiki/Natural_language_processing}
-  
   \item Wikipedia — Topic Modeling.\\
     \url{https://en.wikipedia.org/wiki/Topic_model}
-  
   \item Wikipedia — Sentiment Analysis.\\
     \url{https://en.wikipedia.org/wiki/Sentiment_analysis}
-
   \item Wikipédia, \textit{TF-IDF}\\
     \url{https://fr.wikipedia.org/wiki/TF-IDF}
-
   \item Wikipédia, \textit{Word Embedding}\\
     \url{https://fr.wikipedia.org/wiki/Word_embedding}
-
   \item Wikipédia, \textit{Allocation de Dirichlet Latente}\\
     \url{https://fr.wikipedia.org/wiki/Allocation_de_Dirichlet_latente}
-
   \item Wikipédia, \textit{Mots vides}\\
     \url{https://fr.wikipedia.org/wiki/Mot_vide}
-
   \item Wikipédia, \textit{Hapax}\\
     \url{https://fr.wikipedia.org/wiki/Hapax}
-
   \item freeCodeCamp, \textit{How to Process Textual Data Using TF-IDF in Python}\\
     \url{https://www.freecodecamp.org/news/how-to-process-textual-data-using-tf-idf-in-python-cd2bbc0a94a3}
-
   \item GeeksforGeeks, \textit{Word Embeddings in NLP}\\
     \url{https://www.geeksforgeeks.org/nlp/word-embeddings-in-nlp/}
-
   \item GeeksforGeeks, \textit{N-gram in NLP}\\
     \url{https://www.geeksforgeeks.org/nlp/n-gram-in-nlp/}
-
   \item IBM, \textit{Latent Dirichlet Allocation}\\
     \url{https://www.ibm.com/fr-fr/think/topics/latent-dirichlet-allocation}
-
-  \item Spiriit, \textit{Data Clustering}\\
-    \url{https://www.spiriit.com/ressources/data-clustering-definition-methodes-usages/}
-
   \item Université Toulouse, \textit{Tutoriel Word Embeddings}\\
     \url{http://w3.erss.univ-tlse2.fr/UETAL/2018-2019/Tuto-embeddings.pdf}
-
-  \item Éduscol, \textit{Word Embedding \& Machine Learning}\\
-    \url{https://sti.eduscol.education.fr/sites/eduscol.education.fr.sti/files/ressources/pedagogiques/14960/14960-word-embedding-les-mots-et-le-machine-learning-ensps.pdf}
-
 \end{itemize}
 
 \section*{Papiers de référence}
@@ -4386,25 +4109,18 @@ futurs orientés vers des applications cliniques réelles.
 \begin{itemize}
   \item all-MiniLM-L6-v2 — Hugging Face.\\
     \url{https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2}
-
   \item RoBERTa — Hugging Face.\\
     \url{https://huggingface.co/docs/transformers/model_doc/roberta}
-  
   \item RoBERTa-large — Hugging Face.\\
     \url{https://huggingface.co/docs/transformers/model_doc/roberta_large}
-
   \item DistilBERT — Hugging Face.\\
     \url{https://huggingface.co/docs/transformers/model_doc/distilbert}
-
   \item cardiffnlp/twitter-roberta-base-sentiment-latest — Hugging Face.\\
     \url{https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest}
-
   \item nlptown/bert-base-multilingual-uncased-sentiment — Hugging Face.\\
     \url{https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment}
-
   \item siebert/sentiment-roberta-large-english — Hugging Face.\\
     \url{https://huggingface.co/siebert/sentiment-roberta-large-english}
-
   \item j-hartmann/emotion-english-distilroberta-base — Hugging Face.\\
     \url{https://huggingface.co/j-hartmann/emotion-english-distilroberta-base}
 \end{itemize}
