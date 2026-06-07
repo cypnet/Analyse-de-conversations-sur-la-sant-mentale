@@ -168,7 +168,3 @@ les catégories des sentiments où les annotations sont fournies manuellement pa
 | Victor BLANQUART-BLANCHET | Lucas DA SILVA |
 
 ---
-
-## 📄 Licence
-
-Projet académique — Université de Toulouse, 2026. Usage éducatif uniquement.
